@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mata Mágica 🦊</title>
+  <title>🦊 Mata Mágica 🦊</title>
 
   <style>
     * {
@@ -1879,7 +1879,7 @@ PokedexAdaptador.iniciar({
   extras: info => [["🌿 Onde vive", info.habitat]],
   // Aviso vermelho na ficha (ex.: planta venenosa):
   alerta: info => info.perigoso === true ? (info.aviso || "Cuidado! Peça ajuda a um adulto.") : "",
-  salvar: () => { document.getElementById("saveBtn").click(); document.getElementById("abaAlbum").click(); },
+  salvar: () => { document.getElementById("saveButton").click(); document.getElementById("abaAlbum").click(); },
   novaFoto: () => document.getElementById("fotoInput").click()
 });
 </script>
