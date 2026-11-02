@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Asas da Amazônia</title>
+<style>
+:root{
+  --bg:#08110d;
+  --bg2:#0d1913;
+  --panel:#101d16;
+  --panel2:#14241b;
+  --line:#26382d;
+  --text:#f4f2df;
+  --muted:#a8b3aa;
+  --green:#82d95b;
+  --green2:#4cae68;
+  --yellow:#e9d65b;
+  --cream:#d9d4ae;
+  --danger:#ffb26b;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(circle at 85% 0%,#28472b44,transparent 30%),
+    radial-gradient(circle at 0% 30%,#1f402c33,transparent 28%),
+    var(--bg);
+  font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+}
+button,input{font:inherit}
+button{cursor:pointer}
+.app{width:min(1180px,calc(100% - 34px));margin:auto;padding:28px 0 55px}
+
+/* topo */
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:7px 0 34px;border-bottom:1px solid var(--line);
+}
+.brand{display:flex;gap:13px;align-items:center}
+.brand-mark{
+  width:43px;height:43px;border:1px solid #4d6d55;border-radius:13px;
+  display:grid;place-items:center;background:#14241b;font-size:25px;
+}
+.brand-kicker{
+  font-size:11px;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--green);font-weight:800;
+}
+.brand-name{font-weight:850;font-size:18px;letter-spacing:-.02em}
+.top-link{
+  border:1px solid var(--line);background:transparent;color:var(--cream);
+  padding:10px 14px;border-radius:12px;
+}
+
+/* hero */
+.hero{padding:60px 0 45px;max-width:850px}
+.eyebrow{
+  color:var(--yellow);font-size:12px;letter-spacing:.18em;
+  text-transform:uppercase;font-weight:800;margin-bottom:14px;
+}
+h1{
+  margin:0;font-size:clamp(48px,8vw,92px);line-height:.88;
+  letter-spacing:-.065em;font-weight:900;
+}
+h1 span{color:var(--green)}
+.hero p{
+  max-width:720px;color:var(--muted);font-size:17px;
+  line-height:1.65;margin:22px 0 0;
+}
+
+/* contador */
+.safari{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:27px;
+}
+.safari-chip{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--line);background:#ffffff05;
+  border-radius:999px;padding:9px 13px;color:var(--cream);font-size:13px;
+}
+.safari-chip strong{color:var(--green);font-size:16px}
+.safari-chip-button{font:inherit;cursor:pointer;color:var(--cream)}
+.safari-chip-button:hover{border-color:#6da65e;background:#ffffff0a}
+.subpage-head{display:flex;align-items:center;gap:12px;margin:22px 0 24px}
+.subpage-head h2{margin:0;font-size:clamp(30px,5vw,46px);letter-spacing:-.04em}
+.subpage-kicker{font-size:10px;letter-spacing:.2em;color:var(--green);text-transform:uppercase;font-weight:800;margin-bottom:6px}
+.brasil-hero{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:center;border:1px solid var(--line);border-radius:22px;padding:clamp(18px,4vw,34px);background:linear-gradient(130deg,#10251a,#08140e);overflow:hidden}
+.brasil-hero p,.tuca-bio p{color:var(--muted);line-height:1.7;font-size:14px}
+.brazil-map-wrap{display:grid;place-items:center;min-height:250px;background:radial-gradient(ellipse,#315c3744,transparent 68%)}
+.brazil-map{width:min(100%,330px);height:auto;filter:drop-shadow(0 8px 18px #0008)}
+.brazil-map-image{display:block;width:min(100%,430px);max-height:360px;object-fit:contain;border-radius:18px;filter:drop-shadow(0 8px 18px #0008)}
+.fact-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
+.fact-card{border:1px solid var(--line);border-radius:15px;background:var(--panel);padding:16px}
+.fact-card .fact-icon{font-size:24px;color:var(--green);margin-bottom:8px}
+.fact-card strong{display:block;margin-bottom:7px;font-size:14px}
+.fact-card p{font-size:12px;line-height:1.55;color:var(--muted);margin:0}
+.biome-list{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-top:14px}
+.biome-info{padding:15px;border:1px solid var(--line);border-radius:14px;background:#ffffff03}
+.biome-info strong{display:block;color:var(--cream);margin-bottom:6px}
+.biome-info p{margin:0;color:var(--muted);font-size:12px;line-height:1.5}
+.tuca-profile{display:grid;grid-template-columns:minmax(240px,.8fr) 1.2fr;gap:25px;align-items:center;border:1px solid var(--line);border-radius:22px;background:linear-gradient(140deg,#11251a,#08130e);padding:clamp(18px,4vw,34px)}
+.tuca-portrait{width:100%;max-width:390px;aspect-ratio:1/1;object-fit:cover;object-position:center;border-radius:20px;border:1px solid #365b40;box-shadow:0 15px 40px #0006}
+.tuca-bio h3{font-size:25px;margin:0 0 12px}
+.tuca-tags{display:flex;gap:8px;flex-wrap:wrap;margin:15px 0}
+.tuca-tag{border:1px solid #36563b;background:#14271a;border-radius:999px;padding:7px 10px;color:var(--green);font-size:11px}
+.tuca-quote{border:1px solid #386044;background:#10251a;border-radius:15px;padding:17px;margin-top:18px;color:var(--cream);line-height:1.6}
+@media(max-width:760px){.brasil-hero,.tuca-profile{grid-template-columns:1fr}.fact-grid{grid-template-columns:repeat(2,1fr)}.biome-list{grid-template-columns:repeat(2,1fr)}.tuca-portrait{max-width:300px;margin:auto}}
+
+/* categorias */
+.section-head{
+  display:flex;justify-content:space-between;gap:20px;align-items:end;
+  margin:15px 0 15px;
+}
+.section-head h2{
+  margin:0;font-size:25px;letter-spacing:-.035em;
+}
+.section-head p{margin:5px 0 0;color:var(--muted);font-size:14px}
+.categories{
+  display:grid;grid-template-columns:repeat(5,1fr);gap:10px;
+}
+.cat{
+  position:relative;min-height:178px;overflow:hidden;text-align:left;
+  border:1px solid var(--line);background:#0e1913;color:var(--text);
+  border-radius:16px;padding:0;transition:.18s transform,.18s border-color,.18s box-shadow;
+}
+.cat:hover,.cat.active{
+  transform:translateY(-3px);border-color:#6da65e;
+  box-shadow:0 14px 30px #0007;
+}
+.cat-image{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:fill;
+  display:block;transition:.25s transform;filter:saturate(.9);
+}
+.cat:hover .cat-image{transform:scale(1.045)}
+.cat-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg,transparent 22%,#07110de8 100%);
+}
+.cat-content{position:absolute;left:14px;right:14px;bottom:13px;z-index:2}
+.cat-name{font-weight:850;font-size:15px;letter-spacing:-.01em}
+.cat-desc{font-size:11px;color:#c0c9c1;margin-top:4px;line-height:1.3}
+
+.discovery-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:26px 0 0}
+#discoveryPage .capture{margin-top:20px}
+/* captura */
+.capture{
+  margin-top:38px;border-top:1px solid var(--line);
+  padding-top:34px;display:grid;grid-template-columns:1.15fr .85fr;gap:18px;
+}
+.card{
+  border:1px solid var(--line);background:var(--panel);
+  border-radius:20px;padding:22px;
+}
+.card-title{
+  display:flex;justify-content:space-between;align-items:center;gap:10px;
+  margin-bottom:15px;
+}
+.card-title h3{margin:0;font-size:17px}
+.mini{font-size:11px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase}
+.drop{
+  min-height:275px;border:1px dashed #3b5143;border-radius:16px;
+  display:grid;place-items:center;text-align:center;padding:25px;
+  background:#0b1610;
+}
+.drop img{display:none;max-width:100%;max-height:350px;border-radius:12px}
+.drop-inner{max-width:440px}
+.big-icon{font-size:47px;margin-bottom:9px}
+.drop h3{margin:0 0 8px;font-size:20px}
+.drop p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:13px}
+.btn{
+  border-radius:11px;padding:12px 15px;border:1px solid var(--line);
+  font-weight:800;font-size:13px;
+}
+.btn-main{background:var(--yellow);color:#172016;border-color:var(--yellow)}
+.btn-green{background:var(--green);color:#102012;border-color:var(--green)}
+.btn-dark{background:#ffffff05;color:var(--cream)}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+input[type=file]{display:none}
+
+/* resultado */
+.empty{
+  min-height:275px;display:grid;place-items:center;text-align:center;
+  color:var(--muted);padding:25px;
+}
+.result{display:none}
+.result.show{display:block}
+.result-name{
+  font-size:32px;line-height:1;margin:0 0 9px;
+  letter-spacing:-.045em;color:var(--cream);
+}
+.pill{
+  display:inline-block;border:1px solid #416247;background:#182a1c;
+  color:var(--green);border-radius:999px;padding:6px 9px;font-size:11px;font-weight:800;
+}
+.result-text{color:var(--muted);line-height:1.65;font-size:14px}
+.info-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:17px}
+.info{
+  border:1px solid var(--line);border-radius:13px;padding:13px;background:#ffffff03;
+}
+.info b{display:block;color:var(--cream);font-size:11px;text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.info span{color:var(--muted);font-size:13px;line-height:1.45}
+.warning{
+  display:none;margin-top:12px;padding:13px;border-radius:13px;
+  background:#4a2816;border:1px solid #9b6339;color:#ffd4aa;font-size:13px;line-height:1.45;
+}
+.warning.show{display:block}
+
+/* tuca */
+.tuca{
+  display:flex;gap:12px;margin-top:15px;padding:14px;
+  border:1px solid #314536;background:#122019;border-radius:14px;
+}
+.tuca-face{
+  width:46px;height:46px;border-radius:13px;background:#1c3221;
+  display:grid;place-items:center;font-size:27px;flex:none;
+}
+.tuca strong{font-size:13px;color:var(--yellow)}
+.tuca p{margin:4px 0 0;color:var(--muted);font-size:12px;line-height:1.45}
+
+/* mapa e álbum */
+.lower{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.map{
+  min-height:230px;border-radius:15px;border:1px solid var(--line);
+  background:
+    linear-gradient(25deg,transparent 48%,#375a3e44 49%,transparent 51%),
+    linear-gradient(155deg,transparent 48%,#375a3e33 49%,transparent 51%),
+    #0b1811;
+  position:relative;overflow:hidden;padding:18px;
+}
+.map:before{
+  content:"";position:absolute;inset:34px 42px;
+  border:1px solid #46674d;border-radius:46% 54% 52% 48%;
+  transform:rotate(-8deg);
+}
+.map-content{position:relative;z-index:1}
+.map-pin{font-size:24px}
+.map strong{display:block;margin-top:9px;color:var(--cream)}
+.map p{color:var(--muted);font-size:13px;line-height:1.5}
+.album-grid{
+  display:grid;grid-template-columns:repeat(2,1fr);gap:10px;
+}
+.album-item{
+  min-height:112px;border:1px solid var(--line);border-radius:14px;
+  background:#ffffff03;padding:13px;
+}
+.album-item .num{font-size:10px;color:var(--green);font-weight:800}
+.album-item strong{display:block;margin-top:7px;font-size:14px}
+.album-item span{display:block;margin-top:5px;color:var(--muted);font-size:11px}
+
+/* status */
+.status{min-height:20px;margin-top:12px;color:var(--muted);font-size:13px}
+.success{color:var(--green)}
+.error{color:#ffab9b}
+.footer{
+  margin-top:35px;padding-top:20px;border-top:1px solid var(--line);
+  color:#758278;font-size:11px;line-height:1.6;
+}
+
+/* responsivo */
+@media(max-width:900px){
+  .categories{grid-template-columns:repeat(3,1fr)}
+  .capture,.lower{grid-template-columns:1fr}
+}
+/* Página do Safari */
+#safariPage{display:none}
+.safari-head{display:flex;align-items:center;gap:12px;margin:22px 0 18px}
+.safari-head h2{margin:0;font-size:clamp(28px,5vw,42px);letter-spacing:-.04em}
+.safari-sub{color:var(--green);font-size:10px;letter-spacing:.2em;font-weight:800;text-transform:uppercase;margin-top:5px}
+.biome-tabs{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 30px}
+.biome-tab{border:1px solid var(--line);border-radius:999px;background:#ffffff06;color:var(--muted);padding:9px 13px;font-size:12px}
+.biome-tab.active{border-color:#37c98b;background:#123c2b;color:var(--text)}
+.biome-section{margin:26px 0 34px}
+.biome-title{display:flex;justify-content:space-between;align-items:center;margin-bottom:15px}
+.biome-title h3{margin:0;font-family:Georgia,serif;font-size:22px}
+.biome-title span{font-size:11px;color:#84988a}
+.biome-scene{height:clamp(300px,48vw,420px);position:relative;overflow:hidden;border:1px solid #344438;border-radius:24px;background-size:cover;background-position:center;isolation:isolate}
+.biome-scene.amazon{background-image:linear-gradient(180deg,#07130d10,#06110be8),url('https://images.unsplash.com/photo-1516026672322-bc52d61a55d5?auto=format&fit=crop&w=1400&q=85')}
+.biome-scene.cerrado{background-image:linear-gradient(180deg,#07130d05,#06110bd9),url('https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=1400&q=85')}
+.biome-scene.mata{background-image:linear-gradient(180deg,#07130d05,#06110bd9),url('https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1400&q=85')}
+.biome-scene.caatinga{background-image:linear-gradient(180deg,#07130d05,#06110bd9),url('https://images.unsplash.com/photo-1509316785289-025f5b846b35?auto=format&fit=crop&w=1400&q=85')}
+.biome-scene.pantanal{background-image:linear-gradient(180deg,#07130d05,#06110bd9),url('https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=1400&q=85')}
+.biome-scene.pampa{background-image:linear-gradient(180deg,#07130d05,#06110bd9),url('https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=1400&q=85')}
+.day-controls{position:absolute;right:13px;top:13px;display:flex;gap:6px;flex-wrap:wrap;z-index:3}
+.day-controls button{border:1px solid #ffffff2a;background:#14221de8;color:#eef3e9;border-radius:999px;padding:8px 12px;font-size:11px;font-weight:750}
+.day-controls button.active{background:#55c9bb;color:#082018}
+.scene-message{position:absolute;left:50%;top:48%;transform:translate(-50%,-50%);padding:16px 20px;width:min(310px,80%);text-align:center;border:1px solid #ffffff30;border-radius:18px;background:#09130fba;backdrop-filter:blur(8px);font-size:13px;line-height:1.5;color:#e0e9df}
+.scene-caption{position:absolute;bottom:15px;left:16px;right:16px;z-index:2}
+.scene-caption .eyebrow{margin:0 0 5px;font-size:10px;color:#45e9a6}
+.scene-caption strong{font-family:Georgia,serif;font-size:21px}
+.walker{position:absolute;z-index:4;left:12%;bottom:24%;width:54px;height:54px;border-radius:50%;border:3px solid #36e6a2;background:#0b291dd9;box-shadow:0 0 0 8px #25d88c33,0 0 30px #30eaa9aa;display:grid;place-items:center;font-size:30px;animation:walkAcross 13s linear infinite alternate, bob .55s ease-in-out infinite alternate}
+.walker::after{content:'';position:absolute;inset:-7px;border:1px solid #62f4b4;border-radius:50%;animation:pulse 1.8s ease-out infinite}
+@keyframes walkAcross{from{left:10%}to{left:82%}} @keyframes bob{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-5px) rotate(5deg)}} @keyframes pulse{from{transform:scale(.85);opacity:.8}to{transform:scale(1.5);opacity:0}}
+@media(prefers-reduced-motion:reduce){.walker{animation:none;left:45%}}
+@media(max-width:600px){
+  .app{width:min(100% - 22px,1180px);padding-top:15px}
+  .topbar{padding-bottom:20px}
+  .top-link{display:none}
+  .hero{padding:45px 0 30px}
+  .categories{grid-template-columns:repeat(2,1fr)}
+  .info-row{grid-template-columns:1fr}
+  h1{font-size:52px}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="topbar">
+  <div class="brand">
+    <div class="brand-mark">🐦</div>
+    <div>
+      <div class="brand-kicker">Catálogo de campo</div>
+      <div class="brand-name">Asas da Amazônia</div>
+    </div>
+  </div>
+</header>
+
+<main id="homePage">
+<section class="hero">
+  <div class="eyebrow">Floresta + Tecnologia · IA de visão</div>
+  <h1>Asas da<br><span>Amazônia</span></h1>
+  <p>Explore o Brasil com o Tuca. Tire uma foto para descobrir aves, animais, plantas, frutas e outros tesouros da natureza brasileira.</p>
+  <div class="safari">
+    <button type="button" class="safari-chip safari-chip-button" id="abrirSafari">🧭 Seu Safari <strong id="contadorHero">0</strong></button>
+    <button type="button" class="safari-chip safari-chip-button" id="abrirBrasil">🌎 Brasil</button>
+    <button type="button" class="safari-chip safari-chip-button" id="abrirTuca">🐦 Tuca, seu Guia</button>
+  </div>
+</section>
+
+<section>
+  <div class="section-head">
+    <div>
+      <h2>Escolha sua lente</h2>
+      <p>Dez caminhos para explorar o que vive e cresce pelo Brasil.</p>
+    </div>
+  </div>
+  <div class="categories" id="categorias">
+    <button class="cat active" data-cat="aves">
+      <img class="cat-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSZ2j_rsj4dEwK96C5FkRBVka0FUlhdXzGRqtZVUF5JQA&s=10" alt="Imagem de Aves">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Aves</div><div class="cat-desc">Passarinhos e aves brasileiras</div></div>
+    </button>
+    <button class="cat" data-cat="mamiferos">
+      <img class="cat-image" src="https://s5.static.brasilescola.uol.com.br/be/2020/12/baleia.jpg" alt="Imagem de Mamíferos">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Mamíferos</div><div class="cat-desc">Onças, macacos e mais</div></div>
+    </button>
+    <button class="cat" data-cat="repteis">
+      <img class="cat-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR-g1OyKXstAvmsj8N32JFJbhnLseRYDs2uB7cgesqV6w&s=10" alt="Imagem de Répteis">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Répteis</div><div class="cat-desc">Jacarés, cobras e lagartos</div></div>
+    </button>
+    <button class="cat" data-cat="anfibios">
+      <img class="cat-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6G2auTkky6NqGg6B4pgYOZU662N1A6QmZUpeXteDnQw&s=10" alt="Imagem de Anfíbios">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Anfíbios</div><div class="cat-desc">Sapos e rãs</div></div>
+    </button>
+    <button class="cat" data-cat="peixes">
+      <img class="cat-image" src="https://static.escolakids.uol.com.br/2020/11/peixe-palhaco.jpg" alt="Imagem de Peixes">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Peixes</div><div class="cat-desc">Rios e mares do Brasil</div></div>
+    </button>
+    <button class="cat" data-cat="insetos">
+      <img class="cat-image" src="https://corpomenteeespirito.com/wp-content/uploads/2025/03/arquetipo-da-joaninha-lado-sombra.jpg" alt="Imagem de Insetos">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Insetos</div><div class="cat-desc">Borboletas e pequenos animais</div></div>
+    </button>
+    <button class="cat" data-cat="arvores">
+      <img class="cat-image" src="https://arvoresdesaopaulo.wordpress.com/wp-content/uploads/2013/02/pau-brasil-na-mata-atlc3a2ntica-do-rio-de-janeiro-foto-de-ricardo-cardim-direitos-reservados.jpg?w=584" alt="Imagem de Árvores">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Árvores</div><div class="cat-desc">Árvores e espécies nativas</div></div>
+    </button>
+    <button class="cat" data-cat="flores">
+      <img class="cat-image" src="https://ogimg.infoglobo.com.br/boa-viagem/23085253-545-d1b/FT1086A/flores_girassol-1024x640.jpg" alt="Imagem de Flores">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Flores</div><div class="cat-desc">Cores e formas da natureza</div></div>
+    </button>
+    <button class="cat" data-cat="frutas">
+      <img class="cat-image" src="https://fundacaocargill.org.br/wp-content/uploads/2023/07/acai-conheca-a-versatilidade-do-alimento-1.jpg" alt="Imagem de Frutas">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Frutas</div><div class="cat-desc">Frutas brasileiras</div></div>
+    </button>
+    <button class="cat" data-cat="plantas">
+      <img class="cat-image" src="https://formulajr.com.br/wp-content/uploads/elementor/thumbs/verdura-e-plantas-tropicais-scaled-rajg2cut94djuregdzy5xiv2clqnwa1j4hro8u7kvk.jpg" alt="Imagem de Plantas">
+      <div class="cat-overlay"></div>
+      <div class="cat-content"><div class="cat-name">Plantas</div><div class="cat-desc">Folhas, sementes e plantas</div></div>
+    </button>
+  </div>
+</section>
+
+</main>
+
+<main id="discoveryPage" style="display:none">
+<div class="discovery-top"><button class="btn btn-dark" id="voltarCategorias">← Voltar às categorias</button><span class="mini">PÁGINA DE DESCOBERTA</span></div>
+
+<section class="capture">
+  <div class="card">
+    <div class="card-title">
+      <h3>Pronto para descobrir?</h3>
+      <span class="mini" id="categoriaAtual">Aves</span>
+    </div>
+    <div class="drop" id="drop">
+      <div class="drop-inner" id="dropInner">
+        <div class="big-icon">📷</div>
+        <h3>Tire uma foto ou envie uma imagem</h3>
+        <p>Escolha uma imagem clara do que você encontrou. O Tuca vai olhar com você.</p>
+      </div>
+      <img id="imagem" alt="Imagem escolhida">
+    </div>
+    <div class="actions">
+      <label class="btn btn-main" for="foto">📸 Tirar foto</label>
+      <label class="btn btn-dark" for="foto">🖼️ Galeria</label>
+      <button class="btn btn-green" id="descobrir" disabled>✨ Descobrir</button>
+      <button class="btn btn-dark" id="limpar">Limpar</button>
+      <input id="foto" type="file" accept="image/jpeg,image/png,image/webp">
+    </div>
+    <div class="status" id="status"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <h3>Resultado da exploração</h3>
+      <span class="mini">IA de visão</span>
+    </div>
+    <div class="empty" id="semResultado">
+      <div>
+        <div class="big-icon">🌱</div>
+        <div>Faça uma descoberta para ver<br>as informações aqui.</div>
+      </div>
+    </div>
+    <div class="result" id="resultado">
+      <h2 class="result-name" id="nome"></h2>
+      <span class="pill" id="confianca"></span>
+      <p class="result-text" id="curiosidades"></p>
+      <div class="info-row">
+        <div class="info"><b>Onde vive</b><span id="ondeVive"></span></div>
+        <div class="info"><b>Categoria</b><span id="categoriaResultado"></span></div>
+      </div>
+      <div class="warning" id="avisoGaviao">
+        ⚠️ <strong>Olhe de longe!</strong> Não tente tocar ou se aproximar de um gavião. Observe com segurança e chame um adulto se precisar.
+      </div>
+    </div>
+    <div class="tuca">
+      <div class="tuca-face">🐦</div>
+      <div>
+        <strong id="falaTuca">Tuca diz: “Vamos explorar o Brasil!”</strong>
+        <p>Seu mascote pode aparecer aqui com uma mensagem sobre cada descoberta.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="lower">
+  <div class="card">
+    <div class="card-title">
+      <h3>Álbum de descobertas</h3>
+      <span class="mini"><span id="contadorAlbum">0</span> espécies</span>
+    </div>
+    <div class="album-grid" id="album">
+      <div class="album-item">
+        <div class="num">SUA PRÓXIMA DESCOBERTA</div>
+        <strong>🌿 Em branco</strong>
+        <span>Suas identificações aparecem aqui.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title">
+      <h3>Mapa da descoberta</h3>
+      <span class="mini">Brasil</span>
+    </div>
+    <div class="map">
+      <div class="map-content">
+        <div class="map-pin">📍</div>
+        <strong id="mapaTitulo">Pronto para explorar</strong>
+        <p id="mapaTexto">Depois de descobrir algo, o Tuca mostra onde essa espécie vive.</p>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+
+<main id="brasilPage" style="display:none">
+  <div class="subpage-head">
+    <button class="btn btn-dark" id="voltarBrasil">← Voltar</button>
+    <div><div class="subpage-kicker">Explorando nosso país</div><h2>Brasil: um território de vida e diversidade</h2></div>
+  </div>
+  <section class="brasil-hero">
+    <div>
+      <div class="eyebrow">Um país, muitos mundos</div>
+      <h2 style="font-size:clamp(30px,5vw,48px);line-height:1.02;margin:0">A natureza brasileira é <span style="color:var(--green)">extraordinária.</span></h2>
+      <p>O Brasil reúne florestas tropicais, savanas, campos, áreas alagadas e uma enorme variedade de rios e zonas costeiras. Cada região abriga espécies e paisagens próprias — e proteger essa diversidade ajuda a cuidar do nosso futuro.</p>
+      <div class="safari" style="margin-top:16px">
+        <div class="safari-chip">🌳 6 biomas terrestres</div>
+        <div class="safari-chip">🦜 Fauna diversa</div>
+        <div class="safari-chip">🌿 Flora nativa</div>
+      </div>
+    </div>
+    <div class="brazil-map-wrap">
+      <!-- TROQUE A IMAGEM DO MAPA AQUI: substitua o arquivo imagens/mapa-brasil.png pelo seu mapa. -->
+      <img class="brazil-map-image" src="https://s3-sa-east-1.amazonaws.com/cdn.br.catarse/uploads/redactor_rails/picture/data/635679/e26b4062-a60f-403f-88ca-d51814ff4abb.jpg" alt="Mapa ilustrativo do Brasil e seus biomas">
+    </div>
+  </section>
+  <div class="section-head"><div><h2>Curiosidades sobre o Brasil</h2><p>Pequenos fatos para entender a riqueza natural do nosso país.</p></div></div>
+  <section class="fact-grid">
+    <article class="fact-card"><div class="fact-icon">🦜</div><strong>Uma grande variedade de aves</strong><p>O Brasil é lar de milhares de espécies de aves, incluindo tucanos, araras, beija-flores e muitas outras.</p></article>
+    <article class="fact-card"><div class="fact-icon">🌳</div><strong>A Amazônia é gigante</strong><p>A maior floresta tropical do mundo abriga uma imensa variedade de plantas, animais, fungos e microrganismos.</p></article>
+    <article class="fact-card"><div class="fact-icon">💧</div><strong>Água por todo lado</strong><p>Rios, igarapés, áreas alagadas e nascentes sustentam comunidades e ecossistemas de norte a sul.</p></article>
+    <article class="fact-card"><div class="fact-icon">🌺</div><strong>Plantas especiais</strong><p>Florestas e campos brasileiros possuem plantas que fornecem alimento, abrigo e recursos para inúmeras espécies.</p></article>
+  </section>
+  <div class="section-head"><div><h2>Conheça os seis biomas</h2><p>Cada bioma tem clima, paisagens e seres vivos próprios.</p></div></div>
+  <section class="biome-list">
+    <article class="biome-info"><strong>🌴 Amazônia</strong><p>Floresta tropical úmida, rios extensos e biodiversidade extraordinária.</p></article>
+    <article class="biome-info"><strong>🌾 Cerrado</strong><p>Savana brasileira com árvores retorcidas, gramíneas e muitas nascentes.</p></article>
+    <article class="biome-info"><strong>🌿 Mata Atlântica</strong><p>Florestas ricas em espécies, próximas de grandes áreas urbanas e da costa.</p></article>
+    <article class="biome-info"><strong>🌵 Caatinga</strong><p>Bioma exclusivamente brasileiro, adaptado a períodos de pouca chuva.</p></article>
+    <article class="biome-info"><strong>🐊 Pantanal</strong><p>Planície alagável famosa por sua vida selvagem e mudanças sazonais da água.</p></article>
+    <article class="biome-info"><strong>🍃 Pampa</strong><p>Campos do sul com gramíneas, flores silvestres e fauna adaptada a áreas abertas.</p></article>
+  </section>
+  <div class="tuca-quote">💚 Dica do Tuca: observar a natureza sem retirar plantas ou incomodar animais é uma ótima forma de começar a protegê-la!</div>
+</main>
+
+<main id="tucaPage" style="display:none">
+  <div class="subpage-head">
+    <button class="btn btn-dark" id="voltarTuca">← Voltar</button>
+    <div><div class="subpage-kicker">Conheça nosso guia</div><h2>Tuca, seu Guia</h2></div>
+  </div>
+  <section class="tuca-profile">
+    <div style="text-align:center">
+      <!-- TROQUE A IMAGEM DO TUCA AQUI: substitua o arquivo imagens/tuca.png pela imagem que quiser. -->
+      <img class="tuca-portrait" src="imagem/Tucano explorador na selva tropical.png" alt="Ilustração do Tuca, um tucano explorador">
+      <h2 style="margin:14px 0 4px;font-size:30px">Tuca <span style="color:var(--green)">🐦</span></h2>
+      <div class="mini">Tucano explorador · Amigo da natureza</div>
+    </div>
+    <div class="tuca-bio">
+      <div class="subpage-kicker">Muito prazer!</div>
+      <h3>Quem é o Tuca?</h3>
+      <p>Oi! Eu sou o Tuca, um tucano curioso, observador e apaixonado pela natureza brasileira. Nasci entre as árvores da floresta e adoro descobrir os segredos dos animais, das plantas e dos diferentes biomas do nosso país.</p>
+      <p>Minha missão é acompanhar você nas explorações, compartilhar curiosidades, ajudar a aprender sobre as espécies e lembrar que todo ser vivo merece respeito. Não preciso correr para descobrir algo incrível: basta olhar com atenção e cuidar do lugar por onde passo!</p>
+      <div class="tuca-tags"><span class="tuca-tag">🔎 Curioso</span><span class="tuca-tag">💚 Protetor da natureza</span><span class="tuca-tag">🌿 Explorador</span><span class="tuca-tag">📚 Adora aprender</span></div>
+      <h3 style="font-size:18px;margin-top:22px">O que posso fazer por você?</h3>
+      <p>🌱 Ajudar a explorar as categorias da natureza.<br>🦜 Compartilhar curiosidades sobre animais e plantas.<br>🗺️ Apresentar os biomas brasileiros.<br>💬 Conversar com você e incentivar descobertas seguras.</p>
+      <div class="tuca-quote">“A natureza está cheia de histórias! Vamos descobrir uma de cada vez e cuidar dela juntos?”</div>
+    </div>
+  </section>
+</main>
+
+<main id="safariPage">
+  <div class="safari-head"><button class="btn btn-dark" id="voltarSafari">←</button><div><h2>Seu Safari</h2><div class="safari-sub">Tudo que você já descobriu. No seu bioma</div></div></div>
+  <div class="biome-tabs" id="biomeTabs"></div>
+  <div id="biomeScenes"></div>
+</main>
+
+<div class="footer">
+  🌱 Asas da Amazônia · Um catálogo de campo para aprender sobre a natureza brasileira.
+  O app não dá um resultado quando a IA não tem certeza suficiente.
+</div>
+</div>
+
+<script>
+const fotoInput=document.getElementById("foto");
+const imagem=document.getElementById("imagem");
+const dropInner=document.getElementById("dropInner");
+const descobrir=document.getElementById("descobrir");
+const statusEl=document.getElementById("status");
+const resultado=document.getElementById("resultado");
+const semResultado=document.getElementById("semResultado");
+const nomeEl=document.getElementById("nome");
+const confiancaEl=document.getElementById("confianca");
+const curiosidadesEl=document.getElementById("curiosidades");
+const ondeViveEl=document.getElementById("ondeVive");
+const categoriaResultadoEl=document.getElementById("categoriaResultado");
+const avisoGaviao=document.getElementById("avisoGaviao");
+const falaTuca=document.getElementById("falaTuca");
+const mapaTitulo=document.getElementById("mapaTitulo");
+const mapaTexto=document.getElementById("mapaTexto");
+const album=document.getElementById("album");
+const categoriaAtual=document.getElementById("categoriaAtual");
+const contadorAlbum=document.getElementById("contadorAlbum");
+const contadorTopo=document.getElementById("contadorTopo");
+const contadorHero=document.getElementById("contadorHero");
+
+const safariPage=document.getElementById("safariPage");
+const homePage=document.getElementById("homePage");
+const discoveryPage=document.getElementById("discoveryPage");
+const brasilPage=document.getElementById("brasilPage");
+const tucaPage=document.getElementById("tucaPage");
+const biomes=[{id:"amazon",name:"Amazônia",cls:"amazon"},{id:"cerrado",name:"Cerrado",cls:"cerrado"},{id:"mata",name:"Mata Atlântica",cls:"mata"},{id:"caatinga",name:"Caatinga",cls:"caatinga"},{id:"pantanal",name:"Pantanal",cls:"pantanal"},{id:"pampa",name:"Pampa",cls:"pampa"}];
+function esconderPaginas(){[homePage,discoveryPage,safariPage,brasilPage,tucaPage].forEach(p=>p.style.display="none");}
+function abrirSafari(){esconderPaginas();safariPage.style.display="block";renderSafari();window.scrollTo({top:0,behavior:"smooth"});}
+function abrirBrasil(){esconderPaginas();brasilPage.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
+function abrirTuca(){esconderPaginas();tucaPage.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
+function voltarPaginaInicial(){esconderPaginas();homePage.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
+document.getElementById("abrirSafari").addEventListener("click",abrirSafari);
+document.getElementById("abrirBrasil").addEventListener("click",abrirBrasil);
+document.getElementById("abrirTuca").addEventListener("click",abrirTuca);
+document.getElementById("voltarBrasil").addEventListener("click",voltarPaginaInicial);
+document.getElementById("voltarTuca").addEventListener("click",voltarPaginaInicial);
+function voltarSafari(){voltarPaginaInicial();}
+document.getElementById("voltarSafari").addEventListener("click",voltarSafari);
+function renderSafari(){
+ const tabs=document.getElementById("biomeTabs"), scenes=document.getElementById("biomeScenes");
+ tabs.textContent="";scenes.textContent="";
+ const counts={};biomes.forEach(b=>counts[b.id]=0);
+ descobertas.forEach(d=>{const id=(d.bioma||"amazon");if(counts[id]!==undefined)counts[id]++;});
+ biomes.forEach((b,i)=>{
+  const tab=document.createElement("button");tab.className="biome-tab"+(i===0?" active":"");tab.textContent="●  "+b.name+"  "+counts[b.id];tab.addEventListener("click",()=>{document.querySelectorAll(".biome-tab").forEach(x=>x.classList.remove("active"));tab.classList.add("active");document.getElementById("scene-"+b.id).scrollIntoView({behavior:"smooth",block:"center"});});tabs.appendChild(tab);
+  const section=document.createElement("section");section.className="biome-section";section.innerHTML='<div class="biome-title"><h3>'+b.name+'</h3><span>'+counts[b.id]+' descobertas</span></div><div class="biome-scene '+b.cls+'" id="scene-'+b.id+'"><div class="day-controls"><button class="active">Dia</button><button>Amanhecer</button><button>Crepúsculo</button><button>Noite</button></div><div class="walker" title="Personagem caminhando">🧑‍🌾</div><div class="scene-message">'+(counts[b.id]?'Você já encontrou vida por aqui! Continue explorando este bioma.':'Ninguém por aqui ainda. Identifique algo do(a) '+b.name+' para ver a vida chegar nesse cenário.')+'</div><div class="scene-caption"><div class="eyebrow">BIOMA BRASILEIRO · DIA</div><strong>'+counts[b.id]+' caminhando · 0 plantadas</strong></div></div></section>';
+  scenes.appendChild(section);
+  section.querySelectorAll(".day-controls button").forEach((btn,j)=>btn.addEventListener("click",()=>{section.querySelectorAll(".day-controls button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");const scene=section.querySelector(".biome-scene");scene.style.filter=["none","sepia(.25) brightness(1.15)","sepia(.45) brightness(.8)","brightness(.55) hue-rotate(25deg)"][j];section.querySelector(".eyebrow").textContent="BIOMA BRASILEIRO · "+btn.textContent.toUpperCase();}));
+ });
+}
+
+let fotoBase64=null;
+let tipoImagem="image/jpeg";
+let categoriaSelecionada="aves";
+let descobertas=[];
+
+const nomesCategoria={
+  aves:"Aves",mamiferos:"Mamíferos",repteis:"Répteis",anfibios:"Anfíbios",
+  peixes:"Peixes",insetos:"Insetos",arvores:"Árvores",flores:"Flores",
+  frutas:"Frutas",plantas:"Plantas"
+};
+
+function abrirDescoberta(){
+  document.getElementById("homePage").style.display="none";
+  document.getElementById("discoveryPage").style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+function voltarCategorias(){
+  document.getElementById("discoveryPage").style.display="none";
+  document.getElementById("homePage").style.display="block";
+  window.scrollTo({top:0,behavior:"smooth"});
+}
+document.getElementById("voltarCategorias").addEventListener("click",voltarCategorias);
+document.querySelectorAll(".cat").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".cat").forEach(b=>b.classList.remove("active"));
+    btn.classList.add("active");
+    categoriaSelecionada=btn.dataset.cat;
+    categoriaAtual.textContent=nomesCategoria[categoriaSelecionada];
+    falaTuca.textContent="Tuca diz: “Boa escolha! Vamos explorar "+nomesCategoria[categoriaSelecionada].toLowerCase()+"!”";
+    abrirDescoberta();
+  });
+});
+
+fotoInput.addEventListener("change",()=>{
+  const file=fotoInput.files && fotoInput.files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=()=>{
+    const src=String(reader.result);
+    fotoBase64=src.split(",")[1]||"";
+    tipoImagem=file.type||"image/jpeg";
+    imagem.src=src;
+    imagem.style.display="block";
+    dropInner.style.display="none";
+    descobrir.disabled=false;
+    statusEl.textContent="Imagem pronta! Agora vamos descobrir. 🔎";
+    statusEl.className="status success";
+    resultado.classList.remove("show");
+    semResultado.style.display="grid";
+  };
+  reader.onerror=()=>{
+    statusEl.textContent="Ops! Não consegui abrir essa imagem. Tente outra. 😊";
+    statusEl.className="status error";
+  };
+  reader.readAsDataURL(file);
+});
+
+function seguro(valor, fallback=""){
+  return typeof valor==="string" ? valor : fallback;
+}
+
+function limparResultado(){
+  resultado.classList.remove("show");
+  semResultado.style.display="grid";
+  avisoGaviao.classList.remove("show");
+}
+
+descobrir.addEventListener("click",async()=>{
+  if(!fotoBase64)return;
+  descobrir.disabled=true;
+  statusEl.textContent="Tuca está olhando a imagem... 🐦🔎";
+  statusEl.className="status";
+  limparResultado();
+
+  const pedido={
+    modelo:"gemini-3.6-flash",
+    body:{
+      contents:[{parts:[
+        {text:
+          "Você é a inteligência de um app infantil chamado Asas da Amazônia. "+
+          "A categoria escolhida pelo usuário é '"+nomesCategoria[categoriaSelecionada]+"'. "+
+          "Analise a imagem e tente identificar somente o que pertence a essa categoria, "+
+          "dentro da natureza brasileira. Se não houver um item adequado, se a imagem estiver "+
+          "ruim ou se você não tiver certeza, identificado deve ser false. Nunca chute. "+
+          "Responda em JSON simples, com identificado, confianca de 0 a 100, nome, "+
+          "curiosidades e onde_vive. Use palavras fáceis para uma criança do 5º ano. "+
+          "Se identificar um gavião, destaque que ele deve ser observado de longe e não tocado."
+        },
+        {inline_data:{mime_type:tipoImagem||"image/jpeg",data:fotoBase64}}
+      ]}],
+      generationConfig:{
+        temperature:0.2,
+        responseMimeType:"application/json",
+        responseSchema:{
+          type:"object",
+          properties:{
+            identificado:{type:"boolean"},
+            confianca:{type:"integer"},
+            nome:{type:"string"},
+            curiosidades:{type:"string"},
+            onde_vive:{type:"string"}
+          },
+          required:["identificado","confianca"]
+        }
+      }
+    }
+  };
+
+  try{
+    const resposta=await fetch("/api/identificar",{
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(pedido)
+    });
+    if(!resposta.ok)throw new Error("servidor");
+
+    const bruto=await resposta.json();
+    const texto=bruto?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if(typeof texto!=="string")throw new Error("resposta");
+    const dados=JSON.parse(texto);
+
+    if(dados.identificado!==true || Number(dados.confianca)<80){
+      statusEl.textContent="Hmm... não consegui ter certeza. Tenta outra foto! 🌿📸";
+      statusEl.className="status";
+      descobrir.disabled=false;
+      falaTuca.textContent="Tuca diz: “Vamos tentar uma foto mais clara?”";
+      return;
+    }
+
+    const nome=seguro(dados.nome,"Descoberta");
+    const curios=seguro(dados.curiosidades,"Uma descoberta da natureza brasileira!");
+    const onde=seguro(dados.onde_vive,"Brasil");
+
+    nomeEl.textContent=nome;
+    confiancaEl.textContent="Certeza: "+Number(dados.confianca)+"%";
+    curiosidadesEl.textContent=curios;
+    ondeViveEl.textContent=onde;
+    categoriaResultadoEl.textContent=nomesCategoria[categoriaSelecionada];
+
+    const nomeLower=nome.toLowerCase();
+    const isGaviao=nomeLower.includes("gavião")||nomeLower.includes("gaviao");
+    avisoGaviao.classList.toggle("show",isGaviao);
+
+    semResultado.style.display="none";
+    resultado.classList.add("show");
+
+    falaTuca.textContent=isGaviao
+      ?"Tuca diz: “É um gavião! Vamos observar de longe, combinado?”"
+      :"Tuca diz: “Descobrimos! Que legal conhecer a natureza do Brasil!”";
+
+    mapaTitulo.textContent=nome;
+    mapaTexto.textContent="Esta espécie pode ser encontrada em: "+onde;
+
+    const existente=descobertas.some(x=>x.nome.toLowerCase()===nome.toLowerCase());
+    if(!existente){
+      descobertas.unshift({nome,onde,categoria:nomesCategoria[categoriaSelecionada]});
+      atualizarAlbum();
+    }
+
+    statusEl.textContent="Descoberta registrada no seu álbum! 🎉";
+    statusEl.className="status success";
+  }catch(e){
+    statusEl.textContent="Ops! A floresta ficou sem sinal. 🌧️ Tente de novo daqui a pouco!";
+    statusEl.className="status error";
+    falaTuca.textContent="Tuca diz: “Não consegui falar com a floresta agora. Vamos tentar de novo!”";
+  }finally{
+    descobrir.disabled=!fotoBase64;
+  }
+});
+
+function atualizarAlbum(){
+  album.innerHTML="";
+  if(descobertas.length===0){
+    album.innerHTML='<div class="album-item"><div class="num">SUA PRÓXIMA DESCOBERTA</div><strong>🌿 Em branco</strong><span>Suas identificações aparecem aqui.</span></div>';
+  }else{
+    descobertas.forEach((d,i)=>{
+      const item=document.createElement("div");
+      item.className="album-item";
+      const num=document.createElement("div");
+      num.className="num";
+      num.textContent="#"+String(descobertas.length-i).padStart(2,"0");
+      const strong=document.createElement("strong");
+      strong.textContent="🐦 "+d.nome;
+      const span=document.createElement("span");
+      span.textContent=d.categoria+" · "+d.onde;
+      item.append(num,strong,span);
+      album.appendChild(item);
+    });
+  }
+  const n=descobertas.length;
+  contadorAlbum.textContent=n;
+  contadorTopo.textContent=n;
+  contadorHero.textContent=n;
+}
+
+document.getElementById("limpar").addEventListener("click",()=>{
+  fotoInput.value="";
+  fotoBase64=null;
+  imagem.src="";
+  imagem.style.display="none";
+  dropInner.style.display="block";
+  descobrir.disabled=true;
+  statusEl.textContent="";
+  limparResultado();
+  falaTuca.textContent="Tuca diz: “Vamos explorar o Brasil!”";
+  mapaTitulo.textContent="Pronto para explorar";
+  mapaTexto.textContent="Depois de descobrir algo, o Tuca mostra onde essa espécie vive.";
+});
+
+</script>
+</body>
+</html>
