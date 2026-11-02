@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokédex da Mata — Seu Safari</title>
+<style>
+:root{--forest:#06251f;--leaf:#9cf36b;--aqua:#6de8dc;--cream:#fff6d9;--panel:rgba(5,34,29,.88);--line:rgba(155,243,107,.32)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;color:var(--cream);font-family:Inter,"Trebuchet MS",Arial,sans-serif;min-height:100vh;background:linear-gradient(180deg,#031b17a8,#021a14e8),url("https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=2000&q=85") center/cover fixed}
+button{font:inherit;cursor:pointer}.shell{width:min(1280px,calc(100% - 32px));margin:auto;padding:22px 0 40px}
+header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:17px 22px;border:1px solid var(--line);border-radius:24px;background:#031f1ad9;backdrop-filter:blur(16px);box-shadow:0 16px 40px #0004}
+.brand{display:flex;align-items:center;gap:14px}.brand-mark{width:58px;height:58px;display:grid;place-items:center;border-radius:18px;background:linear-gradient(145deg,#a8f56b,#25b979);font-size:31px}
+.eyebrow,.small-label{text-transform:uppercase;letter-spacing:.15em;color:var(--aqua);font-size:11px;font-weight:900}h1{font-size:clamp(26px,4vw,40px);letter-spacing:-.04em;margin:3px 0 0;line-height:1}h1 span{color:var(--leaf)}
+.top-action{border:1px solid #72e7bd;background:#0b4537;color:var(--cream);border-radius:15px;padding:12px 16px;font-weight:800;white-space:nowrap}
+.hero{display:grid;grid-template-columns:1.3fr .7fr;gap:20px;margin:22px 0}.hero-copy,.mascot-card,.section,.upload-card{border:1px solid var(--line);background:var(--panel);backdrop-filter:blur(13px);border-radius:26px;box-shadow:0 16px 42px #0003}
+.hero-copy{padding:clamp(24px,4vw,42px);position:relative;overflow:hidden}.hero-copy:after{content:"🌿";position:absolute;font-size:130px;right:-12px;bottom:-35px;opacity:.12;transform:rotate(-20deg)}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border-radius:99px;background:#164d38;color:#caffaa;font-size:12px;font-weight:900}
+.hero h2{font-size:clamp(29px,4.3vw,49px);line-height:1.04;letter-spacing:-.045em;margin:17px 0 13px;max-width:680px}.hero h2 em{color:var(--leaf);font-style:normal}.hero-copy p{max-width:580px;color:#d0e8d7;line-height:1.65;margin:0}
+.hero-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:23px}.primary,.secondary{border:0;border-radius:14px;padding:13px 17px;font-weight:900}.primary{background:linear-gradient(135deg,#b6fa70,#54df8b);color:#153622}.secondary{background:#103e35;color:#e8ffef;border:1px solid #3c8c6c}
+.mascot-card{padding:24px;display:flex;flex-direction:column;justify-content:space-between;min-height:245px;overflow:hidden}.mascot-top{display:flex;justify-content:space-between;align-items:center}.mascot-art{font-size:clamp(65px,8vw,100px);text-align:center;filter:drop-shadow(0 12px 10px #0005);animation:bob 3s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-7px) rotate(2deg)}}
+.speech{align-self:flex-end;max-width:270px;padding:12px 15px;border:1px solid #8df27b;border-radius:18px 18px 4px 18px;background:#0c4435;font-weight:800;line-height:1.4}
+.section{padding:23px;margin-top:20px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:14px;margin-bottom:17px}.section-head h2{font-size:clamp(22px,3vw,30px);margin:5px 0 0;letter-spacing:-.03em}.section-head p{margin:7px 0 0;color:#c1ddd0}
+.category-grid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:13px}
+.category{position:relative;isolation:isolate;overflow:hidden;min-height:180px;border:1px solid #7de5a45c;border-radius:20px;padding:0;text-align:left;color:white;background:#164b36;box-shadow:0 9px 20px #0003;transition:transform .2s,border-color .2s,box-shadow .2s}
+.category:before{content:"";position:absolute;inset:0;z-index:-2;background-image:var(--category-image);background-size:cover;background-position:center;transition:transform .35s}
+.category:after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,#00000008 10%,#00140f35 42%,#00110def 100%)}
+.category:hover{transform:translateY(-4px);border-color:var(--leaf);box-shadow:0 13px 28px #0005}.category:hover:before{transform:scale(1.07)}.category.selected{outline:3px solid var(--leaf);outline-offset:2px}
+.category-content{position:absolute;inset:auto 14px 14px}.category-emoji{font-size:25px;display:block;margin-bottom:7px;filter:drop-shadow(0 2px 3px #0008)}.category-name{font-size:18px;font-weight:950;display:block;text-shadow:0 2px 7px #0008}.category-desc{display:block;font-size:12px;color:#e0f4e7;margin-top:4px}
+.lower-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}.upload-card{padding:22px;margin-top:20px}.upload-drop{display:flex;align-items:center;gap:16px;border:1px dashed #73dba4;border-radius:18px;padding:18px;background:#0b382e}.upload-icon{width:54px;height:54px;border-radius:16px;display:grid;place-items:center;background:#1b6044;font-size:26px;flex:none}.upload-copy{flex:1}.upload-copy strong{display:block;font-size:17px}.upload-copy span{display:block;color:#b9d8c9;font-size:13px;margin-top:4px;line-height:1.45}#fileInput{display:none}
+.album-empty{border:1px solid #ffffff15;border-radius:17px;padding:18px;color:#c0d9cd;background:#092e27}.album-empty strong{display:block;color:var(--cream);margin-bottom:6px}.footer{text-align:center;color:#c0dfcf;font-size:13px;padding:24px 8px 0}
+.toast{position:fixed;bottom:18px;left:50%;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:#d5ffab;color:#163321;padding:12px 18px;border-radius:13px;font-weight:900;box-shadow:0 10px 30px #0005;transition:.25s;z-index:5}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:950px){.category-grid{grid-template-columns:repeat(3,minmax(0,1fr))}.hero{grid-template-columns:1fr}.mascot-card{min-height:190px}.mascot-art{font-size:75px}}
+@media(max-width:620px){.shell{width:calc(100% - 20px);padding-top:10px}.brand-mark{width:47px;height:47px;font-size:25px}.top-action{font-size:0;padding:12px}.top-action:after{content:"Safari";font-size:13px}.hero-copy,.section,.upload-card{padding:17px}.category-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.category{min-height:160px}.lower-grid{grid-template-columns:1fr}.section-head{align-items:start;flex-direction:column}.upload-drop{align-items:flex-start;flex-wrap:wrap}}
+</style>
+</head>
+<body>
+<div class="shell">
+<header><div class="brand"><div class="brand-mark">🐾</div><div><div class="eyebrow">Núcleo WIT · Catálogo de campo</div><h1>Pokédex <span>da Mata</span></h1></div></div><button class="top-action" onclick="document.getElementById('categorias').scrollIntoView({behavior:'smooth'})">🧭 Ver meu Safari <span id="count">0</span></button></header>
+<section class="hero">
+<div class="hero-copy"><span class="pill">🌱 FLORESTA + TECNOLOGIA · IA DE VISÃO</span><h2>Pequenas descobertas.<br><em>Grandes aventuras.</em></h2><p>Explore o Brasil, encontre espécies incríveis e monte seu próprio álbum de descobertas da natureza.</p><div class="hero-actions"><button class="primary" onclick="document.getElementById('categorias').scrollIntoView({behavior:'smooth'})">Explorar categorias ↘</button><button class="secondary" onclick="document.getElementById('fileInput').click()">＋ Enviar uma foto</button></div></div>
+<aside class="mascot-card"><div class="mascot-top"><span class="small-label">Seu guia de campo</span><span>🌧️ 🌿</span></div><div class="mascot-art" aria-label="Zé Goiabinha">🍈🧑‍🌾</div><div class="speech">Oi! Eu sou o Zé Goiabinha. Bora explorar a mata? 🌳</div></aside>
+</section>
+<section class="section" id="categorias"><div class="section-head"><div><div class="small-label">Escolha sua trilha</div><h2>O que você encontrou? 🔎</h2><p>Toque em uma categoria para começar sua próxima descoberta.</p></div><span class="pill">10 categorias</span></div><div class="category-grid" id="categoryGrid"></div></section>
+<div class="lower-grid">
+<section class="upload-card"><div class="small-label">Comece por uma imagem</div><h2 style="margin:7px 0 14px">Pronto pra descobrir?</h2><div class="upload-drop"><div class="upload-icon">📸</div><div class="upload-copy"><strong>Tire uma foto ou escolha da galeria</strong><span>Esta versão é a tela visual. A identificação automática será ligada depois.</span></div><button class="primary" onclick="document.getElementById('fileInput').click()">Escolher foto</button></div><input id="fileInput" type="file" accept="image/*" capture="environment"><p id="fileStatus" style="color:#c3e6d3;font-size:13px;margin:12px 2px 0">Nenhuma imagem selecionada.</p></section>
+<section class="upload-card"><div class="small-label">Seu Safari</div><h2 style="margin:7px 0 14px">Álbum de descobertas</h2><div class="album-empty"><strong id="albumCount">0 espécies</strong><span id="albumText">Suas identificações aparecem aqui quando a parte de reconhecimento estiver pronta.</span></div></section>
+</div><div class="footer">🌿 A natureza tem muitas histórias. Vamos descobrir e proteger cada uma delas.</div>
+</div><div class="toast" id="toast" role="status"></div>
+<script>
+/*
+EDITAR AS IMAGENS DAS CATEGORIAS:
+Mude o valor de image para um caminho como "images/mamiferos.jpg".
+A foto cobre todo o botão por causa de background-size: cover.
+*/
+const CATEGORIAS=[
+{name:"Mamíferos",emoji:"🐆",description:"Onças, macacos e muito mais",image:"https://images.unsplash.com/photo-1561731216-c3a4d99437d5?auto=format&fit=crop&w=800&q=85"},
+{name:"Aves",emoji:"🦜",description:"Asas e cantos da floresta",image:"https://www.petz.com.br/blog/wp-content/uploads/2024/04/aves-brasileiras-topo.jpg"},
+{name:"Répteis",emoji:"🐍",description:"Escamas e camuflagem",image:"https://s1.static.brasilescola.uol.com.br/be/2020/11/camaleao.jpg"},
+{name:"Anfíbios",emoji:"🐸",description:"Pequenos saltos e coaxos",image:"https://s2-umsoplaneta.glbimg.com/UaKmM5BZcNz56w907t0BVPJJ1Xg=/0x0:2121x1414/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_7d5b9b5029304d27b7ef8a7f28b4d70f/internal_photos/bs/2022/G/t/pGZRXxQrKGLSsRgJhQEg/gettyimages-898596842.jpg"},
+{name:"Peixes",emoji:"🐟",description:"Vida nos rios brasileiros",image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSG8v0vAQ1s4UhRtKNePLxPfCeRWVGSVtL-vZyXPUOvNLSglDyLcn6FMVUF&s=10"},
+{name:"Insetos",emoji:"🦋",description:"Mestres pequeninos",image:"https://s2-vidadebicho.glbimg.com/ci30eqd7a9KhF3Y_rC9GSQvnz20=/0x0:800x532/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_fb623579cd474803aedbbbbae014af68/internal_photos/bs/2022/A/A/9G6JdoTvWBhfYh59Mb2g/2022-11-04-c233b320-8e2d-4949-9260-22f7cc91ca17.jpeg"},
+{name:"Plantas",emoji:"🌿",description:"Folhas, árvores e cipós",image:"https://casaefesta.com/wp-content/uploads/2024/04/plantas-nativas-do-brasil-para-ter-no-apartamento-5.webp"},
+{name:"Flores",emoji:"🌺",description:"Cores e formas naturais",image:"https://casaeconstrucao.org/wp-content/uploads/2023/06/1-flor-brasileira-amarela-Wikipedia.jpg"},
+{name:"Frutas",emoji:"🍈",description:"Sabores que vêm da mata",image:"https://images.unsplash.com/photo-1610832958506-aa56368176cf?auto=format&fit=crop&w=800&q=85"},
+{name:"Fungos",emoji:"🍄",description:"Vida escondida no chão",image:"https://images.unsplash.com/photo-1504545102780-26774c1bb073?auto=format&fit=crop&w=800&q=85"}
+];
+const grid=document.getElementById("categoryGrid"),toast=document.getElementById("toast");const escolhidas=new Set();
+function mostrarToast(t){toast.textContent=t;toast.classList.add("show");clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>toast.classList.remove("show"),2200)}
+CATEGORIAS.forEach(c=>{
+ const b=document.createElement("button");b.type="button";b.className="category";b.style.setProperty("--category-image",`url("${c.image}")`);b.setAttribute("aria-label",c.name);
+ const content=document.createElement("span");content.className="category-content";
+ const emoji=document.createElement("span");emoji.className="category-emoji";emoji.textContent=c.emoji;
+ const name=document.createElement("span");name.className="category-name";name.textContent=c.name;
+ const desc=document.createElement("span");desc.className="category-desc";desc.textContent=c.description;
+ content.append(emoji,name,desc);b.append(content);
+ b.addEventListener("click",()=>{if(escolhidas.has(c.name)){escolhidas.delete(c.name);b.classList.remove("selected");mostrarToast("Categoria removida: "+c.name)}else{escolhidas.add(c.name);b.classList.add("selected");mostrarToast("Trilha escolhida: "+c.name+" 🌿")}document.getElementById("count").textContent=escolhidas.size});
+ grid.append(b);
+});
+document.getElementById("fileInput").addEventListener("change",e=>{const f=e.target.files&&e.target.files[0];document.getElementById("fileStatus").textContent=f?`Imagem selecionada: ${f.name} (a identificação será ligada depois).`:"Nenhuma imagem selecionada."});
+</script>
+</body>
+</html>

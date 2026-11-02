@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dexmon — Análise da descoberta</title>
+<style>
+:root{--bg:#06110d;--panel:#0d2118;--panel2:#11291f;--green:#35e37b;--blue:#2196ff;--red:#ff4545;--text:#f4fff8;--muted:#91a99b;--border:#1d3b2b}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 10% 0%,rgba(33,150,255,.12),transparent 32%),radial-gradient(circle at 90% 10%,rgba(53,227,123,.1),transparent 30%),var(--bg);color:var(--text);font-family:Arial,Helvetica,sans-serif}
+button{font:inherit;cursor:pointer}.app{width:min(1100px,94%);margin:auto;padding:24px 0 50px}
+header{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:30px}.brand{display:flex;align-items:center;gap:12px}.brand img{width:48px;height:48px;object-fit:contain}.brand small{display:block;color:var(--muted);text-transform:uppercase;letter-spacing:1px;font-size:11px}.brand strong{font-size:22px}.back{border:1px solid var(--border);background:var(--panel);color:white;border-radius:12px;padding:11px 15px}
+.eyebrow{color:var(--green);font-weight:bold;text-transform:uppercase;font-size:12px;letter-spacing:1.5px}.intro h1{font-size:clamp(32px,5vw,52px);margin:10px 0}.intro p{color:var(--muted);line-height:1.6;margin-top:0}
+.status{display:flex;align-items:center;gap:12px;background:var(--panel);border:1px solid var(--border);border-radius:16px;padding:16px;margin:24px 0}.pulse{width:12px;height:12px;border-radius:50%;background:var(--blue);box-shadow:0 0 0 6px rgba(33,150,255,.12);flex-shrink:0}.status strong{display:block}.status span{display:block;color:var(--muted);font-size:13px;margin-top:4px}
+.layout{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);gap:20px}.panel{background:var(--panel);border:1px solid var(--border);border-radius:22px;padding:20px;min-width:0}.panel h2{font-size:20px;margin:0 0 15px}.preview{height:300px;border-radius:16px;background:#081710;border:1px dashed #2a513a;display:flex;align-items:center;justify-content:center;overflow:hidden;color:var(--muted);text-align:center;padding:20px}.preview img{width:100%;height:100%;object-fit:contain;display:none}.preview.has-image img{display:block}.preview.has-image .placeholder{display:none}.preview .placeholder{line-height:1.7}.category-pill{display:inline-block;margin-top:15px;padding:8px 12px;border-radius:100px;background:rgba(53,227,123,.1);border:1px solid rgba(53,227,123,.35);color:var(--green);font-size:12px;font-weight:bold}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:15px}.primary,.secondary{border:0;border-radius:12px;padding:12px 15px;font-weight:bold}.primary{background:var(--green);color:#041008}.secondary{background:var(--panel2);border:1px solid var(--border);color:white}.primary:disabled{opacity:.45;cursor:not-allowed}
+.result-placeholder{color:var(--muted);line-height:1.6;padding:16px;border:1px dashed var(--border);border-radius:15px}.result{display:none}.result.show{display:block}.name{font-size:32px;margin:0 0 6px}.type{color:var(--green);text-transform:uppercase;letter-spacing:1px;font-size:11px;font-weight:bold}.confidence{color:var(--muted);font-size:12px;margin:8px 0 18px}.facts{display:grid;grid-template-columns:1fr 1fr;gap:10px}.fact{background:var(--panel2);border-radius:14px;padding:14px}.fact h3{font-size:13px;margin:0 0 8px}.fact p{color:#c4d8cb;font-size:13px;line-height:1.55;margin:0;white-space:pre-line}
+.conservation{margin-top:14px;border-radius:15px;padding:16px;border:1px solid var(--border);background:rgba(53,227,123,.07)}.conservation .label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--muted);font-weight:bold}.conservation strong{display:block;font-size:19px;margin:7px 0}.conservation p{color:#c4d8cb;line-height:1.5;font-size:13px;margin:0}.conservation.risk{border-color:var(--red);background:rgba(255,69,69,.1)}.conservation.unknown{border-color:#d5a843;background:rgba(213,168,67,.08)}
+.notice{display:none;margin-top:14px;padding:14px;border:1px solid var(--red);background:rgba(255,69,69,.1);border-radius:14px;line-height:1.5}.notice.show{display:block}.message{display:none;margin-top:14px;padding:13px;border-radius:12px;line-height:1.5;font-size:13px}.message.show{display:block}.message.error{border:1px solid var(--red);background:rgba(255,69,69,.08)}.message.info{border:1px solid var(--blue);background:rgba(33,150,255,.08)}
+footer{text-align:center;color:var(--muted);font-size:12px;margin-top:30px}
+@media(max-width:760px){.layout{grid-template-columns:1fr}.preview{height:250px}.facts{grid-template-columns:1fr}.intro h1{font-size:36px}}@media(max-width:450px){header{align-items:flex-start}.brand strong{font-size:19px}.back{padding:9px;font-size:12px}.panel{padding:15px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand"><img src="assets/logo-papagaio.png" alt="Papagaio Dexmon" onerror="this.style.display='none'"><div><small>Cientista da natureza</small><strong>DEXMON</strong></div></div>
+  <button class="back" id="voltarBtn">← Voltar ao início</button>
+</header>
+<section class="intro">
+  <div class="eyebrow">Laboratório de descobertas</div>
+  <h1>Vamos conhecer sua descoberta?</h1>
+  <p>O Dexmon vai analisar a imagem e ajudar você a descobrir o que encontrou, aprender curiosidades e entender como podemos proteger a natureza.</p>
+</section>
+<div class="status" id="statusBox"><div class="pulse"></div><div><strong id="statusTitle">Pronto para analisar</strong><span id="statusText">Escolha uma foto para começar sua investigação.</span></div></div>
+<div class="layout">
+  <section class="panel">
+    <h2>Sua imagem</h2>
+    <div class="preview" id="preview"><div class="placeholder">Sua foto aparecerá aqui.<br>Escolha uma imagem ou tire uma foto.</div><img id="fotoPreview" alt="Imagem escolhida para análise"></div>
+    <div class="category-pill" id="categoriaPill">Categoria: não selecionada</div>
+    <div class="actions">
+      <button class="primary" id="cameraBtn">Tirar foto</button>
+      <button class="secondary" id="galeriaBtn">Escolher da galeria</button>
+      <button class="secondary" id="analisarBtn" disabled>Analisar imagem</button>
+    </div>
+    <input id="cameraInput" type="file" accept="image/*" capture="environment" hidden>
+    <input id="galeriaInput" type="file" accept="image/*" hidden>
+    <div class="message" id="message" role="status"></div>
+  </section>
+  <section class="panel">
+    <h2>Ficha da descoberta</h2>
+    <div class="result-placeholder" id="resultPlaceholder">Depois da análise, as informações aparecerão aqui: nome, curiosidades, habitat, conservação e outros detalhes.</div>
+    <div class="result" id="result">
+      <div class="type">Identificação confirmada</div>
+      <h2 class="name" id="nome">Descoberta</h2>
+      <div class="confidence" id="confianca"></div>
+      <div class="facts">
+        <div class="fact"><h3>Curiosidades</h3><p id="curiosidades"></p></div>
+        <div class="fact"><h3>Onde vive?</h3><p id="habitat"></p></div>
+        <div class="fact"><h3>Como é seu som?</h3><p id="som"></p></div>
+        <div class="fact"><h3>Como podemos ajudar?</h3><p id="conservacaoTexto"></p></div>
+      </div>
+      <div class="conservation" id="conservation">
+        <div class="label">Situação de conservação</div>
+        <strong id="statusConservacao">Informação não confirmada</strong>
+        <p id="detalheConservacao"></p>
+      </div>
+      <div class="notice" id="avisoPerigo"></div>
+    </div>
+  </section>
+</div>
+<footer>Dexmon · Observe com curiosidade e respeite todos os seres vivos.</footer>
+</div>
+<script>
+const ENDPOINT = "/api/identificar";
+const cameraInput = document.getElementById("cameraInput");
+const galeriaInput = document.getElementById("galeriaInput");
+const fotoPreview = document.getElementById("fotoPreview");
+const preview = document.getElementById("preview");
+const analisarBtn = document.getElementById("analisarBtn");
+const message = document.getElementById("message");
+let arquivoSelecionado = null;
+let categoriaSelecionada = "Não selecionada";
+
+function mostrarMensagem(texto, tipo="info") {
+  message.textContent = texto;
+  message.className = "message show " + tipo;
+}
+function atualizarStatus(titulo, texto) {
+  document.getElementById("statusTitle").textContent = titulo;
+  document.getElementById("statusText").textContent = texto;
+}
+function prepararArquivo(arquivo) {
+  if (!arquivo) return;
+  if (!arquivo.type.startsWith("image/")) {
+    mostrarMensagem("Escolha um arquivo de imagem, por favor.", "error");
+    return;
+  }
+  arquivoSelecionado = arquivo;
+  fotoPreview.src = URL.createObjectURL(arquivo);
+  preview.classList.add("has-image");
+  analisarBtn.disabled = false;
+  document.getElementById("result").classList.remove("show");
+  document.getElementById("resultPlaceholder").style.display = "block";
+  message.className = "message";
+  atualizarStatus("Imagem pronta para análise", "Confira a foto e toque em “Analisar imagem”.");
+}
+cameraInput.addEventListener("change", e => prepararArquivo(e.target.files[0]));
+galeriaInput.addEventListener("change", e => prepararArquivo(e.target.files[0]));
+document.getElementById("cameraBtn").addEventListener("click", () => cameraInput.click());
+document.getElementById("galeriaBtn").addEventListener("click", () => galeriaInput.click());
+
+function lerBase64(arquivo) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).split(",")[1]);
+    reader.onerror = reject;
+    reader.readAsDataURL(arquivo);
+  });
+}
+function textoSeguro(valor, padrao="Informação não disponível.") {
+  return typeof valor === "string" && valor.trim() ? valor.trim() : padrao;
+}
+function mostrarResultado(dados) {
+  document.getElementById("resultPlaceholder").style.display = "none";
+  document.getElementById("result").classList.add("show");
+  document.getElementById("nome").textContent = textoSeguro(dados.nome, "Descoberta da natureza");
+  document.getElementById("confianca").textContent = "Confiança estimada da identificação: " + Number(dados.confianca || 0) + "%";
+  document.getElementById("curiosidades").textContent = textoSeguro(dados.curiosidades);
+  document.getElementById("habitat").textContent = textoSeguro(dados.habitat);
+  document.getElementById("som").textContent = textoSeguro(dados.som, "Nem todos os seres vivos produzem sons audíveis.");
+  document.getElementById("conservacaoTexto").textContent = textoSeguro(dados.comoAjudar || dados.conservacao, "Evite retirar seres vivos do ambiente e não deixe lixo na natureza.");
+  const estado = textoSeguro(dados.statusConservacao || dados.situacaoConservacao, "");
+  const detalhe = textoSeguro(dados.detalheConservacao || dados.conservacao, "");
+  const conservation = document.getElementById("conservation");
+  const estadoEl = document.getElementById("statusConservacao");
+  const detalheEl = document.getElementById("detalheConservacao");
+  conservation.className = "conservation";
+  estadoEl.textContent = estado || "Situação não confirmada";
+  detalheEl.textContent = detalhe || "A situação de conservação depende da espécie exata e da região. Consulte fontes ambientais oficiais para confirmar se está ameaçada.";
+  const estadoBusca = (estado + " " + detalhe).toLowerCase();
+  if (/extinção|ameaçad|em perigo|criticamente|vulnerável|risco/.test(estadoBusca)) conservation.classList.add("risk");
+  else if (/desconhecid|não confirm|não foi possível|incerta/.test(estadoBusca) || !estado) conservation.classList.add("unknown");
+  const aviso = document.getElementById("avisoPerigo");
+  const temPerigo = dados.temPerigo === true && dados.perigo;
+  aviso.textContent = temPerigo ? "Atenção: " + dados.perigo : "";
+  aviso.classList.toggle("show", Boolean(temPerigo));
+}
+analisarBtn.addEventListener("click", async () => {
+  if (!arquivoSelecionado) return;
+  analisarBtn.disabled = true;
+  document.getElementById("result").classList.remove("show");
+  document.getElementById("resultPlaceholder").style.display = "block";
+  document.getElementById("resultPlaceholder").textContent = "O Dexmon está examinando a imagem e preparando sua ficha...";
+  atualizarStatus("Analisando imagem...", "Aguarde um pouquinho. Estamos investigando sua descoberta.");
+  mostrarMensagem("Analisando sua foto com cuidado...", "info");
+  try {
+    const base64 = await lerBase64(arquivoSelecionado);
+    const mime = arquivoSelecionado.type === "image/png" ? "image/png" : "image/jpeg";
+    const prompt = `Você é o cientista da natureza do aplicativo Dexmon e explica tudo para uma criança de 9 a 14 anos, em português brasileiro simples. Analise a imagem com cuidado. Categoria selecionada: "${categoriaSelecionada}". Use a categoria como orientação, mas não force uma identificação. O app reconhece passarinhos, insetos, árvores, flores, frutas e peixes. Não invente espécie, situação de conservação, habitat ou perigo. Se não tiver segurança, marque identificado=false. Para conservação, informe o status apenas se puder associá-lo com segurança à espécie exata; se não souber, escreva "Não foi possível confirmar" e explique que é necessário consultar uma fonte ambiental oficial. Não diga que uma espécie está segura ou ameaçada sem base. Retorne um JSON com os campos: identificado (boolean), confianca (integer de 0 a 100), nome (string), curiosidades (string), habitat (string), som (string), comoAjudar (string), statusConservacao (string), detalheConservacao (string), temPerigo (boolean), perigo (string).`;
+    const pedido = {
+      modelo: "gemini-3.6-flash",
+      body: {
+        contents: [{parts: [
+          {text: prompt},
+          {inline_data: {mime_type: mime, data: base64}}
+        ]}],
+        generationConfig: {
+          temperature: 0.2,
+          responseMimeType: "application/json",
+          responseSchema: {
+            type: "object",
+            properties: {
+              identificado: {type: "boolean"},
+              confianca: {type: "integer"},
+              nome: {type: "string"},
+              curiosidades: {type: "string"},
+              habitat: {type: "string"},
+              som: {type: "string"},
+              comoAjudar: {type: "string"},
+              statusConservacao: {type: "string"},
+              detalheConservacao: {type: "string"},
+              temPerigo: {type: "boolean"},
+              perigo: {type: "string"}
+            },
+            required: ["identificado", "confianca"]
+          }
+        }
+      }
+    };
+    const response = await fetch(ENDPOINT, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify(pedido)
+    });
+    if (!response.ok) throw new Error("Falha ao consultar o servidor.");
+    const data = await response.json();
+    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!raw) throw new Error("A resposta veio vazia.");
+    const resultado = JSON.parse(raw);
+    if (resultado.identificado !== true || Number(resultado.confianca) < 80) {
+      document.getElementById("resultPlaceholder").textContent = "Não conseguimos ter certeza sobre o que aparece na foto. Tente outra imagem com boa iluminação e mostre o ser vivo inteiro, se possível.";
+      mostrarMensagem("Ainda não temos certeza suficiente para identificar essa imagem. Você pode tentar outra foto.", "error");
+      atualizarStatus("Precisamos de outra pista", "Tente uma imagem mais nítida ou de outro ângulo.");
+      return;
+    }
+    mostrarResultado(resultado);
+    message.className = "message";
+    atualizarStatus("Análise concluída!", "Confira as curiosidades e as informações de conservação abaixo.");
+  } catch (error) {
+    console.error(error);
+    document.getElementById("resultPlaceholder").textContent = "Não foi possível concluir a análise agora. Confira sua conexão e tente novamente.";
+    mostrarMensagem("Ops! O Dexmon não conseguiu analisar a imagem. Tente novamente.", "error");
+    atualizarStatus("A análise não foi concluída", "Sua foto continua selecionada. Você pode tentar de novo.");
+  } finally {
+    analisarBtn.disabled = !arquivoSelecionado;
+  }
+});
+
+// Permite receber a categoria e a foto selecionadas na página inicial.
+try {
+  const params = new URLSearchParams(window.location.search);
+  const categoria = params.get("categoria");
+  if (categoria) categoriaSelecionada = categoria;
+  const pill = document.getElementById("categoriaPill");
+  pill.textContent = "Categoria: " + categoriaSelecionada;
+  const fotoGuardada = sessionStorage.getItem("dexmonFotoDataUrl");
+  if (fotoGuardada) {
+    fetch(fotoGuardada).then(r => r.blob()).then(blob => {
+      const nome = sessionStorage.getItem("dexmonFotoNome") || "foto-dexmon.jpg";
+      prepararArquivo(new File([blob], nome, {type: blob.type || "image/jpeg"}));
+      sessionStorage.removeItem("dexmonFotoDataUrl");
+      sessionStorage.removeItem("dexmonFotoNome");
+    }).catch(() => {});
+  }
+} catch (e) {
+  document.getElementById("categoriaPill").textContent = "Categoria: " + categoriaSelecionada;
+}
+document.getElementById("voltarBtn").addEventListener("click", () => {
+  window.location.href = "index.html";
+});
+</script>
+</body>
+</html>

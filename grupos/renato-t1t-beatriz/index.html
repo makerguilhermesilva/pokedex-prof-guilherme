@@ -1,0 +1,3491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Jabutipoké — Explorador da Natureza Brasileira</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700;800&family=Playfair+Display:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --navy: #061a33;
+            --navy-dark: #041326;
+            --navy-light: #0b3157;
+            --navy-card: #092849;
+
+            --yellow: #ffd52a;
+            --yellow-light: #ffe978;
+
+            --white: #ffffff;
+            --cream: #fffdf3;
+            --gray: #b7c4d1;
+            --gray-dark: #718197;
+
+            --green: #45d483;
+            --orange: #ff9f43;
+            --red: #ff6b6b;
+
+            --border: rgba(255, 213, 42, 0.20);
+
+            --radius: 18px;
+            --shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            min-height: 100vh;
+            background:
+                radial-gradient(circle at 10% 10%, rgba(255, 213, 42, 0.05), transparent 25%),
+                radial-gradient(circle at 90% 80%, rgba(11, 49, 87, 0.5), transparent 35%),
+                var(--navy-dark);
+            color: var(--white);
+            font-family: "DM Sans", sans-serif;
+        }
+
+        button,
+        input {
+            font: inherit;
+        }
+
+        button {
+            border: none;
+        }
+
+        img {
+            display: block;
+            max-width: 100%;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        /* =====================================================
+           HEADER
+        ===================================================== */
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            width: 100%;
+            background: rgba(4, 19, 38, 0.94);
+            backdrop-filter: blur(16px);
+
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-inner {
+            width: min(1180px, calc(100% - 36px));
+            min-height: 76px;
+            margin: auto;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 20px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 13px;
+
+            color: var(--white);
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .logo-image {
+            width: 48px;
+            height: 48px;
+            border-radius: 14px;
+            object-fit: cover;
+
+            border: 2px solid var(--yellow);
+            background: var(--yellow);
+        }
+
+        .logo-text strong {
+            display: block;
+            font-family: "Playfair Display", serif;
+            font-size: 24px;
+            line-height: 1;
+        }
+
+        .logo-text span {
+            display: block;
+            margin-top: 5px;
+
+            color: var(--gray);
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+
+            min-height: 42px;
+            padding: 0 16px;
+
+            border: 1px solid transparent;
+            border-radius: 12px;
+
+            background: transparent;
+            color: var(--gray);
+
+            cursor: pointer;
+            transition: 0.25s ease;
+
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .nav-btn:hover {
+            color: var(--white);
+            border-color: var(--border);
+            background: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-btn.active {
+            color: var(--navy);
+            background: var(--yellow);
+        }
+
+        /* =====================================================
+           PÁGINAS
+        ===================================================== */
+
+        .page {
+            width: min(1180px, calc(100% - 36px));
+            margin: auto;
+            padding: 55px 0 80px;
+        }
+
+        /* =====================================================
+           HERO
+        ===================================================== */
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.15fr 0.85fr;
+            align-items: center;
+            gap: 50px;
+
+            min-height: 500px;
+        }
+
+        .eyebrow {
+            display: inline-flex;
+            align-items: center;
+
+            padding: 7px 11px;
+            margin-bottom: 18px;
+
+            border: 1px solid var(--border);
+            border-radius: 999px;
+
+            background: rgba(255, 213, 42, 0.07);
+            color: var(--yellow);
+
+            font-family: "DM Mono", monospace;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .hero h1 {
+            max-width: 700px;
+
+            font-family: "Playfair Display", serif;
+            font-size: clamp(48px, 7vw, 82px);
+            line-height: 0.98;
+            letter-spacing: -3px;
+        }
+
+        .hero h1 span {
+            color: var(--yellow);
+        }
+
+        .hero-description {
+            max-width: 620px;
+            margin-top: 25px;
+
+            color: var(--gray);
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .hero-actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 30px;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            min-height: 50px;
+            padding: 0 22px;
+
+            border-radius: 13px;
+
+            cursor: pointer;
+            transition: 0.25s ease;
+
+            font-weight: 800;
+        }
+
+        .primary-btn {
+            background: var(--yellow);
+            color: var(--navy);
+        }
+
+        .primary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 213, 42, 0.2);
+        }
+
+        .secondary-btn {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--white);
+        }
+
+        .secondary-btn:hover {
+            border-color: var(--yellow);
+            color: var(--yellow);
+        }
+
+        /* =====================================================
+           MASCOTE
+        ===================================================== */
+
+        .hero-mascot {
+            position: relative;
+
+            min-height: 400px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .mascot-circle {
+            width: 330px;
+            height: 330px;
+
+            border-radius: 50%;
+
+            background:
+                radial-gradient(circle at 50% 35%, rgba(255, 213, 42, 0.16), transparent 55%),
+                var(--navy-card);
+
+            border: 1px solid var(--border);
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            box-shadow: var(--shadow);
+        }
+
+        .mascot-image {
+            width: 270px;
+            height: 270px;
+
+            border-radius: 50%;
+            object-fit: cover;
+
+            border: 5px solid var(--yellow);
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+        }
+
+        /* =====================================================
+           SOM DA ARARA
+        ===================================================== */
+
+        .macaw-sound {
+            position: absolute;
+            left: -5px;
+            top: 75px;
+            z-index: 5;
+
+            display: flex;
+            align-items: center;
+            gap: 9px;
+
+            min-height: 46px;
+            padding: 0 13px;
+
+            border: 1px solid var(--yellow);
+            border-radius: 14px;
+
+            background: var(--navy);
+            color: var(--yellow);
+
+            cursor: pointer;
+
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            transition: 0.25s ease;
+        }
+
+        .macaw-sound img {
+            width: 28px;
+            height: 28px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .macaw-sound span {
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            white-space: nowrap;
+        }
+
+        .macaw-sound:hover {
+            background: var(--yellow);
+            color: var(--navy);
+            transform: translateX(-3px);
+        }
+
+        /* =====================================================
+           SEÇÃO
+        ===================================================== */
+
+        .section-header {
+            margin-bottom: 28px;
+        }
+
+        .section-label {
+            margin-bottom: 7px;
+
+            color: var(--yellow);
+            font-family: "DM Mono", monospace;
+            font-size: 10px;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+        }
+
+        .section-title {
+            font-family: "Playfair Display", serif;
+            font-size: clamp(30px, 4vw, 46px);
+            line-height: 1.05;
+        }
+
+        .section-description {
+            max-width: 650px;
+            margin-top: 10px;
+
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        /* =====================================================
+           CATEGORIAS
+        ===================================================== */
+
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 17px;
+        }
+
+        .category-card {
+            position: relative;
+            overflow: hidden;
+
+            min-height: 230px;
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: var(--radius);
+
+            background: var(--navy-card);
+
+            cursor: pointer;
+            text-align: left;
+
+            transition: 0.3s ease;
+        }
+
+        .category-card:hover {
+            transform: translateY(-6px);
+            border-color: var(--yellow);
+            box-shadow: var(--shadow);
+        }
+
+        .category-image {
+            position: absolute;
+            inset: 0;
+
+            width: 100%;
+            height: 100%;
+
+            object-fit: cover;
+
+            opacity: 0.65;
+
+            transition: 0.4s ease;
+        }
+
+        .category-card:hover .category-image {
+            transform: scale(1.06);
+            opacity: 0.78;
+        }
+
+        .category-overlay {
+            position: absolute;
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    to top,
+                    rgba(4, 19, 38, 0.98) 0%,
+                    rgba(4, 19, 38, 0.65) 48%,
+                    rgba(4, 19, 38, 0.05) 100%
+                );
+        }
+
+        .category-content {
+            position: absolute;
+            z-index: 2;
+            inset: auto 20px 20px 20px;
+        }
+
+        .category-number {
+            display: block;
+            margin-bottom: 6px;
+
+            color: var(--yellow);
+            font-family: "DM Mono", monospace;
+            font-size: 10px;
+        }
+
+        .category-name {
+            font-family: "Playfair Display", serif;
+            font-size: 27px;
+        }
+
+        .category-subtitle {
+            margin-top: 5px;
+
+            color: var(--gray);
+            font-size: 12px;
+        }
+
+        /* =====================================================
+           BUSCA
+        ===================================================== */
+
+        .search-box {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 0 30px;
+
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            height: 52px;
+
+            padding: 0 18px;
+
+            border: 1px solid var(--border);
+            border-radius: 14px;
+
+            outline: none;
+
+            background: var(--navy-card);
+            color: var(--white);
+
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: var(--gray-dark);
+        }
+
+        .search-box input:focus {
+            border-color: var(--yellow);
+        }
+
+        /* =====================================================
+           DESCOBERTA
+        ===================================================== */
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+
+            margin-bottom: 25px;
+
+            color: var(--gray);
+            background: transparent;
+
+            cursor: pointer;
+            font-size: 13px;
+        }
+
+        .back-button:hover {
+            color: var(--yellow);
+        }
+
+        .discovery-layout {
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .upload-card,
+        .result-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            background: var(--navy-card);
+            box-shadow: var(--shadow);
+        }
+
+        .upload-card {
+            padding: 25px;
+        }
+
+        .upload-title {
+            font-family: "Playfair Display", serif;
+            font-size: 29px;
+        }
+
+        .upload-description {
+            margin-top: 8px;
+
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .upload-zone {
+            position: relative;
+
+            min-height: 310px;
+            margin-top: 22px;
+
+            border: 2px dashed rgba(255, 213, 42, 0.35);
+            border-radius: 16px;
+
+            background: rgba(255, 213, 42, 0.025);
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            text-align: center;
+            cursor: pointer;
+
+            transition: 0.25s ease;
+        }
+
+        .upload-zone:hover,
+        .upload-zone.dragging {
+            border-color: var(--yellow);
+            background: rgba(255, 213, 42, 0.06);
+        }
+
+        .upload-zone input {
+            display: none;
+        }
+
+        .upload-preview {
+            width: 100%;
+            max-height: 300px;
+
+            object-fit: contain;
+
+            border-radius: 12px;
+        }
+
+        .upload-placeholder {
+            color: var(--gray);
+        }
+
+        .upload-placeholder strong {
+            display: block;
+            margin-bottom: 8px;
+
+            color: var(--yellow);
+            font-size: 30px;
+        }
+
+        .upload-placeholder span {
+            display: block;
+            font-size: 13px;
+        }
+
+        .upload-placeholder small {
+            display: block;
+            margin-top: 8px;
+
+            color: var(--gray-dark);
+        }
+
+        .discover-btn {
+            width: 100%;
+            height: 54px;
+            margin-top: 16px;
+
+            border-radius: 13px;
+
+            background: var(--yellow);
+            color: var(--navy);
+
+            cursor: pointer;
+
+            font-weight: 800;
+
+            transition: 0.25s ease;
+        }
+
+        .discover-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(255, 213, 42, 0.2);
+        }
+
+        .discover-btn:disabled {
+            opacity: 0.45;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* =====================================================
+           LOADING
+        ===================================================== */
+
+        .loading {
+            min-height: 500px;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+
+            text-align: center;
+        }
+
+        .loading-image {
+            width: 120px;
+            height: 120px;
+
+            border-radius: 50%;
+            object-fit: cover;
+
+            border: 3px solid var(--yellow);
+
+            animation: pulse 1.4s infinite;
+        }
+
+        .loading h3 {
+            margin-top: 22px;
+
+            font-family: "Playfair Display", serif;
+            font-size: 27px;
+        }
+
+        .loading p {
+            margin-top: 7px;
+            color: var(--gray);
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+
+            50% {
+                transform: scale(0.92);
+                opacity: 0.65;
+            }
+        }
+
+        /* =====================================================
+           RESULTADO
+        ===================================================== */
+
+        .result-card {
+            overflow: hidden;
+        }
+
+        .result-image-wrapper {
+            height: 300px;
+            background: var(--navy-dark);
+        }
+
+        .result-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .result-content {
+            padding: 27px;
+        }
+
+        .result-category {
+            color: var(--yellow);
+            font-family: "DM Mono", monospace;
+            font-size: 10px;
+            letter-spacing: 1.3px;
+            text-transform: uppercase;
+        }
+
+        .result-name {
+            margin-top: 7px;
+
+            font-family: "Playfair Display", serif;
+            font-size: clamp(34px, 5vw, 48px);
+            line-height: 1;
+        }
+
+        .confidence {
+            display: inline-flex;
+            align-items: center;
+
+            margin-top: 12px;
+            padding: 6px 10px;
+
+            border-radius: 999px;
+
+            background: rgba(69, 212, 131, 0.12);
+            color: var(--green);
+
+            font-family: "DM Mono", monospace;
+            font-size: 10px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+
+            margin-top: 25px;
+        }
+
+        .info-box {
+            min-height: 95px;
+
+            padding: 15px;
+
+            border: 1px solid rgba(255, 255, 255, 0.07);
+            border-radius: 13px;
+
+            background: rgba(255, 255, 255, 0.025);
+        }
+
+        .info-label {
+            margin-bottom: 7px;
+
+            color: var(--yellow);
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+        }
+
+        .info-value {
+            color: var(--white);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        .curiosity {
+            margin-top: 15px;
+            padding: 19px;
+
+            border-left: 3px solid var(--yellow);
+            border-radius: 0 13px 13px 0;
+
+            background: rgba(255, 213, 42, 0.055);
+        }
+
+        .curiosity-title {
+            margin-bottom: 8px;
+
+            color: var(--yellow);
+            font-weight: 800;
+        }
+
+        .curiosity p {
+            color: var(--cream);
+            font-size: 14px;
+            line-height: 1.65;
+        }
+
+        .danger {
+            margin-top: 15px;
+            padding: 18px;
+
+            border: 1px solid rgba(255, 107, 107, 0.28);
+            border-radius: 13px;
+
+            background: rgba(255, 107, 107, 0.07);
+        }
+
+        .danger-title {
+            margin-bottom: 7px;
+            color: var(--red);
+            font-weight: 800;
+        }
+
+        .danger p {
+            color: var(--gray);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .result-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            margin-top: 22px;
+        }
+
+        .result-actions button {
+            min-height: 45px;
+            padding: 0 15px;
+
+            border-radius: 11px;
+
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .speak-btn {
+            background: var(--yellow);
+            color: var(--navy);
+        }
+
+        .new-photo-btn {
+            border: 1px solid var(--border);
+            background: transparent;
+            color: var(--white);
+        }
+
+        /* =====================================================
+           MENSAGEM
+        ===================================================== */
+
+        .message-card {
+            margin-top: 20px;
+            padding: 25px;
+
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+
+            background: var(--navy-card);
+
+            text-align: center;
+        }
+
+        .message-card h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 28px;
+        }
+
+        .message-card p {
+            max-width: 500px;
+            margin: 10px auto 0;
+
+            color: var(--gray);
+            line-height: 1.6;
+        }
+
+        .message-card button {
+            margin-top: 18px;
+        }
+
+        /* =====================================================
+           ÁLBUM
+        ===================================================== */
+
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+        }
+
+        .album-card {
+            overflow: hidden;
+
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+
+            background: var(--navy-card);
+        }
+
+        .album-image {
+            width: 100%;
+            height: 220px;
+
+            object-fit: cover;
+        }
+
+        .album-info {
+            padding: 17px;
+        }
+
+        .album-info h3 {
+            font-family: "Playfair Display", serif;
+            font-size: 22px;
+        }
+
+        .album-info p {
+            margin-top: 5px;
+
+            color: var(--gray);
+            font-size: 11px;
+        }
+
+        .empty-album {
+            padding: 70px 20px;
+
+            border: 1px dashed var(--border);
+            border-radius: var(--radius);
+
+            color: var(--gray);
+            text-align: center;
+        }
+
+        .empty-album h3 {
+            margin-bottom: 8px;
+
+            color: var(--white);
+            font-family: "Playfair Display", serif;
+            font-size: 27px;
+        }
+
+        /* =====================================================
+           FOOTER
+        ===================================================== */
+
+        footer {
+            width: min(1180px, calc(100% - 36px));
+            margin: auto;
+
+            padding: 30px 0 35px;
+
+            border-top: 1px solid rgba(255, 255, 255, 0.07);
+
+            color: var(--gray-dark);
+            text-align: center;
+
+            font-family: "DM Mono", monospace;
+            font-size: 9px;
+            letter-spacing: 0.5px;
+        }
+
+        footer strong {
+            color: var(--yellow);
+        }
+
+        /* =====================================================
+           RESPONSIVO
+        ===================================================== */
+
+        @media (max-width: 900px) {
+            .hero {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-description {
+                margin-left: auto;
+                margin-right: auto;
+            }
+
+            .hero-actions {
+                justify-content: center;
+            }
+
+            .hero-mascot {
+                min-height: 350px;
+            }
+
+            .macaw-sound {
+                left: 50%;
+                top: 15px;
+                transform: translateX(-50%);
+            }
+
+            .macaw-sound:hover {
+                transform: translateX(-50%) translateY(-2px);
+            }
+
+            .discovery-layout {
+                grid-template-columns: 1fr;
+            }
+
+            .categories-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .album-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 620px) {
+            .header-inner {
+                min-height: 68px;
+            }
+
+            .logo-text span {
+                display: none;
+            }
+
+            .logo-text strong {
+                font-size: 20px;
+            }
+
+            .logo-image {
+                width: 42px;
+                height: 42px;
+            }
+
+            .nav-btn {
+                padding: 0 10px;
+                font-size: 11px;
+            }
+
+            .page {
+                width: min(100% - 24px, 1180px);
+                padding-top: 35px;
+            }
+
+            .hero {
+                min-height: auto;
+                padding-top: 15px;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+                letter-spacing: -2px;
+            }
+
+            .hero-description {
+                font-size: 14px;
+            }
+
+            .mascot-circle {
+                width: 270px;
+                height: 270px;
+            }
+
+            .mascot-image {
+                width: 220px;
+                height: 220px;
+            }
+
+            .categories-grid,
+            .album-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .category-card {
+                min-height: 210px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .result-image-wrapper {
+                height: 240px;
+            }
+
+            .upload-zone {
+                min-height: 250px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =====================================================
+         HEADER
+    ====================================================== -->
+
+    <header>
+        <div class="header-inner">
+
+            <div class="logo" id="logoHome">
+                <img
+                    class="logo-image"
+                    src="imagens/jabuti.jpg"
+                    alt="Jabuti"
+                >
+
+                <div class="logo-text">
+                    <strong>Jabutipoké</strong>
+                    <span>Explorador da natureza brasileira</span>
+                </div>
+            </div>
+
+            <nav class="nav">
+                <button class="nav-btn active" id="homeBtn">
+                    Início
+                </button>
+
+                <button class="nav-btn" id="albumBtn">
+                    Meu Safari
+                </button>
+            </nav>
+
+        </div>
+    </header>
+
+
+    <!-- =====================================================
+         PÁGINA INICIAL
+    ====================================================== -->
+
+    <main id="homePage" class="page">
+
+        <section class="hero">
+
+            <div>
+
+                <div class="eyebrow">
+                    Diário de campo • Brasil
+                </div>
+
+                <h1>
+                    Descubra a vida
+                    <span>brasileira.</span>
+                </h1>
+
+                <p class="hero-description">
+                    Tire uma foto de um animal, planta, fruta ou inseto
+                    e deixe o Jabutipoké ajudar você a descobrir o que
+                    encontrou na natureza.
+                </p>
+
+                <div class="hero-actions">
+
+                    <button
+                        class="primary-btn"
+                        id="startDiscovery"
+                    >
+                        🔎 Fazer uma descoberta
+                    </button>
+
+                    <button
+                        class="secondary-btn"
+                        id="goCategories"
+                    >
+                        Explorar categorias
+                    </button>
+
+                </div>
+
+            </div>
+
+
+            <div class="hero-mascot">
+
+                <button
+                    class="macaw-sound"
+                    id="macawSoundButton"
+                    type="button"
+                    title="Ouvir o som da arara"
+                >
+
+                    <img
+                        src="imagens/arara.jpg"
+                        alt="Arara"
+                    >
+
+                    <span>OUVIR SOM DA ARARA</span>
+
+                </button>
+
+                <div class="mascot-circle">
+
+                    <img
+                        class="mascot-image"
+                        src="imagens/jabuti.jpg"
+                        alt="Mascote Jabutipoké: um jabuti"
+                    >
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CATEGORIAS -->
+
+        <section id="categoriesSection">
+
+            <div class="section-header">
+
+                <div class="section-label">
+                    Catálogo de campo
+                </div>
+
+                <h2 class="section-title">
+                    O que você encontrou?
+                </h2>
+
+                <p class="section-description">
+                    Escolha uma categoria para começar sua exploração.
+                    Você também poderá escolher a categoria depois de
+                    enviar uma foto.
+                </p>
+
+            </div>
+
+
+            <div class="search-box">
+
+                <input
+                    type="text"
+                    id="categorySearch"
+                    placeholder="Pesquisar categoria..."
+                    autocomplete="off"
+                >
+
+            </div>
+
+
+            <div class="categories-grid" id="categoriesGrid">
+
+                <!-- AVES -->
+
+                <button
+                    class="category-card"
+                    data-category="Aves"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/aves.jpg"
+                        alt="Aves brasileiras"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            01 • FAUNA
+                        </span>
+
+                        <div class="category-name">
+                            Aves
+                        </div>
+
+                        <div class="category-subtitle">
+                            Araras, tucanos, aves e muito mais
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- MAMÍFEROS -->
+
+                <button
+                    class="category-card"
+                    data-category="Mamíferos"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/mamiferos.jpg"
+                        alt="Mamíferos brasileiros"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            02 • FAUNA
+                        </span>
+
+                        <div class="category-name">
+                            Mamíferos
+                        </div>
+
+                        <div class="category-subtitle">
+                            Onças, macacos, capivaras e outros
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- RÉPTEIS -->
+
+                <button
+                    class="category-card"
+                    data-category="Répteis"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/repteis.jpg"
+                        alt="Répteis brasileiros"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            03 • FAUNA
+                        </span>
+
+                        <div class="category-name">
+                            Répteis
+                        </div>
+
+                        <div class="category-subtitle">
+                            Jabutis, jacarés, cobras e lagartos
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- ANFÍBIOS -->
+
+                <button
+                    class="category-card"
+                    data-category="Anfíbios"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/anfibios.jpg"
+                        alt="Anfíbios brasileiros"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            04 • FAUNA
+                        </span>
+
+                        <div class="category-name">
+                            Anfíbios
+                        </div>
+
+                        <div class="category-subtitle">
+                            Sapos, rãs e pererecas
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- PEIXES -->
+
+                <button
+                    class="category-card"
+                    data-category="Peixes"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/peixes.jpg"
+                        alt="Peixes brasileiros"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            05 • FAUNA
+                        </span>
+
+                        <div class="category-name">
+                            Peixes
+                        </div>
+
+                        <div class="category-subtitle">
+                            Espécies dos rios e mares brasileiros
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- INSETOS -->
+
+                <button
+                    class="category-card"
+                    data-category="Insetos"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/insetos.jpg"
+                        alt="Insetos brasileiros"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            06 • FAUNA
+                        </span>
+
+                        <div class="category-name">
+                            Insetos
+                        </div>
+
+                        <div class="category-subtitle">
+                            Borboletas, besouros, abelhas e outros
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- ÁRVORES -->
+
+                <button
+                    class="category-card"
+                    data-category="Árvores"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/arvores.jpg"
+                        alt="Árvores brasileiras"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            07 • FLORA
+                        </span>
+
+                        <div class="category-name">
+                            Árvores
+                        </div>
+
+                        <div class="category-subtitle">
+                            Espécies e árvores nativas
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- PLANTAS -->
+
+                <button
+                    class="category-card"
+                    data-category="Plantas e Flores"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/plantas.jpg"
+                        alt="Plantas e flores brasileiras"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            08 • FLORA
+                        </span>
+
+                        <div class="category-name">
+                            Plantas
+                        </div>
+
+                        <div class="category-subtitle">
+                            Flores e plantas da nossa natureza
+                        </div>
+
+                    </div>
+
+                </button>
+
+
+                <!-- FRUTOS -->
+
+                <button
+                    class="category-card"
+                    data-category="Frutos"
+                >
+
+                    <img
+                        class="category-image"
+                        src="imagens/frutos.jpg"
+                        alt="Frutos brasileiros"
+                    >
+
+                    <div class="category-overlay"></div>
+
+                    <div class="category-content">
+
+                        <span class="category-number">
+                            09 • FLORA
+                        </span>
+
+                        <div class="category-name">
+                            Frutos
+                        </div>
+
+                        <div class="category-subtitle">
+                            Frutas nativas e frutos da floresta
+                        </div>
+
+                    </div>
+
+                </button>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- =====================================================
+         PÁGINA DE DESCOBERTA
+    ====================================================== -->
+
+    <main
+        id="discoveryPage"
+        class="page hidden"
+    >
+
+        <button
+            class="back-button"
+            id="backHome"
+        >
+            ← Voltar para o catálogo
+        </button>
+
+
+        <div class="section-header">
+
+            <div class="section-label">
+                Estação de descoberta
+            </div>
+
+            <h2
+                class="section-title"
+                id="discoveryTitle"
+            >
+                Faça sua descoberta
+            </h2>
+
+            <p class="section-description">
+                Escolha uma foto e o Jabutipoké vai tentar descobrir
+                o que aparece nela.
+            </p>
+
+        </div>
+
+
+        <div class="discovery-layout">
+
+            <!-- UPLOAD -->
+
+            <section class="upload-card">
+
+                <h3 class="upload-title">
+                    Envie uma foto
+                </h3>
+
+                <p class="upload-description">
+                    Escolha uma imagem nítida do animal, planta,
+                    fruto ou inseto que você encontrou.
+                </p>
+
+
+                <label
+                    class="upload-zone"
+                    id="uploadZone"
+                    for="imageInput"
+                >
+
+                    <input
+                        id="imageInput"
+                        type="file"
+                        accept="image/*"
+                    >
+
+                    <div
+                        class="upload-placeholder"
+                        id="uploadPlaceholder"
+                    >
+
+                        <strong>+</strong>
+
+                        <span>
+                            Clique aqui para escolher uma foto
+                        </span>
+
+                        <small>
+                            JPG, PNG ou WEBP
+                        </small>
+
+                    </div>
+
+
+                    <img
+                        id="imagePreview"
+                        class="upload-preview hidden"
+                        alt="Pré-visualização da imagem"
+                    >
+
+                </label>
+
+
+                <button
+                    class="discover-btn"
+                    id="discoverButton"
+                    disabled
+                >
+                    🔎 Descobrir o que é!
+                </button>
+
+            </section>
+
+
+            <!-- RESULTADO -->
+
+            <section id="resultArea">
+
+                <div
+                    class="message-card"
+                    id="initialMessage"
+                >
+
+                    <h3>
+                        Sua descoberta aparecerá aqui
+                    </h3>
+
+                    <p>
+                        Escolha uma imagem e clique em
+                        “Descobrir o que é!” para começar.
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="loading hidden"
+                    id="loadingArea"
+                >
+
+                    <img
+                        class="loading-image"
+                        src="imagens/jabuti.jpg"
+                        alt="Jabuti pesquisando"
+                    >
+
+                    <h3>
+                        O Jabutipoké está pesquisando...
+                    </h3>
+
+                    <p>
+                        Vamos descobrir o que a natureza esconde!
+                    </p>
+
+                </div>
+
+
+                <div
+                    class="result-card hidden"
+                    id="resultCard"
+                >
+
+                    <div class="result-image-wrapper">
+
+                        <img
+                            class="result-image"
+                            id="resultImage"
+                            alt="Imagem identificada"
+                        >
+
+                    </div>
+
+
+                    <div class="result-content">
+
+                        <div
+                            class="result-category"
+                            id="resultCategory"
+                        >
+                            FAUNA
+                        </div>
+
+                        <h2
+                            class="result-name"
+                            id="resultName"
+                        >
+                            —
+                        </h2>
+
+                        <div
+                            class="confidence"
+                            id="confidence"
+                        >
+                            Confiança: —
+                        </div>
+
+
+                        <div class="info-grid">
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    Habitat
+                                </div>
+
+                                <div
+                                    class="info-value"
+                                    id="resultHabitat"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    Bioma
+                                </div>
+
+                                <div
+                                    class="info-value"
+                                    id="resultBiome"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    Onde encontramos
+                                </div>
+
+                                <div
+                                    class="info-value"
+                                    id="resultLocation"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+
+                            <div class="info-box">
+
+                                <div class="info-label">
+                                    Conservação
+                                </div>
+
+                                <div
+                                    class="info-value"
+                                    id="resultConservation"
+                                >
+                                    —
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <div class="curiosity">
+
+                            <div class="curiosity-title">
+                                💡 Você sabia?
+                            </div>
+
+                            <p id="resultCuriosity">
+                                —
+                            </p>
+
+                        </div>
+
+
+                        <div
+                            class="danger hidden"
+                            id="dangerBox"
+                        >
+
+                            <div class="danger-title">
+                                ⚠️ Atenção
+                            </div>
+
+                            <p id="resultDanger">
+                                —
+                            </p>
+
+                        </div>
+
+
+                        <div class="result-actions">
+
+                            <button
+                                class="speak-btn"
+                                id="speakButton"
+                            >
+                                🔊 Ouvir curiosidade
+                            </button>
+
+                            <button
+                                class="new-photo-btn"
+                                id="newPhotoButton"
+                            >
+                                📷 Nova foto
+                            </button>
+
+                            <button
+                                class="new-photo-btn"
+                                id="saveAlbumButton"
+                            >
+                                ☆ Salvar no Safari
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <div
+                    class="message-card hidden"
+                    id="uncertainMessage"
+                >
+
+                    <h3>
+                        O Jabutipoké não tem certeza... 🐢
+                    </h3>
+
+                    <p>
+                        A imagem pode estar difícil de identificar.
+                        Tente tirar outra foto com mais luz e mostrando
+                        melhor o animal ou planta.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        id="tryAgainButton"
+                    >
+                        Tentar outra foto
+                    </button>
+
+                </div>
+
+
+                <div
+                    class="message-card hidden"
+                    id="errorMessage"
+                >
+
+                    <h3>
+                        Ops! Algo deu errado.
+                    </h3>
+
+                    <p id="errorText">
+                        Não conseguimos fazer a descoberta agora.
+                        Tente novamente.
+                    </p>
+
+                    <button
+                        class="primary-btn"
+                        id="errorTryButton"
+                    >
+                        Tentar novamente
+                    </button>
+
+                </div>
+
+            </section>
+
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         PÁGINA DO ÁLBUM
+    ====================================================== -->
+
+    <main
+        id="albumPage"
+        class="page hidden"
+    >
+
+        <div class="section-header">
+
+            <div class="section-label">
+                Diário de campo
+            </div>
+
+            <h2 class="section-title">
+                Meu Safari
+            </h2>
+
+            <p class="section-description">
+                Aqui ficam guardadas as suas descobertas.
+            </p>
+
+        </div>
+
+
+        <div
+            id="albumEmpty"
+            class="empty-album"
+        >
+
+            <h3>
+                Seu Safari ainda está vazio
+            </h3>
+
+            <p>
+                Faça sua primeira descoberta para começar seu álbum.
+            </p>
+
+            <button
+                class="primary-btn"
+                id="albumDiscoverButton"
+                style="margin-top:20px;"
+            >
+                Fazer descoberta
+            </button>
+
+        </div>
+
+
+        <div
+            class="album-grid hidden"
+            id="albumGrid"
+        >
+        </div>
+
+    </main>
+
+
+    <!-- =====================================================
+         ÁUDIO DA ARARA
+    ====================================================== -->
+
+    <audio
+        id="macawAudio"
+        preload="auto"
+    >
+        <source
+            src="som-arara.mp3"
+            type="audio/mpeg"
+        >
+    </audio>
+
+
+    <!-- =====================================================
+         FOOTER
+    ====================================================== -->
+
+    <footer>
+
+        <strong>Jabutipoké</strong>
+        • Um pequeno explorador descobrindo a grande natureza brasileira.
+
+    </footer>
+
+
+    <script>
+
+        /* =====================================================
+           IMAGENS
+
+           PARA TROCAR AS IMAGENS DO SITE:
+
+           1. Crie uma pasta chamada "imagens"
+           2. Coloque suas imagens nela
+           3. Mantenha os nomes abaixo
+
+           Exemplo:
+           imagens/aves.jpg
+
+           Você pode substituir os arquivos pelas imagens
+           que quiser, sem precisar alterar o restante do código.
+        ====================================================== */
+
+        const imagens = {
+
+            jabuti: "imagens/jabuti.jpg",
+
+            arara: "imagens/arara.jpg",
+
+            aves: "imagens/aves.jpg",
+
+            mamiferos: "imagens/mamiferos.jpg",
+
+            repteis: "imagens/repteis.jpg",
+
+            anfibios: "imagens/anfibios.jpg",
+
+            peixes: "imagens/peixes.jpg",
+
+            insetos: "imagens/insetos.jpg",
+
+            arvores: "imagens/arvores.jpg",
+
+            plantas: "imagens/plantas.jpg",
+
+            frutos: "imagens/frutos.jpg"
+
+        };
+
+
+        /* =====================================================
+           ELEMENTOS
+        ===================================================== */
+
+        const homePage =
+            document.getElementById("homePage");
+
+        const discoveryPage =
+            document.getElementById("discoveryPage");
+
+        const albumPage =
+            document.getElementById("albumPage");
+
+        const homeBtn =
+            document.getElementById("homeBtn");
+
+        const albumBtn =
+            document.getElementById("albumBtn");
+
+        const logoHome =
+            document.getElementById("logoHome");
+
+        const startDiscovery =
+            document.getElementById("startDiscovery");
+
+        const goCategories =
+            document.getElementById("goCategories");
+
+        const backHome =
+            document.getElementById("backHome");
+
+        const imageInput =
+            document.getElementById("imageInput");
+
+        const imagePreview =
+            document.getElementById("imagePreview");
+
+        const uploadPlaceholder =
+            document.getElementById("uploadPlaceholder");
+
+        const uploadZone =
+            document.getElementById("uploadZone");
+
+        const discoverButton =
+            document.getElementById("discoverButton");
+
+        const discoveryTitle =
+            document.getElementById("discoveryTitle");
+
+        const initialMessage =
+            document.getElementById("initialMessage");
+
+        const loadingArea =
+            document.getElementById("loadingArea");
+
+        const resultCard =
+            document.getElementById("resultCard");
+
+        const uncertainMessage =
+            document.getElementById("uncertainMessage");
+
+        const errorMessage =
+            document.getElementById("errorMessage");
+
+        const errorText =
+            document.getElementById("errorText");
+
+        const resultImage =
+            document.getElementById("resultImage");
+
+        const resultName =
+            document.getElementById("resultName");
+
+        const resultCategory =
+            document.getElementById("resultCategory");
+
+        const confidence =
+            document.getElementById("confidence");
+
+        const resultHabitat =
+            document.getElementById("resultHabitat");
+
+        const resultBiome =
+            document.getElementById("resultBiome");
+
+        const resultLocation =
+            document.getElementById("resultLocation");
+
+        const resultConservation =
+            document.getElementById("resultConservation");
+
+        const resultCuriosity =
+            document.getElementById("resultCuriosity");
+
+        const resultDanger =
+            document.getElementById("resultDanger");
+
+        const dangerBox =
+            document.getElementById("dangerBox");
+
+        const speakButton =
+            document.getElementById("speakButton");
+
+        const newPhotoButton =
+            document.getElementById("newPhotoButton");
+
+        const saveAlbumButton =
+            document.getElementById("saveAlbumButton");
+
+        const tryAgainButton =
+            document.getElementById("tryAgainButton");
+
+        const errorTryButton =
+            document.getElementById("errorTryButton");
+
+        const categorySearch =
+            document.getElementById("categorySearch");
+
+        const categoriesGrid =
+            document.getElementById("categoriesGrid");
+
+        const macawSoundButton =
+            document.getElementById("macawSoundButton");
+
+        const macawAudio =
+            document.getElementById("macawAudio");
+
+        const albumGrid =
+            document.getElementById("albumGrid");
+
+        const albumEmpty =
+            document.getElementById("albumEmpty");
+
+        const albumDiscoverButton =
+            document.getElementById("albumDiscoverButton");
+
+
+        /* =====================================================
+           ESTADO
+        ===================================================== */
+
+        let selectedCategory = "Fauna ou Flora brasileira";
+
+        let selectedFile = null;
+
+        let currentImageData = null;
+
+        let currentResult = null;
+
+
+        /* =====================================================
+           NAVEGAÇÃO
+        ===================================================== */
+
+        function showPage(page) {
+
+            homePage.classList.add("hidden");
+            discoveryPage.classList.add("hidden");
+            albumPage.classList.add("hidden");
+
+            homeBtn.classList.remove("active");
+            albumBtn.classList.remove("active");
+
+            if (page === "home") {
+
+                homePage.classList.remove("hidden");
+                homeBtn.classList.add("active");
+
+            }
+
+            if (page === "discovery") {
+
+                discoveryPage.classList.remove("hidden");
+
+            }
+
+            if (page === "album") {
+
+                albumPage.classList.remove("hidden");
+                albumBtn.classList.add("active");
+
+                renderAlbum();
+
+            }
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+        }
+
+
+        homeBtn.addEventListener(
+            "click",
+            () => showPage("home")
+        );
+
+        logoHome.addEventListener(
+            "click",
+            () => showPage("home")
+        );
+
+        albumBtn.addEventListener(
+            "click",
+            () => showPage("album")
+        );
+
+
+        startDiscovery.addEventListener(
+            "click",
+            () => {
+
+                selectedCategory =
+                    "Fauna ou Flora brasileira";
+
+                discoveryTitle.textContent =
+                    "Faça uma descoberta";
+
+                showPage("discovery");
+
+            }
+        );
+
+
+        goCategories.addEventListener(
+            "click",
+            () => {
+
+                document
+                    .getElementById("categoriesSection")
+                    .scrollIntoView({
+                        behavior: "smooth"
+                    });
+
+            }
+        );
+
+
+        backHome.addEventListener(
+            "click",
+            () => showPage("home")
+        );
+
+
+        albumDiscoverButton.addEventListener(
+            "click",
+            () => {
+
+                selectedCategory =
+                    "Fauna ou Flora brasileira";
+
+                discoveryTitle.textContent =
+                    "Faça uma descoberta";
+
+                showPage("discovery");
+
+            }
+        );
+
+
+        /* =====================================================
+           CATEGORIAS
+        ===================================================== */
+
+        document
+            .querySelectorAll(".category-card")
+            .forEach(card => {
+
+                card.addEventListener(
+                    "click",
+                    () => {
+
+                        selectedCategory =
+                            card.dataset.category;
+
+                        discoveryTitle.textContent =
+                            "Descubra um " +
+                            selectedCategory;
+
+                        showPage("discovery");
+
+                    }
+                );
+
+            });
+
+
+        /* =====================================================
+           PESQUISA DE CATEGORIAS
+        ===================================================== */
+
+        categorySearch.addEventListener(
+            "input",
+            () => {
+
+                const search =
+                    categorySearch.value
+                        .toLowerCase()
+                        .trim();
+
+                document
+                    .querySelectorAll(".category-card")
+                    .forEach(card => {
+
+                        const category =
+                            card.dataset.category
+                                .toLowerCase();
+
+                        const text =
+                            card.textContent
+                                .toLowerCase();
+
+                        const visible =
+                            category.includes(search) ||
+                            text.includes(search);
+
+                        card.style.display =
+                            visible ? "" : "none";
+
+                    });
+
+            }
+        );
+
+
+        /* =====================================================
+           UPLOAD DA IMAGEM
+        ===================================================== */
+
+        imageInput.addEventListener(
+            "change",
+            event => {
+
+                const file =
+                    event.target.files[0];
+
+                if (!file) {
+                    return;
+                }
+
+                handleFile(file);
+
+            }
+        );
+
+
+        function handleFile(file) {
+
+            if (!file.type.startsWith("image/")) {
+
+                showError(
+                    "Escolha um arquivo de imagem."
+                );
+
+                return;
+            }
+
+            selectedFile = file;
+
+            const reader =
+                new FileReader();
+
+            reader.onload = event => {
+
+                currentImageData =
+                    event.target.result;
+
+                imagePreview.src =
+                    currentImageData;
+
+                imagePreview.classList.remove(
+                    "hidden"
+                );
+
+                uploadPlaceholder.classList.add(
+                    "hidden"
+                );
+
+                discoverButton.disabled =
+                    false;
+
+                hideMessages();
+
+            };
+
+            reader.readAsDataURL(file);
+
+        }
+
+
+        /* =====================================================
+           ARRASTAR IMAGEM
+        ===================================================== */
+
+        uploadZone.addEventListener(
+            "dragover",
+            event => {
+
+                event.preventDefault();
+
+                uploadZone.classList.add(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        uploadZone.addEventListener(
+            "dragleave",
+            () => {
+
+                uploadZone.classList.remove(
+                    "dragging"
+                );
+
+            }
+        );
+
+
+        uploadZone.addEventListener(
+            "drop",
+            event => {
+
+                event.preventDefault();
+
+                uploadZone.classList.remove(
+                    "dragging"
+                );
+
+                const file =
+                    event.dataTransfer.files[0];
+
+                if (file) {
+                    handleFile(file);
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           PREPARAR IMAGEM PARA JPEG
+
+           Isso garante que o servidor receba realmente
+           image/jpeg, mesmo se o usuário escolher PNG ou WEBP.
+        ===================================================== */
+
+        function imageToJpegBase64(file) {
+
+            return new Promise(
+                (resolve, reject) => {
+
+                    const reader =
+                        new FileReader();
+
+                    reader.onload = event => {
+
+                        const image =
+                            new Image();
+
+                        image.onload = () => {
+
+                            const maxSize =
+                                1600;
+
+                            let width =
+                                image.width;
+
+                            let height =
+                                image.height;
+
+                            if (width > maxSize ||
+                                height > maxSize) {
+
+                                const ratio =
+                                    Math.min(
+                                        maxSize / width,
+                                        maxSize / height
+                                    );
+
+                                width =
+                                    Math.round(
+                                        width * ratio
+                                    );
+
+                                height =
+                                    Math.round(
+                                        height * ratio
+                                    );
+
+                            }
+
+                            const canvas =
+                                document.createElement(
+                                    "canvas"
+                                );
+
+                            canvas.width =
+                                width;
+
+                            canvas.height =
+                                height;
+
+                            const ctx =
+                                canvas.getContext(
+                                    "2d"
+                                );
+
+                            ctx.drawImage(
+                                image,
+                                0,
+                                0,
+                                width,
+                                height
+                            );
+
+                            const jpeg =
+                                canvas.toDataURL(
+                                    "image/jpeg",
+                                    0.88
+                                );
+
+                            const base64 =
+                                jpeg.split(
+                                    ","
+                                )[1];
+
+                            resolve({
+                                data: base64,
+                                preview: jpeg
+                            });
+
+                        };
+
+                        image.onerror =
+                            reject;
+
+                        image.src =
+                            event.target.result;
+
+                    };
+
+                    reader.onerror =
+                        reject;
+
+                    reader.readAsDataURL(file);
+
+                }
+            );
+
+        }
+
+
+        /* =====================================================
+           ESCONDER MENSAGENS
+        ===================================================== */
+
+        function hideMessages() {
+
+            initialMessage.classList.add(
+                "hidden"
+            );
+
+            uncertainMessage.classList.add(
+                "hidden"
+            );
+
+            errorMessage.classList.add(
+                "hidden"
+            );
+
+            resultCard.classList.add(
+                "hidden"
+            );
+
+            loadingArea.classList.add(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           ERRO
+        ===================================================== */
+
+        function showError(message) {
+
+            hideMessages();
+
+            errorText.textContent =
+                message;
+
+            errorMessage.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           DESCOBERTA PELA IA
+        ===================================================== */
+
+        discoverButton.addEventListener(
+            "click",
+            identifyImage
+        );
+
+
+        async function identifyImage() {
+
+            if (!selectedFile) {
+                return;
+            }
+
+            hideMessages();
+
+            loadingArea.classList.remove(
+                "hidden"
+            );
+
+            discoverButton.disabled =
+                true;
+
+            try {
+
+                const converted =
+                    await imageToJpegBase64(
+                        selectedFile
+                    );
+
+                const imageBase64 =
+                    converted.data;
+
+                currentImageData =
+                    converted.preview;
+
+
+                const prompt = `
+Você é o Jabutipoké, um cientista explorador
+especialista na fauna e flora brasileira.
+
+Analise cuidadosamente a imagem enviada.
+
+A categoria escolhida pelo usuário é:
+"${selectedCategory}"
+
+Identifique SOMENTE seres vivos da fauna ou flora
+brasileira que realmente possam ser reconhecidos
+pela imagem.
+
+Nunca invente uma identificação.
+
+Se você não tiver segurança suficiente para identificar
+o que aparece na imagem, retorne identificado como false.
+
+Se a imagem não mostrar claramente um ser vivo,
+também retorne identificado como false.
+
+Se a categoria escolhida for específica, tente respeitá-la.
+
+A identificação só deve ser considerada confiável
+quando a confiança for de pelo menos 80%.
+
+Quando identificar corretamente, forneça informações
+simples, educativas e apropriadas para uma criança
+do ensino fundamental.
+
+Informe:
+- nome
+- categoria
+- estado de conservação, se aplicável
+- curiosidade
+- habitat
+- bioma
+- localização no Brasil
+- perigo ou risco para humanos, somente se realmente existir
+
+Nunca invente perigos.
+
+Responda SOMENTE no formato JSON solicitado.
+                `.trim();
+
+
+                const response =
+                    await fetch(
+                        "/api/identificar",
+                        {
+                            method: "POST",
+
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
+
+                            body: JSON.stringify({
+
+                                modelo:
+                                    "gemini-3.6-flash",
+
+                                body: {
+
+                                    contents: [
+
+                                        {
+
+                                            parts: [
+
+                                                {
+                                                    text:
+                                                        prompt
+                                                },
+
+                                                {
+                                                    inline_data: {
+                                                        mime_type:
+                                                            "image/jpeg",
+                                                        data:
+                                                            imageBase64
+                                                    }
+                                                }
+
+                                            ]
+
+                                        }
+
+                                    ],
+
+                                    generationConfig: {
+
+                                        temperature:
+                                            0.2,
+
+                                        responseMimeType:
+                                            "application/json",
+
+                                        responseSchema: {
+
+                                            type:
+                                                "object",
+
+                                            properties: {
+
+                                                identificado: {
+                                                    type:
+                                                        "boolean"
+                                                },
+
+                                                confianca: {
+                                                    type:
+                                                        "integer"
+                                                },
+
+                                                nome: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                categoria: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                conservacao: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                curiosidade: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                habitat: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                bioma: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                localizacao: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                perigo: {
+                                                    type:
+                                                        "string"
+                                                },
+
+                                                narracao: {
+                                                    type:
+                                                        "string"
+                                                }
+
+                                            },
+
+                                            required: [
+                                                "identificado",
+                                                "confianca"
+                                            ]
+
+                                        }
+
+                                    }
+
+                                }
+
+                            })
+
+                        }
+                    );
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "Servidor indisponível."
+                    );
+
+                }
+
+
+                const data =
+                    await response.json();
+
+
+                const text =
+                    data
+                        ?.candidates
+                        ?.[0]
+                        ?.content
+                        ?.parts
+                        ?.[0]
+                        ?.text;
+
+
+                if (!text) {
+
+                    throw new Error(
+                        "A resposta da IA estava vazia."
+                    );
+
+                }
+
+
+                const aiResult =
+                    JSON.parse(text);
+
+
+                /* =================================================
+                   REGRA DE SEGURANÇA:
+
+                   Nunca mostrar resultado se:
+                   identificado !== true
+                   OU confiança < 80
+                ================================================= */
+
+                if (
+                    aiResult.identificado !== true ||
+                    Number(aiResult.confianca) < 80
+                ) {
+
+                    loadingArea.classList.add(
+                        "hidden"
+                    );
+
+                    uncertainMessage.classList.remove(
+                        "hidden"
+                    );
+
+                    return;
+                }
+
+
+                currentResult =
+                    aiResult;
+
+                displayResult(
+                    aiResult,
+                    currentImageData
+                );
+
+
+            } catch (error) {
+
+                console.error(
+                    "Erro na identificação:",
+                    error
+                );
+
+                showError(
+                    "Não conseguimos analisar essa imagem agora. Confira sua conexão e tente novamente."
+                );
+
+            } finally {
+
+                discoverButton.disabled =
+                    false;
+
+            }
+
+        }
+
+
+        /* =====================================================
+           MOSTRAR RESULTADO
+        ===================================================== */
+
+        function displayResult(
+            result,
+            imageData
+        ) {
+
+            hideMessages();
+
+            resultImage.src =
+                imageData;
+
+            resultName.textContent =
+                result.nome ||
+                "Identificação encontrada";
+
+            resultCategory.textContent =
+                result.categoria ||
+                selectedCategory;
+
+            confidence.textContent =
+                "Confiança: " +
+                Number(result.confianca || 0) +
+                "%";
+
+            resultHabitat.textContent =
+                result.habitat ||
+                "Não informado";
+
+            resultBiome.textContent =
+                result.bioma ||
+                "Não informado";
+
+            resultLocation.textContent =
+                result.localizacao ||
+                "Não informado";
+
+            resultConservation.textContent =
+                result.conservacao ||
+                "Não informado";
+
+            resultCuriosity.textContent =
+                result.curiosidade ||
+                "Não encontramos uma curiosidade.";
+
+            if (
+                result.perigo &&
+                result.perigo.trim()
+            ) {
+
+                resultDanger.textContent =
+                    result.perigo;
+
+                dangerBox.classList.remove(
+                    "hidden"
+                );
+
+            } else {
+
+                dangerBox.classList.add(
+                    "hidden"
+                );
+
+            }
+
+            resultCard.classList.remove(
+                "hidden"
+            );
+
+        }
+
+
+        /* =====================================================
+           NOVA FOTO
+        ===================================================== */
+
+        newPhotoButton.addEventListener(
+            "click",
+            resetDiscovery
+        );
+
+
+        tryAgainButton.addEventListener(
+            "click",
+            resetDiscovery
+        );
+
+
+        errorTryButton.addEventListener(
+            "click",
+            resetDiscovery
+        );
+
+
+        function resetDiscovery() {
+
+            selectedFile =
+                null;
+
+            currentImageData =
+                null;
+
+            currentResult =
+                null;
+
+            imageInput.value =
+                "";
+
+            imagePreview.src =
+                "";
+
+            imagePreview.classList.add(
+                "hidden"
+            );
+
+            uploadPlaceholder.classList.remove(
+                "hidden"
+            );
+
+            discoverButton.disabled =
+                true;
+
+            hideMessages();
+
+            initialMessage.classList.remove(
+                "hidden"
+            );
+
+            window.scrollTo({
+                top: 0,
+                behavior: "smooth"
+            });
+
+        }
+
+
+        /* =====================================================
+           FALAR CURIOSIDADE
+        ===================================================== */
+
+        speakButton.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    !currentResult ||
+                    !("speechSynthesis" in window)
+                ) {
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+
+                const texto =
+                    currentResult.narracao ||
+                    currentResult.curiosidade ||
+                    "";
+
+                if (!texto) {
+                    return;
+                }
+
+                const fala =
+                    new SpeechSynthesisUtterance(
+                        texto
+                    );
+
+                fala.lang =
+                    "pt-BR";
+
+                fala.rate =
+                    0.95;
+
+                window.speechSynthesis.speak(
+                    fala
+                );
+
+            }
+        );
+
+
+        /* =====================================================
+           ÁUDIO DA ARARA
+        ===================================================== */
+
+        macawSoundButton.addEventListener(
+            "click",
+            () => {
+
+                try {
+
+                    macawAudio.currentTime =
+                        0;
+
+                    macawAudio.play();
+
+                } catch (error) {
+
+                    console.log(
+                        "Não foi possível reproduzir o áudio."
+                    );
+
+                }
+
+            }
+        );
+
+
+        /* =====================================================
+           ÁLBUM — LOCAL STORAGE
+        ===================================================== */
+
+        const ALBUM_KEY =
+            "jabutipoke_album";
+
+
+        function getAlbum() {
+
+            try {
+
+                return JSON.parse(
+                    localStorage.getItem(
+                        ALBUM_KEY
+                    )
+                ) || [];
+
+            } catch {
+
+                return [];
+
+            }
+
+        }
+
+
+        function saveAlbum(
+            album
+        ) {
+
+            try {
+
+                localStorage.setItem(
+                    ALBUM_KEY,
+                    JSON.stringify(album)
+                );
+
+            } catch (error) {
+
+                console.error(
+                    "Não foi possível salvar o álbum:",
+                    error
+                );
+
+                alert(
+                    "O álbum ficou cheio. Tente remover algumas descobertas."
+                );
+
+            }
+
+        }
+
+
+        /* =====================================================
+           SALVAR DESCOBERTA
+        ===================================================== */
+
+        saveAlbumButton.addEventListener(
+            "click",
+            () => {
+
+                if (
+                    !currentResult ||
+                    !currentImageData
+                ) {
+                    return;
+                }
+
+                const album =
+                    getAlbum();
+
+                const item = {
+
+                    id:
+                        Date.now(),
+
+                    nome:
+                        currentResult.nome ||
+                        "Descoberta",
+
+                    categoria:
+                        currentResult.categoria ||
+                        selectedCategory,
+
+                    imagem:
+                        currentImageData,
+
+                    data:
+                        new Date()
+                            .toLocaleDateString(
+                                "pt-BR"
+                            )
+
+                };
+
+
+                album.unshift(item);
+
+                saveAlbum(album);
+
+                saveAlbumButton.textContent =
+                    "✓ Salvo no Safari";
+
+            }
+        );
+
+
+        /* =====================================================
+           MOSTRAR ÁLBUM
+        ===================================================== */
+
+        function renderAlbum() {
+
+            const album =
+                getAlbum();
+
+            albumGrid.innerHTML =
+                "";
+
+            if (!album.length) {
+
+                albumEmpty.classList.remove(
+                    "hidden"
+                );
+
+                albumGrid.classList.add(
+                    "hidden"
+                );
+
+                return;
+            }
+
+
+            albumEmpty.classList.add(
+                "hidden"
+            );
+
+            albumGrid.classList.remove(
+                "hidden"
+            );
+
+
+            album.forEach(item => {
+
+                const card =
+                    document.createElement(
+                        "article"
+                    );
+
+                card.className =
+                    "album-card";
+
+
+                const image =
+                    document.createElement(
+                        "img"
+                    );
+
+                image.className =
+                    "album-image";
+
+                image.src =
+                    item.imagem;
+
+                image.alt =
+                    item.nome;
+
+
+                const info =
+                    document.createElement(
+                        "div"
+                    );
+
+                info.className =
+                    "album-info";
+
+
+                const title =
+                    document.createElement(
+                        "h3"
+                    );
+
+                title.textContent =
+                    item.nome;
+
+
+                const category =
+                    document.createElement(
+                        "p"
+                    );
+
+                category.textContent =
+                    item.categoria +
+                    " • " +
+                    item.data;
+
+
+                info.appendChild(
+                    title
+                );
+
+                info.appendChild(
+                    category
+                );
+
+
+                card.appendChild(
+                    image
+                );
+
+                card.appendChild(
+                    info
+                );
+
+
+                albumGrid.appendChild(
+                    card
+                );
+
+            });
+
+        }
+
+
+        /* =====================================================
+           INICIALIZAÇÃO
+        ===================================================== */
+
+        function initializeImages() {
+
+            document
+                .querySelectorAll(
+                    ".mascot-image"
+                )
+                .forEach(img => {
+
+                    img.src =
+                        imagens.jabuti;
+
+                });
+
+
+            const macawImage =
+                document.querySelector(
+                    ".macaw-sound img"
+                );
+
+            if (macawImage) {
+
+                macawImage.src =
+                    imagens.arara;
+
+            }
+
+        }
+
+
+        initializeImages();
+
+        showPage("home");
+
+    </script>
+
+</body>
+</html>

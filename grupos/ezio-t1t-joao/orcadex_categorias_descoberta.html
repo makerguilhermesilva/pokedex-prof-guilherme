@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OrcaDex | Descubra a natureza</title>
+<style>
+:root{--bg:#06151a;--panel:#0d252b;--mint:#b9f5d0;--lime:#d7ff78;--text:#f5fff9;--muted:#b8cbc6}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(circle at top,#12343a 0,#06151a 50%,#03090c 100%);color:var(--text);font-family:Arial,Helvetica,sans-serif;min-height:100vh}
+button,input{font:inherit}button{cursor:pointer}
+.app{max-width:1280px;margin:auto;padding:24px}
+header{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:28px}
+.brand{font-size:clamp(25px,4vw,40px);font-weight:900;letter-spacing:1px}.brand span{color:var(--lime)}
+.tag{color:var(--muted);font-size:14px}
+h1{font-size:clamp(30px,5vw,52px);line-height:1.05;margin:0 0 12px}
+h2{margin:0 0 10px;font-size:clamp(24px,3vw,34px)}
+p{line-height:1.6;color:var(--muted)}
+.intro{text-align:center;max-width:760px;margin:34px auto 28px}
+.intro p{font-size:17px;margin:0}
+.categories{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px}
+.category{position:relative;isolation:isolate;min-height:220px;overflow:hidden;border:1px solid #ffffff30;border-radius:24px;text-align:left;padding:0;background:#123;color:white;box-shadow:0 12px 28px #0004;transition:transform .28s,box-shadow .28s,border-color .28s}
+.category img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;transition:transform .55s}
+.category:before{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(0,0,0,.88),rgba(0,0,0,.04) 85%)}
+.category:hover,.category:focus-visible{transform:translateY(-7px) scale(1.015);box-shadow:0 20px 38px #0008;border-color:var(--lime);outline:none}
+.category:hover img,.category:focus-visible img{transform:scale(1.09)}
+.category:active{transform:scale(.97)}
+.category-copy{position:absolute;left:22px;right:18px;bottom:20px}
+.category-copy strong{display:block;font-size:24px;margin-bottom:5px}
+.category-copy span{font-size:14px;color:#e2f1e9}
+.arrow{position:absolute;right:18px;top:17px;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#ffffffd9;color:#092126;font-size:22px;transition:transform .2s}
+.category:hover .arrow{transform:translate(3px,-3px)}
+.image-slot{margin:30px 0 6px;border:2px dashed #80b9a0;border-radius:22px;min-height:155px;display:flex;align-items:center;justify-content:center;text-align:center;padding:22px;background:#0b2025}
+.image-slot img{max-width:100%;max-height:210px;object-fit:contain;border-radius:12px}
+.slot-inner{max-width:600px}.slot-inner strong{display:block;color:var(--mint);font-size:20px;margin-bottom:7px}.slot-inner code{color:var(--lime)}
+.hidden{display:none!important}
+.discovery{animation:appear .35s ease both}
+@keyframes appear{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+.back{border:1px solid #638078;color:white;border-radius:999px;padding:10px 16px;background:#102a30;margin-bottom:22px}
+.discovery-head{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:18px}
+.selected-label{display:inline-block;color:#092126;background:var(--lime);padding:7px 12px;border-radius:999px;font-weight:800;font-size:13px;margin-bottom:10px}
+.upload-panel{background:#0d252b;border:1px solid #28514e;border-radius:24px;padding:24px;display:grid;grid-template-columns:minmax(0,1fr) minmax(250px,.8fr);gap:24px;align-items:center}
+.upload-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:18px}
+.primary,.secondary{border-radius:999px;padding:13px 19px;font-weight:800;transition:transform .2s,background .2s}
+.primary{background:var(--lime);color:#102016}.secondary{border:1px solid #88b7a5;color:white;background:#102e32}
+.primary:hover,.secondary:hover{transform:translateY(-2px)}
+.preview{min-height:190px;border:1px dashed #628c80;border-radius:18px;display:grid;place-items:center;overflow:hidden;color:var(--muted);text-align:center;padding:12px}
+.preview img{width:100%;max-height:300px;object-fit:contain}
+.note{font-size:13px;margin-bottom:0}
+.results{margin-top:24px;display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.result-card{background:#0d252b;border:1px solid #28514e;border-radius:20px;padding:22px;min-width:0}
+.result-card h3{margin:0 0 12px;color:var(--mint);font-size:18px}
+.result-card p{margin:0;color:#edf8f1;white-space:pre-wrap}
+.result-name{font-size:28px;font-weight:900;margin-bottom:6px}
+.scientific{font-style:italic;color:var(--muted)!important;margin-bottom:14px!important}
+.map-placeholder{min-height:155px;border-radius:14px;border:1px dashed #5c8c7c;background:linear-gradient(135deg,#173d3b,#10272b);display:grid;place-items:center;text-align:center;padding:18px;color:#e4f5e9}
+.status{margin-top:18px;color:var(--muted);font-size:14px}
+.spinner{display:inline-block;width:16px;height:16px;border:2px solid #638078;border-top-color:var(--lime);border-radius:50%;animation:spin .8s linear infinite;vertical-align:middle;margin-right:8px}
+@keyframes spin{to{transform:rotate(360deg)}}
+footer{text-align:center;padding:32px 0 10px;color:#91aaa1;font-size:13px}
+input[type=file]{display:none}
+@media(max-width:800px){.categories{grid-template-columns:repeat(2,minmax(0,1fr))}.upload-panel{grid-template-columns:1fr}.results{grid-template-columns:1fr}}
+@media(max-width:520px){.app{padding:16px}.categories{grid-template-columns:1fr}.category{min-height:200px}.intro{margin:22px auto}.upload-panel,.result-card{padding:17px}.brand{font-size:25px}.tag{max-width:120px;text-align:right}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<div class="app">
+<header>
+  <div class="brand">ORCA<span>DEX</span></div>
+  <div class="tag">Explore • Descubra • Preserve</div>
+</header>
+
+<main>
+<section id="home">
+  <div class="intro">
+    <h1>Pronto pra descobrir?</h1>
+    <p>Escolha uma categoria, envie uma foto e explore o mundo incrível da natureza.</p>
+  </div>
+  <div class="categories" aria-label="Categorias para descobrir">
+    <button class="category" data-category="Animais mamíferos">
+      <img src="https://images.unsplash.com/photo-1549366021-9f761d450615?auto=format&fit=crop&w=1000&q=85" alt="">
+      <span class="arrow">↗</span><span class="category-copy"><strong>Animais mamíferos</strong><span>Gigantes, pequenos e surpreendentes</span></span>
+    </button>
+    <button class="category" data-category="Aves brasileiras">
+      <img src="https://images.unsplash.com/photo-1552728089-57bdde30beb3?auto=format&fit=crop&w=1000&q=85" alt="">
+      <span class="arrow">↗</span><span class="category-copy"><strong>Aves brasileiras</strong><span>Cores, cantos e curiosidades</span></span>
+    </button>
+    <button class="category" data-category="Animais marinhos">
+      <img src="https://images.unsplash.com/photo-1518467166778-b88f373ffec7?auto=format&fit=crop&w=1000&q=85" alt="">
+      <span class="arrow">↗</span><span class="category-copy"><strong>Animais marinhos</strong><span>Descubra quem vive nos oceanos</span></span>
+    </button>
+    <button class="category" data-category="Árvores nativas">
+      <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=1000&q=85" alt="">
+      <span class="arrow">↗</span><span class="category-copy"><strong>Árvores nativas</strong><span>Conheça as florestas do Brasil</span></span>
+    </button>
+    <button class="category" data-category="Frutas brasileiras">
+      <img src="https://images.unsplash.com/photo-1619566636858-adf3ef46400b?auto=format&fit=crop&w=1000&q=85" alt="">
+      <span class="arrow">↗</span><span class="category-copy"><strong>Frutas brasileiras</strong><span>Sabores, sementes e natureza</span></span>
+    </button>
+    <button class="category" data-category="Plantas e flores">
+      <img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=1000&q=85" alt="">
+      <span class="arrow">↗</span><span class="category-copy"><strong>Plantas e flores</strong><span>Pequenos detalhes, grandes descobertas</span></span>
+    </button>
+  </div>
+
+  <div class="image-slot">
+    <div class="slot-inner">
+      <strong>Espaço reservado para a imagem dos alunos</strong>
+      <p>Substitua este bloco por uma imagem da turma, mascote ou ilustração da escola. Para isso, troque este conteúdo por uma tag <code>&lt;img src="sua-imagem.png" alt="..."&gt;</code>.</p>
+    </div>
+  </div>
+</section>
+
+<section id="discovery" class="discovery hidden">
+  <button class="back" id="backBtn">← Voltar às categorias</button>
+  <div class="discovery-head">
+    <div><span class="selected-label" id="categoryLabel">Categoria</span><h2>Vamos descobrir!</h2><p>Envie uma foto do item que você quer conhecer. A análise será feita pela IA.</p></div>
+  </div>
+  <div class="upload-panel">
+    <div>
+      <h2 style="font-size:23px">Sua descoberta começa aqui</h2>
+      <p>Você pode tirar uma foto com a câmera do dispositivo ou escolher uma imagem salva na galeria.</p>
+      <div class="upload-actions">
+        <button class="primary" id="cameraBtn">📷 Tirar foto</button>
+        <button class="secondary" id="galleryBtn">▧ Escolher da galeria</button>
+        <button class="secondary hidden" id="analyzeBtn">Analisar novamente</button>
+      </div>
+      <p class="note">Dica: use uma imagem nítida e mostre o item inteiro, sempre que possível.</p>
+      <div id="status" class="status" aria-live="polite"></div>
+    </div>
+    <div class="preview" id="preview"><span>A prévia da sua imagem aparecerá aqui.</span></div>
+  </div>
+  <div id="results" class="results hidden" aria-live="polite">
+    <article class="result-card">
+      <h3>🔎 IDENTIFICAÇÃO</h3>
+      <div class="result-name" id="resultName">Aguardando análise</div>
+      <p class="scientific" id="resultScientific"></p>
+      <p id="resultDescription">Envie uma imagem para começar.</p>
+    </article>
+    <article class="result-card"><h3>🌱 ESTADO DE CONSERVAÇÃO</h3><p id="resultConservation">A informação aparecerá após a análise.</p></article>
+    <article class="result-card"><h3>💡 CURIOSIDADES</h3><p id="resultFacts">A informação aparecerá após a análise.</p></article>
+    <article class="result-card"><h3>🗺️ ORIGEM E DISTRIBUIÇÃO</h3><div class="map-placeholder" id="resultMap">O mapa/bioma de origem aparecerá após a análise.</div><p id="resultOrigin" style="margin-top:12px"></p></article>
+  </div>
+</section>
+</main>
+<footer>OrcaDex • Aprender sobre a natureza é o primeiro passo para protegê-la.</footer>
+</div>
+
+<input id="cameraInput" type="file" accept="image/*" capture="environment">
+<input id="galleryInput" type="file" accept="image/*">
+
+<script>
+const home = document.getElementById('home');
+const discovery = document.getElementById('discovery');
+const categoryLabel = document.getElementById('categoryLabel');
+const cameraInput = document.getElementById('cameraInput');
+const galleryInput = document.getElementById('galleryInput');
+const preview = document.getElementById('preview');
+const statusBox = document.getElementById('status');
+const analyzeBtn = document.getElementById('analyzeBtn');
+let selectedCategory = '';
+let selectedFile = null;
+let previewUrl = '';
+
+document.querySelectorAll('.category').forEach(button => {
+  button.addEventListener('click', () => {
+    selectedCategory = button.dataset.category;
+    categoryLabel.textContent = selectedCategory;
+    home.classList.add('hidden');
+    discovery.classList.remove('hidden');
+    window.scrollTo({top:0, behavior:'smooth'});
+  });
+});
+document.getElementById('backBtn').addEventListener('click', () => {
+  discovery.classList.add('hidden');
+  home.classList.remove('hidden');
+  statusBox.textContent = '';
+  window.scrollTo({top:0, behavior:'smooth'});
+});
+document.getElementById('cameraBtn').addEventListener('click', () => { cameraInput.value=''; cameraInput.click(); });
+document.getElementById('galleryBtn').addEventListener('click', () => { galleryInput.value=''; galleryInput.click(); });
+cameraInput.addEventListener('change', () => useFile(cameraInput.files && cameraInput.files[0]));
+galleryInput.addEventListener('change', () => useFile(galleryInput.files && galleryInput.files[0]));
+analyzeBtn.addEventListener('click', () => { if(selectedFile) identify(selectedFile); });
+
+function useFile(file) {
+  if (!file) return;
+  if (!file.type.startsWith('image/')) { statusBox.textContent = 'Escolha um arquivo de imagem, por favor.'; return; }
+  selectedFile = file;
+  if (previewUrl) URL.revokeObjectURL(previewUrl);
+  previewUrl = URL.createObjectURL(file);
+  preview.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = previewUrl;
+  img.alt = 'Prévia da imagem selecionada';
+  preview.appendChild(img);
+  analyzeBtn.classList.remove('hidden');
+  identify(file);
+}
+function setText(id, value, fallback='Não informado') {
+  const el = document.getElementById(id);
+  el.textContent = value == null || String(value).trim() === '' ? fallback : String(value);
+}
+function showResults() { document.getElementById('results').classList.remove('hidden'); }
+async function identify(file) {
+  statusBox.innerHTML = '<span class="spinner"></span>Analisando sua imagem...';
+  showResults();
+  const reader = new FileReader();
+  const dataUrl = await new Promise((resolve,reject) => {
+    reader.onload = () => resolve(reader.result);
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  }).catch(() => null);
+  if (!dataUrl) { statusBox.textContent = 'Não consegui ler essa imagem. Tente outra.'; return; }
+  const base64 = String(dataUrl).split(',')[1];
+  const mimeType = file.type || 'image/jpeg';
+  const prompt = `Você é um assistente educativo de biodiversidade para crianças. A categoria escolhida foi: "${selectedCategory}". Analise a imagem e identifique o item com cuidado. Responda em português simples. Não invente dados: quando não souber, informe "Não foi possível confirmar". Inclua nome popular, nome científico quando possível, descrição curta, estado/categoria de conservação e curiosidades. Explique a distribuição geográfica e o bioma ou região de origem. Se houver incerteza na identificação, deixe isso claro. Retorne apenas JSON válido com as chaves: identificado (boolean), confianca (integer de 0 a 100), nome, nome_cientifico, descricao, conservacao, curiosidades, origem, bioma, mapa_url (string, opcional).`;
+  const payload = {
+    modelo: 'gemini-3.6-flash',
+    body: { contents: [{ parts: [{ text: prompt }, { inline_data: { mime_type: mimeType, data: base64 } }] }],
+      generationConfig: { temperature: 0.2, responseMimeType: 'application/json',
+        responseSchema: { type:'object', properties: {
+          identificado:{type:'boolean'}, confianca:{type:'integer'}, nome:{type:'string'},
+          nome_cientifico:{type:'string'}, descricao:{type:'string'}, conservacao:{type:'string'},
+          curiosidades:{type:'string'}, origem:{type:'string'}, bioma:{type:'string'}, mapa_url:{type:'string'}
+        }, required:['identificado','confianca','nome','nome_cientifico','descricao','conservacao','curiosidades','origem','bioma'] }
+      }
+    }
+  };
+  try {
+    const response = await fetch('/api/identificar', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    const data = await response.json();
+    const raw = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (typeof raw !== 'string') throw new Error('Resposta sem conteúdo reconhecido');
+    const result = JSON.parse(raw);
+    setText('resultName', result.nome, 'Item não identificado');
+    setText('resultScientific', result.nome_cientifico, 'Nome científico não confirmado');
+    setText('resultDescription', result.descricao, 'Não foi possível confirmar uma descrição.');
+    setText('resultConservation', result.conservacao, 'Não foi possível confirmar o estado de conservação.');
+    setText('resultFacts', result.curiosidades, 'Não foram encontradas curiosidades confiáveis.');
+    setText('resultOrigin', result.origem, 'Origem não confirmada.');
+    const map = document.getElementById('resultMap');
+    map.textContent = '';
+    if (result.mapa_url && /^https?:\/\//i.test(result.mapa_url)) {
+      const link = document.createElement('a'); link.href = result.mapa_url; link.target = '_blank'; link.rel = 'noopener'; link.textContent = 'Abrir mapa da distribuição'; link.style.color = '#d7ff78'; map.appendChild(link);
+    } else {
+      map.textContent = 'Bioma/região: ' + (result.bioma || 'Não confirmado') + '. Para exibir um mapa geográfico real, será necessário integrar uma fonte de mapas/distribuição.';
+    }
+    statusBox.textContent = result.identificado === false ? 'A IA não conseguiu confirmar a identificação. Tente uma foto mais nítida.' : 'Análise concluída. Confira as informações e lembre-se: a IA pode cometer erros.';
+  } catch (error) {
+    console.error(error);
+    statusBox.textContent = 'Não consegui analisar agora. Confira se o backend /api/identificar está configurado para aceitar qualquer categoria e devolver o JSON esperado.';
+    setText('resultName', 'Análise indisponível');
+    setText('resultDescription', 'A interface está pronta, mas a análise depende do backend.');
+  }
+}
+</script>
+</body>
+</html>
