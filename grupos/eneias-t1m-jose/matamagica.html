@@ -1,0 +1,1888 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mata Mágica 🦊</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: Arial, sans-serif;
+      background:
+        radial-gradient(circle at top, #21134f 0%, #0d1028 45%, #070914 100%);
+      color: white;
+      min-height: 100vh;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      padding: 18px 0 25px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .logo-fox {
+      width: 60px;
+      height: 60px;
+      border-radius: 20px;
+      background: linear-gradient(135deg, #7c3aed, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 35px;
+      box-shadow: 0 0 25px rgba(124, 58, 237, .5);
+    }
+
+    .logo h1 {
+      font-size: 28px;
+    }
+
+    .logo p {
+      color: #b8b8d9;
+      margin-top: 4px;
+      font-size: 14px;
+    }
+
+    .points {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.12);
+      padding: 10px 15px;
+      border-radius: 18px;
+      color: #facc15;
+      font-weight: bold;
+    }
+
+    .hero {
+      background: linear-gradient(
+        135deg,
+        rgba(37, 99, 235, .25),
+        rgba(124, 58, 237, .28)
+      );
+      border: 1px solid rgba(139, 92, 246, .35);
+      border-radius: 30px;
+      padding: 30px;
+      text-align: center;
+      box-shadow: 0 20px 50px rgba(0,0,0,.25);
+    }
+
+    .detective {
+      font-size: 65px;
+      animation: flutuar 3s ease-in-out infinite;
+    }
+
+    @keyframes flutuar {
+      0%,100% {
+        transform: translateY(0);
+      }
+      50% {
+        transform: translateY(-10px);
+      }
+    }
+
+    .hero h2 {
+      font-size: 32px;
+      margin: 8px 0;
+    }
+
+    .hero p {
+      color: #d2d2ed;
+      max-width: 600px;
+      margin: auto;
+      line-height: 1.5;
+    }
+
+    .camera-area {
+      margin-top: 25px;
+      background: rgba(0,0,0,.25);
+      border: 2px dashed rgba(139, 92, 246, .6);
+      border-radius: 25px;
+      padding: 25px;
+    }
+
+    .preview {
+      width: 100%;
+      max-width: 500px;
+      max-height: 350px;
+      object-fit: contain;
+      border-radius: 20px;
+      margin: 0 auto 20px;
+      display: none;
+      background: #05060e;
+    }
+
+    .preview.visible {
+      display: block;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 16px;
+      padding: 14px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      filter: brightness(1.1);
+    }
+
+    .btn-primary {
+      color: white;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      box-shadow: 0 8px 25px rgba(79, 70, 229, .35);
+    }
+
+    .btn-secondary {
+      color: white;
+      background: rgba(255,255,255,.1);
+      border: 1px solid rgba(255,255,255,.15);
+    }
+
+    .btn-danger {
+      color: white;
+      background: #dc2626;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .status {
+      margin-top: 18px;
+      display: none;
+      padding: 15px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .status.show {
+      display: block;
+    }
+
+    .status.loading {
+      background: rgba(37,99,235,.15);
+      color: #93c5fd;
+    }
+
+    .status.error {
+      background: rgba(220,38,38,.15);
+      color: #fca5a5;
+    }
+
+    .status.success {
+      background: rgba(34,197,94,.15);
+      color: #86efac;
+    }
+
+    .result {
+      display: none;
+      margin-top: 25px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 25px;
+      padding: 25px;
+    }
+
+    .result.show {
+      display: block;
+      animation: aparecer .5s ease;
+    }
+
+    @keyframes aparecer {
+      from {
+        opacity: 0;
+        transform: translateY(15px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .result-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .result-title h2 {
+      font-size: 28px;
+      color: #c4b5fd;
+    }
+
+    .confidence {
+      background: rgba(34,197,94,.15);
+      color: #86efac;
+      padding: 8px 12px;
+      border-radius: 15px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      background: rgba(0,0,0,.2);
+      border-radius: 18px;
+      padding: 18px;
+      border: 1px solid rgba(255,255,255,.08);
+    }
+
+    .card h3 {
+      color: #93c5fd;
+      margin-bottom: 8px;
+    }
+
+    .card p {
+      color: #d7d7e8;
+      line-height: 1.5;
+      white-space: pre-line;
+    }
+
+    .danger {
+      margin-top: 18px;
+      background: rgba(220,38,38,.18);
+      border: 2px solid rgba(248,113,113,.5);
+      padding: 18px;
+      border-radius: 18px;
+    }
+
+    .danger h3 {
+      color: #fca5a5;
+      margin-bottom: 8px;
+    }
+
+    .danger p {
+      color: #fee2e2;
+      line-height: 1.5;
+    }
+
+    .sections {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 25px;
+    }
+
+    .panel {
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 25px;
+      padding: 22px;
+    }
+
+    .panel h2 {
+      margin-bottom: 15px;
+      color: #ddd6fe;
+    }
+
+    .album {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      max-height: 350px;
+      overflow-y: auto;
+    }
+
+    .album-item {
+      background: rgba(0,0,0,.22);
+      border-radius: 15px;
+      padding: 15px;
+    }
+
+    .album-item .emoji {
+      font-size: 35px;
+    }
+
+    .album-item h3 {
+      margin-top: 6px;
+      font-size: 16px;
+    }
+
+    .album-item small {
+      color: #aaaaca;
+    }
+
+    .empty {
+      color: #aaaaca;
+      line-height: 1.5;
+    }
+
+    .map {
+      min-height: 220px;
+      border-radius: 20px;
+      background:
+        linear-gradient(
+          rgba(37,99,235,.2),
+          rgba(124,58,237,.2)
+        ),
+        repeating-linear-gradient(
+          45deg,
+          rgba(255,255,255,.03) 0px,
+          rgba(255,255,255,.03) 2px,
+          transparent 2px,
+          transparent 18px
+        );
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .map-content {
+      font-size: 18px;
+      line-height: 1.5;
+    }
+
+    .map-pin {
+      font-size: 55px;
+      display: block;
+      margin-bottom: 10px;
+    }
+
+    .medals {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .medal {
+      background: rgba(255,255,255,.06);
+      padding: 12px;
+      border-radius: 15px;
+      text-align: center;
+      min-width: 90px;
+    }
+
+    .medal span {
+      display: block;
+      font-size: 35px;
+      filter: grayscale(1);
+      opacity: .35;
+    }
+
+    .medal.unlocked span {
+      filter: none;
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      color: #8585a5;
+      padding: 30px 0 15px;
+      font-size: 13px;
+    }
+
+    .magic {
+      position: fixed;
+      pointer-events: none;
+      font-size: 25px;
+      animation: magic 1.3s ease-out forwards;
+      z-index: 999;
+    }
+
+    @keyframes magic {
+      from {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-100px) scale(1.5);
+      }
+    }
+
+    .night-button {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 55px;
+      height: 55px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(135deg,#2563eb,#7c3aed);
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,.4);
+      z-index: 10;
+    }
+
+    body.light {
+      background:
+        linear-gradient(135deg,#e0f2fe,#ede9fe);
+      color: #172033;
+    }
+
+    body.light .hero,
+    body.light .panel,
+    body.light .result {
+      background: rgba(255,255,255,.7);
+      color: #172033;
+    }
+
+    body.light .hero p,
+    body.light .card p,
+    body.light .empty {
+      color: #475569;
+    }
+
+    body.light .card,
+    body.light .album-item {
+      background: rgba(255,255,255,.65);
+    }
+
+    /* ===============================
+       LENTES / CATEGORIAS
+       =============================== */
+    .lenses-panel {
+      margin-top: 25px;
+      background: rgba(255,255,255,.06);
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 25px;
+      padding: 22px;
+    }
+
+    .lenses-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      margin-bottom: 16px;
+    }
+
+    .lenses-header h2 {
+      color: #ddd6fe;
+      font-size: 24px;
+    }
+
+    .lenses-header p {
+      color: #aaaaca;
+      font-size: 14px;
+      margin-top: 4px;
+    }
+
+    .lenses {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .lens {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,.1);
+      background: rgba(0,0,0,.2);
+      color: white;
+      border-radius: 18px;
+      padding: 8px;
+      text-align: left;
+      cursor: pointer;
+      transition: transform .2s, border-color .2s, box-shadow .2s;
+      font-family: inherit;
+    }
+
+    .lens:hover {
+      transform: translateY(-4px);
+      border-color: rgba(167,139,250,.7);
+      box-shadow: 0 10px 25px rgba(0,0,0,.2);
+    }
+
+    .lens.active {
+      border-color: #a78bfa;
+      box-shadow: 0 0 0 2px rgba(167,139,250,.2), 0 10px 25px rgba(124,58,237,.2);
+    }
+
+    .lens-image {
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      display: block;
+      object-fit: cover;
+      object-position: center;
+      border-radius: 13px;
+      background: linear-gradient(135deg,#2563eb,#7c3aed);
+    }
+
+    .lens-info {
+      padding: 10px 6px 6px;
+    }
+
+    .lens-info strong {
+      display: block;
+      font-size: 15px;
+      margin-bottom: 3px;
+    }
+
+    .lens-info small {
+      color: #aaaaca;
+      font-size: 12px;
+      line-height: 1.3;
+    }
+
+    body.light .lenses-panel {
+      background: rgba(255,255,255,.7);
+    }
+
+    body.light .lens {
+      background: rgba(255,255,255,.65);
+      color: #172033;
+      border-color: rgba(15,23,42,.1);
+    }
+
+    body.light .lens-info small,
+    body.light .lenses-header p {
+      color: #64748b;
+    }
+
+    @media (max-width: 750px) {
+      .cards,
+      .sections {
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding: 20px;
+      }
+
+      .hero h2 {
+        font-size: 26px;
+      }
+
+      .logo h1 {
+        font-size: 22px;
+      }
+
+      .points {
+        font-size: 13px;
+      }
+
+      .lenses {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .lenses-header {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header>
+      <div class="logo">
+        <div class="logo-fox">🦊</div>
+        <div>
+          <h1>Mata Mágica</h1>
+          <p>Seu detetive da natureza 🔎</p>
+        </div>
+      </div>
+
+      <div class="points">
+        ⭐ <span id="points">0</span> pontos
+      </div>
+    </header>
+
+    <section class="hero">
+
+      <div class="detective">🦊</div>
+
+      <h2>O que você encontrou?</h2>
+
+      <p>
+        Tire uma foto de um passarinho, inseto, árvore ou fruta
+        e deixe a nossa raposa detetive investigar! 🔎✨
+      </p>
+
+      <div class="camera-area">
+
+        <img
+          id="preview"
+          class="preview"
+          alt="Foto escolhida para investigar"
+        >
+
+        <div class="buttons">
+
+          <label class="btn btn-primary" for="photoInput">
+            📸 Tirar foto
+          </label>
+
+          <input
+            id="photoInput"
+            type="file"
+            accept="image/jpeg,image/jpg,image/png"
+            capture="environment"
+          >
+
+          <button
+            id="analyzeButton"
+            class="btn btn-secondary"
+            disabled
+          >
+            🔎 Investigar
+          </button>
+
+          <button
+            id="clearButton"
+            class="btn btn-secondary"
+            type="button"
+          >
+            🗑️ Limpar
+          </button>
+
+        </div>
+
+        <div id="status" class="status"></div>
+
+      </div>
+    </section>
+
+
+
+
+    <!-- LENTES / CATEGORIAS -->
+    <section class="lenses-panel">
+      <div class="lenses-header">
+        <div>
+          <h2>🔎 Escolha uma lente</h2>
+          <p>Escolha o que você quer procurar na natureza.</p>
+        </div>
+      </div>
+
+      <div class="lenses" id="lenses">
+        <button class="lens active" type="button" data-lens="Peixes">
+          <img class="lens-image" src="https://s2-g1.glbimg.com/FO5YCnV1OSF3j3uK7IOgLvvQ3CY=/0x0:620x465/984x0/smart/filters:strip_icc()/s.glbimg.com/jo/g1/f/original/2014/09/17/peixe-palhaco.jpg" alt="Natureza" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Peixes</strong><small>Explorando os rios</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Aves">
+          <img class="lens-image" src=" https://static.escolakids.uol.com.br/2020/11/beija-flor.jpg" alt="Ave" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Aves</strong><small>Quem voa por aqui</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Insetos">
+          <img class="lens-image" src=" https://s1.static.brasilescola.uol.com.br/be/e/borboleta(1).jpg
+" alt="Inseto" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Insetos</strong><small>Pequenos exploradores</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Árvores">
+          <img class="lens-image" src=" https://conexaoplaneta.com.br/wp-content/uploads/2016/09/arvores-perfeitas-calcadas-largas-copaiba-ricardo-cardim.jpg" alt="Árvore" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Árvores</strong><small>Gigantes da floresta</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Frutas">
+          <img class="lens-image" src="https://png.pngtree.com/thumb_back/fh260/background/20230610/pngtree-many-fruits-are-placed-next-to-each-other-in-different-piles-image_2972213.jpg" alt="Frutas" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Frutas</strong><small>Cores e sabores</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Flores">
+          <img class="lens-image" src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRC8-XzebmKHIF-JVao_UmYx9WYkP3wEnyZU6w4M1W_bs2dPqqbUokAZwB6&s=10" alt="Flores" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Flores</strong><small>Belezas da mata</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Fungos">
+          <img class="lens-image" src="https://sme.goiania.go.gov.br/conexaoescola/wp-content/uploads/2020/10/mushroom-389421_1920-e1601672930659.jpg
+" alt="Fungos" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Fungos</strong><small>Vida escondida</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Mamíferos">
+          <img class="lens-image" src="https://images.unsplash.com/photo-1456926631375-92c8ce872def?auto=format&fit=crop&w=600&q=80" alt="Mamífero" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Mamíferos</strong><small>Quem caminha por aqui</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Répteis">
+          <img class="lens-image" src=" https://petanjo.com/blog/wp-content/uploads/2023/07/tartaruga-reptil.jpg
+" alt="Réptil" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>Répteis</strong><small>Rastejantes e curiosos</small></span>
+        </button>
+        <button class="lens" type="button" data-lens="Outros">
+          <img class="lens-image" src=" https://gruposarlo.com.br/wp-content/uploads/2023/08/shutterstock_70320076.jpg" alt="Floresta" onerror="this.style.display='none'">
+          <span class="lens-info"><strong>corais</strong><small>Descobertas especiais</small></span>
+        </button>
+      </div>
+    </section>
+
+    <!-- RESULTADO -->
+    <section id="result" class="result">
+
+      <div class="result-title">
+
+        <h2 id="resultName">Descoberta!</h2>
+
+        <div class="confidence">
+          🔎 <span id="confidence">0</span>%
+        </div>
+
+      </div>
+
+      <div class="cards">
+
+        <div class="card">
+          <h3>🌟 O que é?</h3>
+          <p id="resultDescription"></p>
+        </div>
+
+        <div class="card">
+          <h3>📖 Curiosidades</h3>
+          <p id="resultCuriosities"></p>
+        </div>
+
+        <div class="card">
+          <h3>🗺️ Onde vive?</h3>
+          <p id="resultHabitat"></p>
+        </div>
+
+        <div class="card">
+          <h3>🔊 Som</h3>
+          <p id="resultSound"></p>
+          <button
+            id="soundButton"
+            class="btn btn-primary"
+            style="margin-top:10px;"
+            type="button"
+          >
+            🔊 Ouvir
+          </button>
+        </div>
+
+      </div>
+
+      <div id="dangerBox" class="danger" style="display:none;">
+        <h3>⚠️ ATENÇÃO!</h3>
+        <p id="dangerText"></p>
+      </div>
+
+      <div style="margin-top:18px;">
+        <button id="saveButton" class="btn btn-primary">
+          📚 Guardar no meu álbum
+        </button>
+      </div>
+
+    </section>
+
+
+    <!-- OUTRAS ÁREAS -->
+    <section class="sections">
+
+      <div class="panel">
+
+        <h2>📚 Meu álbum</h2>
+
+        <div id="album" class="album"></div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>🏆 Minhas medalhas</h2>
+
+        <div class="medals">
+
+          <div class="medal" id="medal1">
+            <span>🥉</span>
+            <small>Primeira descoberta</small>
+          </div>
+
+          <div class="medal" id="medal2">
+            <span>🥈</span>
+            <small>5 descobertas</small>
+          </div>
+
+          <div class="medal" id="medal3">
+            <span>🥇</span>
+            <small>10 descobertas</small>
+          </div>
+
+          <div class="medal" id="medal4">
+            <span>🏆</span>
+            <small>Grande explorador</small>
+          </div>
+
+        </div>
+
+      </div>
+
+      <div class="panel">
+
+        <h2>🗺️ Mapa da aventura</h2>
+
+        <div class="map">
+
+          <div class="map-content">
+            <span class="map-pin">📍</span>
+            <strong id="mapPlace">
+              Seu mapa aparecerá aqui!
+            </strong>
+            <br>
+            <span id="mapDescription">
+              Descubra algo para adicionar uma nova pista.
+            </span>
+          </div>
+
+        </div>
+
+      </div>
+
+
+      <div class="panel">
+
+        <h2>✨ Missão do dia</h2>
+
+        <p style="line-height:1.6;color:#d7d7e8;">
+          🔎 Encontre algo na natureza.<br>
+          📸 Tire uma foto.<br>
+          🦊 Deixe a raposa investigar.<br>
+          📚 Guarde sua descoberta.<br>
+          🏆 Complete seu álbum!
+        </p>
+
+      </div>
+
+    </section>
+
+
+    <footer>
+      🦊 Mata Mágica — Explorando a natureza com curiosidade e cuidado! 🌳
+    </footer>
+
+  </main>
+
+
+  <!-- MODO NOTURNO -->
+  <button
+    id="themeButton"
+    class="night-button"
+    title="Mudar tema"
+  >
+    ☀️
+  </button>
+
+
+  <script>
+
+    /* =====================================================
+       DADOS DO APP
+    ===================================================== */
+
+    const photoInput = document.getElementById("photoInput");
+    const preview = document.getElementById("preview");
+    const analyzeButton = document.getElementById("analyzeButton");
+    const clearButton = document.getElementById("clearButton");
+
+    const statusBox = document.getElementById("status");
+
+    const result = document.getElementById("result");
+    const resultName = document.getElementById("resultName");
+    const confidence = document.getElementById("confidence");
+
+    const resultDescription =
+      document.getElementById("resultDescription");
+
+    const resultCuriosities =
+      document.getElementById("resultCuriosities");
+
+    const resultHabitat =
+      document.getElementById("resultHabitat");
+
+    const resultSound =
+      document.getElementById("resultSound");
+
+    const soundButton =
+      document.getElementById("soundButton");
+
+    const dangerBox =
+      document.getElementById("dangerBox");
+
+    const dangerText =
+      document.getElementById("dangerText");
+
+    const saveButton =
+      document.getElementById("saveButton");
+
+    const album =
+      document.getElementById("album");
+
+    const pointsElement =
+      document.getElementById("points");
+
+    const mapPlace =
+      document.getElementById("mapPlace");
+
+    const mapDescription =
+      document.getElementById("mapDescription");
+
+
+    let selectedFile = null;
+    let selectedDataUrl = null;
+    let currentDiscovery = null;
+    let selectedLens = "Peixes";
+
+    let points = Number(
+      localStorage.getItem("mataMagicaPoints") || 0
+    );
+
+    let discoveries = JSON.parse(
+      localStorage.getItem("mataMagicaAlbum") || "[]"
+    );
+
+    pointsElement.textContent = points;
+
+
+    /* =====================================================
+       FUNÇÕES DE TEXTO
+       Tudo que vem da IA será colocado com textContent.
+       ===================================================== */
+
+    function safeText(value, fallback = "Não informado.") {
+      if (
+        typeof value !== "string" ||
+        !value.trim()
+      ) {
+        return fallback;
+      }
+
+      return value;
+    }
+
+
+    function showStatus(message, type) {
+      statusBox.textContent = message;
+      statusBox.className = "status show " + type;
+    }
+
+
+    function hideStatus() {
+      statusBox.textContent = "";
+      statusBox.className = "status";
+    }
+
+
+    /* =====================================================
+       ANIMAÇÃO MÁGICA
+       ===================================================== */
+
+    function magicEffect() {
+
+      const symbols = [
+        "✨",
+        "⭐",
+        "💜",
+        "💙",
+        "🍃",
+        "🦊"
+      ];
+
+      for (let i = 0; i < 15; i++) {
+
+        const magic = document.createElement("div");
+
+        magic.className = "magic";
+
+        magic.textContent =
+          symbols[Math.floor(Math.random() * symbols.length)];
+
+        magic.style.left =
+          Math.random() * 100 + "vw";
+
+        magic.style.top =
+          Math.random() * 80 + "vh";
+
+        magic.style.animationDelay =
+          Math.random() * .5 + "s";
+
+        document.body.appendChild(magic);
+
+        setTimeout(() => {
+          magic.remove();
+        }, 1800);
+      }
+    }
+
+
+
+    /* =====================================================
+       LENTES / CATEGORIAS
+       ===================================================== */
+    document.querySelectorAll(".lens").forEach(lens => {
+      lens.addEventListener("click", function() {
+        document.querySelectorAll(".lens").forEach(item =>
+          item.classList.remove("active")
+        );
+
+        this.classList.add("active");
+        selectedLens = this.dataset.lens || "Peixes";
+
+        showStatus(
+          selectedLens === "Peixes"
+            ? "Lente geral selecionada! A raposa pode investigar qualquer descoberta. 🦊"
+            : `Lente ${selectedLens} selecionada! A raposa vai procurar pistas dessa categoria. 🔎`,
+          "success"
+        );
+      });
+    });
+
+    /* =====================================================
+       ESCOLHER FOTO
+       ===================================================== */
+
+    photoInput.addEventListener("change", function() {
+
+      const file = this.files[0];
+
+      if (!file) {
+        return;
+      }
+
+      if (!file.type.startsWith("image/")) {
+
+        showStatus(
+          "Ops! Escolha uma imagem para investigar. 🦊",
+          "error"
+        );
+
+        return;
+      }
+
+      selectedFile = file;
+
+      const reader = new FileReader();
+
+      reader.onload = function(event) {
+
+        selectedDataUrl = event.target.result;
+
+        preview.src = selectedDataUrl;
+        preview.classList.add("visible");
+
+        analyzeButton.disabled = false;
+
+        result.classList.remove("show");
+
+        showStatus(
+          "Foto pronta! A raposa está esperando sua investigação. 🔎🦊",
+          "success"
+        );
+      };
+
+      reader.onerror = function() {
+
+        showStatus(
+          "Não consegui abrir essa foto. Tente outra! 📸",
+          "error"
+        );
+
+      };
+
+      reader.readAsDataURL(file);
+
+    });
+
+
+    /* =====================================================
+       LIMPAR
+       ===================================================== */
+
+    clearButton.addEventListener("click", function() {
+
+      selectedFile = null;
+      selectedDataUrl = null;
+
+      photoInput.value = "";
+
+      preview.src = "";
+      preview.classList.remove("visible");
+
+      analyzeButton.disabled = true;
+
+      result.classList.remove("show");
+
+      hideStatus();
+
+    });
+
+
+    /* =====================================================
+       CONVERTER FOTO PARA BASE64
+       Remove "data:image/jpeg;base64,"
+       ===================================================== */
+
+    function dataUrlToBase64(dataUrl) {
+
+      const commaIndex = dataUrl.indexOf(",");
+
+      if (commaIndex === -1) {
+        return dataUrl;
+      }
+
+      return dataUrl.substring(
+        commaIndex + 1
+      );
+    }
+
+
+    /* =====================================================
+       INVESTIGAÇÃO
+       ===================================================== */
+
+    analyzeButton.addEventListener("click", async function() {
+
+      if (!selectedDataUrl) {
+        showStatus(
+          "Primeiro escolha uma foto! 📸",
+          "error"
+        );
+
+        return;
+      }
+
+      analyzeButton.disabled = true;
+
+      result.classList.remove("show");
+
+      showStatus(
+        "🦊 A raposa está investigando a foto...",
+        "loading"
+      );
+
+
+      const base64 = dataUrlToBase64(
+        selectedDataUrl
+      );
+
+
+      /*
+        IMPORTANTE:
+
+        O formato abaixo é exatamente o pedido
+        usado pelo motor do aplicativo.
+      */
+
+      const pedido = {
+
+        modelo: "gemini-3.6-flash",
+
+        body: {
+
+          contents: [
+            {
+              parts: [
+
+                {
+                  text: `
+Você é o detetive da natureza do aplicativo Mata Mágica.
+
+Analise a foto e tente identificar SOMENTE se houver
+evidências suficientes.
+
+A lente selecionada pelo usuário é: ${selectedLens}
+
+Se a lente não for "Tudo", dê preferência a identificar algo pertencente a essa categoria, mas nunca invente uma identificação.
+
+O aplicativo trabalha principalmente com:
+- passarinhos
+- insetos
+- árvores
+- frutas
+
+Não chute uma identificação.
+
+Se não for possível ter certeza, use:
+identificado: false
+
+Se conseguir identificar com segurança, use:
+identificado: true
+
+A confiança deve ser um número inteiro de 0 a 100.
+
+Também responda:
+nome: nome comum do que aparece na foto
+tipo: passarinho, inseto, árvore, fruta ou outro
+descricao: explicação simples
+curiosidades: curiosidades curtas e interessantes
+habitat: onde normalmente é encontrado
+perigo: true se houver algum risco conhecido
+aviso: explicação simples do perigo
+som_url: se houver uma URL pública e confiável de áudio do animal, coloque-a; caso contrário, deixe uma string vazia.
+local: região ou tipo de lugar onde costuma ser encontrado
+
+Nunca invente uma identificação.
+Se a imagem estiver confusa, use identificado false.
+`
+                },
+
+                {
+                  inline_data: {
+                    mime_type: "image/jpeg",
+                    data: base64
+                  }
+                }
+
+              ]
+            }
+          ],
+
+          generationConfig: {
+
+            temperature: 0.2,
+
+            responseMimeType:
+              "application/json",
+
+            responseSchema: {
+
+              type: "object",
+
+              properties: {
+
+                identificado: {
+                  type: "boolean"
+                },
+
+                confianca: {
+                  type: "integer"
+                },
+
+                nome: {
+                  type: "string"
+                },
+
+                tipo: {
+                  type: "string"
+                },
+
+                descricao: {
+                  type: "string"
+                },
+
+                curiosidades: {
+                  type: "string"
+                },
+
+                habitat: {
+                  type: "string"
+                },
+
+                perigo: {
+                  type: "boolean"
+                },
+
+                aviso: {
+                  type: "string"
+                },
+
+                som_url: {
+                  type: "string"
+                },
+
+                local: {
+                  type: "string"
+                }
+
+              },
+
+              required: [
+                "identificado",
+                "confianca"
+              ]
+
+            }
+
+          }
+
+        }
+
+      };
+
+
+      try {
+
+        const resposta = await fetch(
+          "/api/identificar",
+          {
+            method: "POST",
+
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+
+            body: JSON.stringify(pedido)
+          }
+        );
+
+
+        if (!resposta.ok) {
+          throw new Error(
+            "Erro no servidor."
+          );
+        }
+
+
+        const dados = await resposta.json();
+
+
+        const texto =
+          dados?.candidates?.[0]
+            ?.content?.parts?.[0]?.text;
+
+
+        if (
+          typeof texto !== "string" ||
+          !texto.trim()
+        ) {
+          throw new Error(
+            "Resposta vazia."
+          );
+        }
+
+
+        let resultadoIA;
+
+        try {
+
+          resultadoIA =
+            JSON.parse(texto);
+
+        } catch (erro) {
+
+          throw new Error(
+            "A resposta não pôde ser entendida."
+          );
+
+        }
+
+
+        const identificado =
+          resultadoIA.identificado === true;
+
+        const confianca =
+          Number(resultadoIA.confianca);
+
+
+        /*
+          REGRA IMPORTANTE:
+          Não mostrar resultado se:
+          identificado = false
+          OU
+          confiança < 80
+        */
+
+        if (
+          !identificado ||
+          !Number.isFinite(confianca) ||
+          confianca < 80
+        ) {
+
+          showStatus(
+            "Hmm... 🦊 Não consegui ter certeza. Tente tirar outra foto, mais de perto e com boa luz!",
+            "error"
+          );
+
+          analyzeButton.disabled = false;
+
+          return;
+        }
+
+
+        mostrarResultado(
+          resultadoIA
+        );
+
+
+        showStatus(
+          "Descoberta encontrada! ✨🦊",
+          "success"
+        );
+
+        magicEffect();
+
+        analyzeButton.disabled = false;
+
+
+      } catch (erro) {
+
+        console.error(erro);
+
+        showStatus(
+          "Ops! A raposa teve um probleminha para investigar. Verifique a internet e tente novamente. 🦊💙",
+          "error"
+        );
+
+        analyzeButton.disabled = false;
+
+      }
+
+    });
+
+
+    /* =====================================================
+       MOSTRAR RESULTADO
+       ===================================================== */
+
+    function mostrarResultado(data) {
+
+      const nome =
+        safeText(data.nome, "Descoberta da natureza");
+
+      const descricao =
+        safeText(
+          data.descricao,
+          "A raposa encontrou algo interessante!"
+        );
+
+      const curiosidades =
+        safeText(
+          data.curiosidades,
+          "Ainda não temos curiosidades sobre esta descoberta."
+        );
+
+      const habitat =
+        safeText(
+          data.habitat,
+          "Informação sobre o habitat não disponível."
+        );
+
+      const local =
+        safeText(
+          data.local,
+          "Local não informado."
+        );
+
+      resultName.textContent =
+        "🔎 " + nome;
+
+      confidence.textContent =
+        String(data.confianca);
+
+      resultDescription.textContent =
+        descricao;
+
+      resultCuriosities.textContent =
+        curiosidades;
+
+      resultHabitat.textContent =
+        habitat;
+
+
+      /* SOM */
+
+      const somUrl =
+        typeof data.som_url === "string"
+          ? data.som_url.trim()
+          : "";
+
+      if (somUrl) {
+
+        resultSound.textContent =
+          "Existe um som para esta descoberta!";
+
+        soundButton.style.display =
+          "inline-block";
+
+        soundButton.onclick = function() {
+
+          const audio =
+            new Audio(somUrl);
+
+          audio.play().catch(() => {
+
+            showStatus(
+              "Não consegui tocar o som agora. 🦊",
+              "error"
+            );
+
+          });
+
+        };
+
+      } else {
+
+        resultSound.textContent =
+          "O som desta descoberta não está disponível.";
+
+        soundButton.style.display =
+          "none";
+
+      }
+
+
+      /* PERIGO */
+
+      const temPerigo =
+        data.perigo === true;
+
+      if (temPerigo) {
+
+        dangerBox.style.display =
+          "block";
+
+        dangerText.textContent =
+          safeText(
+            data.aviso,
+            "Tenha cuidado e não toque, coma ou mexa sem a ajuda de um adulto."
+          );
+
+      } else {
+
+        dangerBox.style.display =
+          "none";
+
+        dangerText.textContent =
+          "";
+
+      }
+
+
+      /* MAPA */
+
+      mapPlace.textContent =
+        local;
+
+      mapDescription.textContent =
+        "Esse é o lugar ou região onde essa descoberta costuma ser encontrada.";
+
+
+      currentDiscovery = {
+
+        nome: nome,
+
+        tipo: safeText(
+          data.tipo,
+          "natureza"
+        ),
+
+        descricao: descricao,
+
+        data: new Date()
+          .toLocaleDateString("pt-BR")
+
+      };
+
+
+      result.classList.add("show");
+
+      result.scrollIntoView({
+        behavior: "smooth",
+        block: "start"
+      });
+
+    }
+
+
+    /* =====================================================
+       SALVAR NO ÁLBUM
+       ===================================================== */
+
+    saveButton.addEventListener(
+      "click",
+      function() {
+
+        if (!currentDiscovery) {
+          return;
+        }
+
+        const jaExiste =
+          discoveries.some(
+            item =>
+              item.nome.toLowerCase() ===
+              currentDiscovery.nome.toLowerCase()
+          );
+
+
+        if (jaExiste) {
+
+          showStatus(
+            "Essa descoberta já está no seu álbum! 📚🦊",
+            "success"
+          );
+
+          return;
+        }
+
+
+        discoveries.push(
+          currentDiscovery
+        );
+
+
+        points += 10;
+
+
+        localStorage.setItem(
+          "mataMagicaAlbum",
+          JSON.stringify(discoveries)
+        );
+
+        localStorage.setItem(
+          "mataMagicaPoints",
+          String(points)
+        );
+
+
+        pointsElement.textContent =
+          points;
+
+
+        atualizarAlbum();
+
+        atualizarMedalhas();
+
+        magicEffect();
+
+
+        showStatus(
+          "Nova descoberta guardada! +10 pontos! 🏆✨",
+          "success"
+        );
+
+      }
+    );
+
+
+    /* =====================================================
+       ÁLBUM
+       ===================================================== */
+
+    function atualizarAlbum() {
+
+      album.textContent = "";
+
+
+      if (discoveries.length === 0) {
+
+        const empty =
+          document.createElement("p");
+
+        empty.className =
+          "empty";
+
+        empty.textContent =
+          "Seu álbum está vazio. Tire uma foto e comece sua aventura! 🦊📸";
+
+        album.appendChild(empty);
+
+        return;
+      }
+
+
+      discoveries
+        .slice()
+        .reverse()
+        .forEach(item => {
+
+          const card =
+            document.createElement("div");
+
+          card.className =
+            "album-item";
+
+
+          const emoji =
+            document.createElement("div");
+
+          emoji.className =
+            "emoji";
+
+          emoji.textContent =
+            emojiDoTipo(item.tipo);
+
+
+          const title =
+            document.createElement("h3");
+
+          title.textContent =
+            item.nome;
+
+
+          const date =
+            document.createElement("small");
+
+          date.textContent =
+            item.data;
+
+
+          card.appendChild(emoji);
+          card.appendChild(title);
+          card.appendChild(date);
+
+          album.appendChild(card);
+
+        });
+
+    }
+
+
+    function emojiDoTipo(tipo) {
+
+      const texto =
+        String(tipo).toLowerCase();
+
+      if (texto.includes("pássaro") ||
+          texto.includes("passarinho")) {
+        return "🐦";
+      }
+
+      if (texto.includes("inseto")) {
+        return "🦋";
+      }
+
+      if (texto.includes("árvore") ||
+          texto.includes("arvore")) {
+        return "🌳";
+      }
+
+      if (texto.includes("fruta")) {
+        return "🍓";
+      }
+
+      return "🌿";
+
+    }
+
+
+    /* =====================================================
+       MEDALHAS
+       ===================================================== */
+
+    function atualizarMedalhas() {
+
+      const quantidade =
+        discoveries.length;
+
+
+      if (quantidade >= 1) {
+        document
+          .getElementById("medal1")
+          .classList.add("unlocked");
+      }
+
+      if (quantidade >= 5) {
+        document
+          .getElementById("medal2")
+          .classList.add("unlocked");
+      }
+
+      if (quantidade >= 10) {
+        document
+          .getElementById("medal3")
+          .classList.add("unlocked");
+      }
+
+      if (quantidade >= 20) {
+        document
+          .getElementById("medal4")
+          .classList.add("unlocked");
+      }
+
+    }
+
+
+    /* =====================================================
+       MODO NOTURNO / CLARO
+       ===================================================== */
+
+    const themeButton =
+      document.getElementById("themeButton");
+
+
+    themeButton.addEventListener(
+      "click",
+      function() {
+
+        document.body.classList.toggle(
+          "light"
+        );
+
+
+        if (
+          document.body.classList.contains(
+            "light"
+          )
+        ) {
+
+          themeButton.textContent =
+            "🌙";
+
+        } else {
+
+          themeButton.textContent =
+            "☀️";
+
+        }
+
+      }
+    );
+
+
+    /* =====================================================
+       INICIALIZAÇÃO
+       ===================================================== */
+
+    atualizarAlbum();
+
+    atualizarMedalhas();
+
+  </script>
+
+  <script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🦊", fauna: false,                 // fauna: true para animais
+  cor: "#ff63ad", cor2: "#a76cff",
+  escuro: () => true,
+  noturno: { fundo: "#1b0d2e", texto: "#fffaff", suave: "#dbcde8" },
+  claro:   { fundo: "#fcf8ff", texto: "#35105e", suave: "#654b78" },
+  carregando: "🔎 Procurando pistas na foto...",
+  esconder: ["#result"],
+  // Campos que o front do grupo pede à IA e que você quer mostrar na ficha:
+  extras: info => [["🌿 Onde vive", info.habitat]],
+  // Aviso vermelho na ficha (ex.: planta venenosa):
+  alerta: info => info.perigoso === true ? (info.aviso || "Cuidado! Peça ajuda a um adulto.") : "",
+  salvar: () => { document.getElementById("saveBtn").click(); document.getElementById("abaAlbum").click(); },
+  novaFoto: () => document.getElementById("fotoInput").click()
+});
+</script>
+
+</body>
+</html>
