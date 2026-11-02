@@ -1,0 +1,1405 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Mata — Descubra a Natureza</title>
+
+  <style>
+    :root {
+      --preto: #050505;
+      --preto2: #0c0c0c;
+      --preto3: #151515;
+      --branco: #ffffff;
+      --cinza: #bdbdbd;
+      --dourado: #d4af37;
+      --dourado-claro: #f0d56a;
+      --borda: rgba(212,175,55,.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at top, #1a1a1a, #050505 55%, #000);
+      color: white;
+      font-family: Arial, Helvetica, sans-serif;
+      min-height: 100vh;
+    }
+
+    button {
+      font-family: inherit;
+      cursor: pointer;
+    }
+
+    /* TOPO */
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 16px 6%;
+      background: rgba(5,5,5,.9);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--borda);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .logo-icon {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--dourado);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+    }
+
+    .safari-btn {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      border: 1px solid var(--dourado);
+      background: transparent;
+      color: white;
+      padding: 11px 17px;
+      border-radius: 30px;
+      transition: .25s;
+    }
+
+    .safari-btn:hover {
+      background: var(--dourado);
+      color: black;
+      transform: translateY(-2px);
+    }
+
+    .count {
+      background: var(--dourado);
+      color: black;
+      min-width: 24px;
+      height: 24px;
+      padding: 0 7px;
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 12px;
+      font-weight: bold;
+    }
+
+    /* GERAL */
+
+    .container {
+      width: min(1180px, 92%);
+      margin: auto;
+    }
+
+    /* HERO */
+
+    .hero {
+      text-align: center;
+      padding: 85px 0 60px;
+    }
+
+    .tag {
+      display: inline-block;
+      color: var(--dourado-claro);
+      border: 1px solid var(--borda);
+      border-radius: 30px;
+      padding: 8px 14px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      font-size: clamp(45px, 8vw, 82px);
+      line-height: .95;
+      letter-spacing: -3px;
+      margin-bottom: 22px;
+    }
+
+    .hero h1 span {
+      color: var(--dourado);
+    }
+
+    .hero p {
+      max-width: 650px;
+      margin: auto;
+      color: var(--cinza);
+      font-size: 17px;
+      line-height: 1.7;
+    }
+
+    /* CATEGORIAS */
+
+    .section-title {
+      margin-bottom: 25px;
+    }
+
+    .section-title small {
+      color: var(--dourado);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+    }
+
+    .section-title h2 {
+      font-size: 32px;
+      margin-top: 7px;
+    }
+
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+    }
+
+    .category {
+      position: relative;
+      height: 230px;
+      overflow: hidden;
+      border-radius: 22px;
+      border: 1px solid var(--borda);
+      background: #111;
+      cursor: pointer;
+      transition: .3s;
+    }
+
+    .category:hover {
+      transform: translateY(-6px);
+      border-color: var(--dourado);
+      box-shadow: 0 25px 60px rgba(0,0,0,.7);
+    }
+
+    .category img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: .6;
+      transition: .4s;
+    }
+
+    .category:hover img {
+      transform: scale(1.08);
+      opacity: .78;
+    }
+
+    .category::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        transparent 20%,
+        rgba(0,0,0,.95)
+      );
+    }
+
+    .category-info {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      z-index: 2;
+    }
+
+    .category-info small {
+      color: var(--dourado-claro);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    .category-info h3 {
+      font-size: 21px;
+      margin-top: 5px;
+    }
+
+    /* INVESTIGAÇÃO */
+
+    .scanner {
+      margin: 80px auto;
+      padding: 35px;
+      background: linear-gradient(145deg,#171717,#080808);
+      border: 1px solid var(--borda);
+      border-radius: 28px;
+      box-shadow: 0 25px 70px rgba(0,0,0,.6);
+    }
+
+    .scanner-header h2 {
+      font-size: 34px;
+      margin: 7px 0;
+    }
+
+    .scanner-header p {
+      color: var(--cinza);
+    }
+
+    .camera-box {
+      min-height: 300px;
+      margin-top: 25px;
+      border: 2px dashed rgba(212,175,55,.4);
+      border-radius: 22px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      overflow: hidden;
+      background: #080808;
+    }
+
+    .camera-content {
+      text-align: center;
+      padding: 25px;
+    }
+
+    .camera-icon {
+      width: 70px;
+      height: 70px;
+      margin: auto auto 18px;
+      border: 2px solid var(--dourado);
+      border-radius: 20px;
+      display: grid;
+      place-items: center;
+      font-size: 30px;
+    }
+
+    .camera-content p {
+      color: var(--cinza);
+      margin: 8px 0 20px;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 13px 20px;
+      font-weight: bold;
+      transition: .2s;
+    }
+
+    .primary {
+      background: var(--dourado);
+      color: black;
+    }
+
+    .primary:hover {
+      background: var(--dourado-claro);
+      transform: translateY(-2px);
+    }
+
+    .secondary {
+      background: transparent;
+      color: white;
+      border: 1px solid #444;
+    }
+
+    .secondary:hover {
+      border-color: var(--dourado);
+      color: var(--dourado-claro);
+    }
+
+    #preview {
+      display: none;
+      max-width: 100%;
+      max-height: 430px;
+      border-radius: 18px;
+      object-fit: contain;
+    }
+
+    #investigateBtn {
+      display: none;
+      margin: 20px auto 0;
+    }
+
+    /* LOADING */
+
+    .loading {
+      display: none;
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,.86);
+      z-index: 10;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .loading.active {
+      display: flex;
+    }
+
+    .spinner {
+      width: 45px;
+      height: 45px;
+      border: 4px solid #333;
+      border-top-color: var(--dourado);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* MODAL */
+
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 500;
+      background: rgba(0,0,0,.88);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-card {
+      width: min(700px,100%);
+      max-height: 90vh;
+      overflow-y: auto;
+      background: #101010;
+      border: 1px solid var(--dourado);
+      border-radius: 25px;
+      padding: 28px;
+      position: relative;
+    }
+
+    .close {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #111;
+      color: white;
+      border: 1px solid #444;
+      font-size: 20px;
+    }
+
+    .result-image {
+      width: 100%;
+      max-height: 350px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 20px;
+    }
+
+    .result-tag {
+      color: var(--dourado);
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-size: 11px;
+    }
+
+    .result-name {
+      font-size: 38px;
+      margin: 7px 0 20px;
+    }
+
+    .result-section {
+      margin-top: 20px;
+    }
+
+    .result-section h4 {
+      color: var(--dourado-claro);
+      margin-bottom: 7px;
+    }
+
+    .result-section p {
+      color: var(--cinza);
+      line-height: 1.65;
+    }
+
+    .danger {
+      display: none;
+      margin-top: 22px;
+      padding: 17px;
+      border-radius: 14px;
+      background: rgba(212,175,55,.08);
+      border: 1px solid #80651c;
+    }
+
+    .danger strong {
+      color: var(--dourado-claro);
+    }
+
+    /* RARO */
+
+    .rare {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(0,0,0,.94);
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 25px;
+    }
+
+    .rare.active {
+      display: flex;
+    }
+
+    .rare-card {
+      max-width: 600px;
+    }
+
+    .rare-card img {
+      width: min(400px,80vw);
+      height: 260px;
+      object-fit: cover;
+      border-radius: 25px;
+      border: 3px solid var(--dourado);
+      margin-bottom: 25px;
+    }
+
+    .rare-card small {
+      color: var(--dourado);
+      text-transform: uppercase;
+      letter-spacing: 4px;
+    }
+
+    .rare-card h2 {
+      font-size: 65px;
+      margin: 10px 0;
+    }
+
+    .rare-card p {
+      color: var(--cinza);
+      margin-bottom: 25px;
+    }
+
+    /* MASCOTE */
+
+    .mascot {
+      position: fixed;
+      right: 25px;
+      bottom: 25px;
+      width: 70px;
+      height: 70px;
+      border-radius: 50%;
+      overflow: hidden;
+      border: 2px solid var(--dourado);
+      z-index: 80;
+    }
+
+    .mascot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    footer {
+      text-align: center;
+      color: #777;
+      padding: 45px 0;
+      margin-top: 50px;
+      border-top: 1px solid var(--borda);
+    }
+
+    @media(max-width:850px) {
+      .categories {
+        grid-template-columns: repeat(2,1fr);
+      }
+    }
+
+    @media(max-width:600px) {
+      .categories {
+        grid-template-columns: 1fr;
+      }
+
+      .scanner {
+        padding: 20px;
+      }
+
+      .hero {
+        padding-top: 60px;
+      }
+
+      .hero h1 {
+        font-size: 48px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+<header class="topbar">
+
+  <div class="logo">
+    <div class="logo-icon">🌿</div>
+    A MATA
+  </div>
+
+  <!-- AGORA ABRE OUTRA PÁGINA -->
+  <button
+    class="safari-btn"
+    onclick="window.location.href='safari.html'"
+    type="button"
+  >
+    🧭 Meu Safari
+    <span class="count" id="topCount">0</span>
+  </button>
+
+</header>
+
+
+<main>
+
+  <section class="hero container">
+
+    <div class="tag">
+      Floresta + Tecnologia · IA de visão
+    </div>
+
+    <h1>
+      Descubra o que vive<br>
+      na <span>Mata.</span>
+    </h1>
+
+    <p>
+      Tire uma foto e descubra animais, frutas,
+      insetos, árvores, flores, plantas e fungos
+      do Brasil.
+    </p>
+
+  </section>
+
+
+  <section class="container">
+
+    <div class="section-title">
+      <small>Escolha uma lente</small>
+      <h2>O que você encontrou?</h2>
+    </div>
+
+    <div class="categories">
+
+      <div class="category"
+           onclick="selecionarCategoria('Animais do Brasil')">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/Jaguar_in_Pantanal_Brazil_1.jpg?width=700"
+          alt="Onça-pintada">
+        <div class="category-info">
+          <small>01 · Fauna</small>
+          <h3>Animais do Brasil</h3>
+        </div>
+      </div>
+
+
+      <div class="category"
+           onclick="selecionarCategoria('Frutas nativas')">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/Jabuticabas_brasileiras.jpg?width=700"
+          alt="Jabuticaba">
+        <div class="category-info">
+          <small>02 · Frutos</small>
+          <h3>Frutas nativas</h3>
+        </div>
+      </div>
+
+
+      <div class="category"
+           onclick="selecionarCategoria('Insetos do Brasil')">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/Brazilian_butterfly1.jpg?width=700"
+          alt="Borboleta">
+        <div class="category-info">
+          <small>03 · Pequenos</small>
+          <h3>Insetos do Brasil</h3>
+        </div>
+      </div>
+
+
+      <div class="category"
+           onclick="selecionarCategoria('Árvores nativas')">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/Ip%C3%AA_Amarelo_Arvore_simbolo_do_Brasil.JPG?width=700"
+          alt="Ipê-amarelo">
+        <div class="category-info">
+          <small>04 · Vegetação</small>
+          <h3>Árvores nativas</h3>
+        </div>
+      </div>
+
+
+      <div class="category"
+           onclick="selecionarCategoria('Flores e plantas')">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/Brom%C3%A9lia_nativa.jpg?width=700"
+          alt="Bromélia">
+        <div class="category-info">
+          <small>05 · Flora</small>
+          <h3>Flores e plantas</h3>
+        </div>
+      </div>
+
+
+      <div class="category"
+           onclick="selecionarCategoria('Fungos e cogumelos')">
+        <img
+          src="https://commons.wikimedia.org/wiki/Special:FilePath/Fungo_Branco.JPG?width=700"
+          alt="Fungo">
+        <div class="category-info">
+          <small>06 · Fungos</small>
+          <h3>Fungos e cogumelos</h3>
+        </div>
+      </div>
+
+    </div>
+
+  </section>
+
+
+  <section class="container scanner">
+
+    <div class="scanner-header">
+
+      <small class="result-tag">
+        Pronto para descobrir?
+      </small>
+
+      <h2>Investigue uma foto</h2>
+
+      <p>
+        Tire uma foto ou envie uma imagem da galeria.
+      </p>
+
+    </div>
+
+
+    <div class="camera-box">
+
+      <div class="camera-content" id="cameraContent">
+
+        <div class="camera-icon">
+          📷
+        </div>
+
+        <h3>Mostre algo da Mata</h3>
+
+        <p>
+          Quanto mais nítida a foto, melhor será
+          a identificação.
+        </p>
+
+        <div class="actions">
+
+          <button
+            class="btn primary"
+            onclick="document.getElementById('cameraInput').click()"
+            type="button">
+            📷 Tirar foto
+          </button>
+
+          <button
+            class="btn secondary"
+            onclick="document.getElementById('galleryInput').click()"
+            type="button">
+            🖼️ Galeria
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <img id="preview" alt="Imagem selecionada">
+
+
+      <div class="loading" id="loading">
+
+        <div class="spinner"></div>
+
+        <strong>Analisando imagem...</strong>
+
+        <span style="color:#aaa;font-size:13px;">
+          A IA está investigando a Mata.
+        </span>
+
+      </div>
+
+    </div>
+
+
+    <button
+      id="investigateBtn"
+      class="btn primary"
+      onclick="investigar()"
+      type="button">
+      🔎 Investigar foto
+    </button>
+
+
+    <input
+      id="cameraInput"
+      type="file"
+      accept="image/*"
+      capture="environment"
+      style="display:none"
+    >
+
+    <input
+      id="galleryInput"
+      type="file"
+      accept="image/*"
+      style="display:none"
+    >
+
+  </section>
+
+</main>
+
+
+<!-- MODAL -->
+
+<div class="modal" id="resultModal">
+
+  <div class="modal-card">
+
+    <button
+      class="close"
+      onclick="fecharModal()"
+      type="button">
+      ×
+    </button>
+
+    <img
+      id="resultImage"
+      class="result-image"
+      alt="Descoberta">
+
+    <div class="result-tag">
+      Espécie identificada
+    </div>
+
+    <h2
+      id="resultName"
+      class="result-name">
+    </h2>
+
+    <div class="result-section">
+      <h4>Sobre</h4>
+      <p id="resultAbout"></p>
+    </div>
+
+    <div class="result-section">
+      <h4>Onde vive</h4>
+      <p id="resultHabitat"></p>
+    </div>
+
+    <div
+      class="danger"
+      id="dangerBox">
+
+      <strong>⚠️ Atenção</strong>
+
+      <p
+        id="dangerText"
+        style="color:#ccc;margin-top:6px;">
+      </p>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- RARO -->
+
+<div class="rare" id="rareOverlay">
+
+  <div class="rare-card">
+
+    <img
+      src="https://commons.wikimedia.org/wiki/Special:FilePath/Jaguar_in_Pantanal_Brazil_1.jpg?width=500"
+      alt="Onça-pintada">
+
+    <small>🏆 Descoberta rara</small>
+
+    <h2>UAU!</h2>
+
+    <p>
+      Você encontrou uma espécie rara!
+      A Mata acaba de ganhar uma nova descoberta.
+    </p>
+
+    <button
+      class="btn primary"
+      onclick="fecharRaro()"
+      type="button">
+      Continuar
+    </button>
+
+  </div>
+
+</div>
+
+
+<div class="mascot">
+
+  <img
+    src="https://commons.wikimedia.org/wiki/Special:FilePath/Jaguar_in_Pantanal_Brazil_1.jpg?width=400"
+    alt="Onça-pintada">
+
+</div>
+
+
+<footer>
+  A Mata · Catálogo de campo brasileiro
+</footer>
+
+
+<script>
+
+  const API_ENDPOINT = "/api/identificar";
+  const STORAGE_KEY = "a-mata-descobertas";
+
+  let selectedFile = null;
+  let selectedCategory = "Animais do Brasil";
+
+
+  /* CONTADOR */
+
+  function atualizarContador() {
+
+    let descobertas = [];
+
+    try {
+      descobertas =
+        JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        ) || [];
+    } catch {
+      descobertas = [];
+    }
+
+    document.getElementById("topCount")
+      .textContent = descobertas.length;
+  }
+
+
+  /* CATEGORIA */
+
+  function selecionarCategoria(categoria) {
+
+    selectedCategory = categoria;
+
+    document
+      .querySelector(".scanner")
+      .scrollIntoView({
+        behavior: "smooth",
+        block: "center"
+      });
+  }
+
+
+  /* INPUTS */
+
+  const cameraInput =
+    document.getElementById("cameraInput");
+
+  const galleryInput =
+    document.getElementById("galleryInput");
+
+
+  cameraInput.addEventListener(
+    "change",
+    receberImagem
+  );
+
+  galleryInput.addEventListener(
+    "change",
+    receberImagem
+  );
+
+
+  function receberImagem(event) {
+
+    const file = event.target.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+      alert("Escolha uma imagem válida.");
+      return;
+    }
+
+    selectedFile = file;
+
+    const preview =
+      document.getElementById("preview");
+
+    preview.src =
+      URL.createObjectURL(file);
+
+    preview.style.display = "block";
+
+    document.getElementById("cameraContent")
+      .style.display = "none";
+
+    document.getElementById("investigateBtn")
+      .style.display = "block";
+  }
+
+
+  /* BASE64 */
+
+  async function imagemParaBase64(file) {
+
+    const bitmap =
+      await createImageBitmap(file);
+
+    const maxSize = 1200;
+
+    let width = bitmap.width;
+    let height = bitmap.height;
+
+    if (width > maxSize || height > maxSize) {
+
+      if (width > height) {
+
+        height =
+          Math.round(
+            height * maxSize / width
+          );
+
+        width = maxSize;
+
+      } else {
+
+        width =
+          Math.round(
+            width * maxSize / height
+          );
+
+        height = maxSize;
+      }
+    }
+
+    const canvas =
+      document.createElement("canvas");
+
+    canvas.width = width;
+    canvas.height = height;
+
+    const ctx =
+      canvas.getContext("2d");
+
+    ctx.drawImage(
+      bitmap,
+      0,
+      0,
+      width,
+      height
+    );
+
+    return canvas
+      .toDataURL("image/jpeg", .82)
+      .split(",")[1];
+  }
+
+
+  /* INVESTIGAR */
+
+  async function investigar() {
+
+    if (!selectedFile) {
+      alert("Escolha uma imagem primeiro.");
+      return;
+    }
+
+    const loading =
+      document.getElementById("loading");
+
+    loading.classList.add("active");
+
+    const btn =
+      document.getElementById("investigateBtn");
+
+    btn.disabled = true;
+
+
+    try {
+
+      const base64 =
+        await imagemParaBase64(selectedFile);
+
+
+      const prompt = `
+Você é um especialista experiente em florestas
+e biodiversidade brasileira.
+
+Analise a imagem enviada.
+
+Categoria selecionada:
+${selectedCategory}
+
+Tente identificar o que aparece na imagem.
+
+Se não houver evidências suficientes,
+retorne identificado como false.
+
+A confiança deve ser um número inteiro de 0 a 100.
+
+Quando identificado, informe:
+nome
+sobre
+onde_vive
+perigoso
+informacoes_perigo
+raro
+
+Não invente informações.
+`;
+
+
+      const payload = {
+
+        modelo: "gemini-3.6-flash",
+
+        body: {
+
+          contents: [
+
+            {
+
+              parts: [
+
+                {
+                  text: prompt
+                },
+
+                {
+
+                  inline_data: {
+
+                    mime_type: "image/jpeg",
+
+                    data: base64
+
+                  }
+
+                }
+
+              ]
+
+            }
+
+          ],
+
+          generationConfig: {
+
+            temperature: .2,
+
+            responseMimeType: "application/json",
+
+            responseSchema: {
+
+              type: "object",
+
+              properties: {
+
+                identificado: {
+                  type: "boolean"
+                },
+
+                confianca: {
+                  type: "integer"
+                },
+
+                nome: {
+                  type: "string"
+                },
+
+                sobre: {
+                  type: "string"
+                },
+
+                onde_vive: {
+                  type: "string"
+                },
+
+                perigoso: {
+                  type: "boolean"
+                },
+
+                informacoes_perigo: {
+                  type: "string"
+                },
+
+                raro: {
+                  type: "boolean"
+                }
+
+              },
+
+              required: [
+                "identificado",
+                "confianca"
+              ]
+            }
+          }
+        }
+      };
+
+
+      const response =
+        await fetch(
+          API_ENDPOINT,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type":
+                "application/json"
+            },
+            body:
+              JSON.stringify(payload)
+          }
+        );
+
+
+      if (!response.ok) {
+        throw new Error("Erro no servidor");
+      }
+
+
+      const resposta =
+        await response.json();
+
+
+      const texto =
+        resposta
+          ?.candidates?.[0]
+          ?.content?.parts?.[0]
+          ?.text;
+
+
+      if (!texto) {
+        throw new Error("Resposta vazia");
+      }
+
+
+      const resultado =
+        JSON.parse(texto);
+
+
+      if (
+        resultado.identificado !== true ||
+        Number(resultado.confianca) < 80
+      ) {
+
+        alert(
+          "Hmm, não consegui ter certeza. " +
+          "Tente outra foto mais nítida!"
+        );
+
+        return;
+      }
+
+
+      const descoberta = {
+
+        ...resultado,
+
+        categoria: selectedCategory,
+
+        imagem:
+          document.getElementById("preview").src,
+
+        data:
+          new Date().toISOString()
+
+      };
+
+
+      salvarDescoberta(descoberta);
+
+      mostrarResultado(descoberta);
+
+
+      if (resultado.raro === true) {
+
+        setTimeout(() => {
+
+          document
+            .getElementById("rareOverlay")
+            .classList.add("active");
+
+        }, 500);
+      }
+
+
+    } catch(error) {
+
+      console.error(error);
+
+      alert(
+        "Não consegui analisar a imagem agora. " +
+        "Tente novamente."
+      );
+
+    } finally {
+
+      loading.classList.remove("active");
+
+      btn.disabled = false;
+    }
+  }
+
+
+  /* SALVAR */
+
+  function salvarDescoberta(descoberta) {
+
+    let descobertas = [];
+
+    try {
+
+      descobertas =
+        JSON.parse(
+          localStorage.getItem(STORAGE_KEY)
+        ) || [];
+
+    } catch {
+
+      descobertas = [];
+    }
+
+
+    descobertas.unshift(descoberta);
+
+
+    localStorage.setItem(
+      STORAGE_KEY,
+      JSON.stringify(descobertas)
+    );
+
+
+    atualizarContador();
+  }
+
+
+  /* RESULTADO */
+
+  function mostrarResultado(item) {
+
+    document.getElementById("resultImage")
+      .src = item.imagem || "";
+
+    document.getElementById("resultName")
+      .textContent =
+      item.nome || "Espécie identificada";
+
+    document.getElementById("resultAbout")
+      .textContent =
+      item.sobre ||
+      "Informação não disponível.";
+
+    document.getElementById("resultHabitat")
+      .textContent =
+      item.onde_vive ||
+      "Informação não disponível.";
+
+
+    const danger =
+      document.getElementById("dangerBox");
+
+    const dangerText =
+      document.getElementById("dangerText");
+
+
+    if (item.perigoso === true) {
+
+      danger.style.display = "block";
+
+      dangerText.textContent =
+        item.informacoes_perigo ||
+        "Tenha cuidado e mantenha distância.";
+
+    } else {
+
+      danger.style.display = "none";
+
+      dangerText.textContent = "";
+    }
+
+
+    document
+      .getElementById("resultModal")
+      .classList.add("active");
+  }
+
+
+  function fecharModal() {
+
+    document
+      .getElementById("resultModal")
+      .classList.remove("active");
+  }
+
+
+  function fecharRaro() {
+
+    document
+      .getElementById("rareOverlay")
+      .classList.remove("active");
+  }
+
+
+  document
+    .getElementById("resultModal")
+    .addEventListener(
+      "click",
+      function(event) {
+
+        if (event.target === this) {
+          fecharModal();
+        }
+
+      }
+    );
+
+
+  atualizarContador();
+
+</script>
+
+</body>
+</html>

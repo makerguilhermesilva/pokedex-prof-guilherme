@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brasildex · Catálogo da Mata</title>
+<style>
+:root{
+  --ink:#18342a; --muted:#66746d; --cream:#f5f1e6; --paper:#fffdf7;
+  --green:#24583f; --green2:#3f7959; --lime:#b9d94c; --yellow:#f4d35e;
+  --line:#d9dfd5; --danger:#c84c43; --shadow:0 18px 50px rgba(24,52,42,.12);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--cream);color:var(--ink);font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",Arial,sans-serif}
+button{font:inherit;cursor:pointer}
+.app{max-width:1180px;margin:auto;padding:22px 20px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:18px;padding:6px 0 22px}
+.brand{font-weight:950;letter-spacing:-1px;font-size:24px}.brand span{color:var(--green2)}
+.badge{font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.safari-btn{border:1px solid var(--line);background:var(--paper);border-radius:999px;padding:10px 16px;font-weight:850;color:var(--ink);box-shadow:0 4px 16px #18342a10}
+.hero{background:var(--paper);border:1px solid var(--line);border-radius:34px;padding:54px 28px 46px;text-align:center;box-shadow:var(--shadow);overflow:hidden;position:relative}
+.hero:before{content:"";position:absolute;width:420px;height:420px;border-radius:50%;background:#b9d94c22;left:-170px;top:-190px}.hero:after{content:"";position:absolute;width:360px;height:360px;border-radius:50%;background:#3f795914;right:-170px;bottom:-200px}
+.hero>*{position:relative;z-index:1}.eyebrow{display:inline-block;background:#edf2e8;border-radius:999px;padding:8px 13px;color:var(--green);font-weight:850;font-size:13px}
+h1{font-size:clamp(48px,8vw,86px);line-height:.92;letter-spacing:-.065em;margin:18px 0 15px}.hero h1 span{display:block;color:var(--green2)}
+.subtitle{max-width:650px;margin:0 auto;color:var(--muted);font-size:18px;line-height:1.6}
+.hero-actions{display:flex;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:25px}.primary,.secondary{border-radius:999px;padding:13px 19px;font-weight:900}.primary{border:0;background:var(--green);color:white}.secondary{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.section{margin-top:34px}.section-head{display:flex;align-items:end;justify-content:space-between;gap:15px;margin-bottom:14px}.section-head h2{font-size:28px;letter-spacing:-.04em;margin:0}.section-head p{margin:4px 0 0;color:var(--muted)}
+.lens-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.lens{background:var(--paper);border:1px solid var(--line);border-radius:22px;overflow:hidden;box-shadow:0 8px 25px rgba(24,52,42,.06);transition:.2s}.lens:hover{transform:translateY(-3px);box-shadow:var(--shadow)}
+.lens-img{height:145px;position:relative;background:#dfe8db;overflow:hidden}.lens-img img{width:100%;height:100%;object-fit:cover;display:block}.lens-number{position:absolute;left:10px;top:10px;background:#fffdf7e8;color:var(--green);font-weight:950;border-radius:999px;padding:6px 9px;font-size:12px}.lens-body{padding:15px}.lens-code{font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--green2);font-weight:900}.lens h3{font-size:18px;margin:5px 0}.lens p{font-size:13px;color:var(--muted);line-height:1.45;margin:0 0 12px}.lens button{width:100%;border:0;background:#edf2e8;color:var(--green);padding:9px;border-radius:12px;font-weight:850}
+.info-strip{display:grid;grid-template-columns:1.2fr .8fr;gap:14px;margin-top:14px}.panel{background:var(--green);color:white;border-radius:26px;padding:24px}.panel h2{margin:0 0 7px}.panel p{color:#e4eee6;line-height:1.55;margin:0}.mini-stat{background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:24px}.mini-stat strong{display:block;font-size:40px;letter-spacing:-.05em}.mini-stat span{color:var(--muted)}
+.explorer{display:grid;grid-template-columns:1fr 1fr;gap:14px}.explore-card{background:var(--paper);border:1px solid var(--line);border-radius:26px;padding:24px}.explore-card h3{margin-top:0;font-size:22px}.explore-card p{color:var(--muted);line-height:1.5}.camera-drop{border:2px dashed #b7c4b5;border-radius:18px;padding:25px;text-align:center}.camera-drop input{display:none}.choose{display:inline-block;background:var(--lime);color:#203d25;border-radius:999px;padding:11px 15px;font-weight:900}.preview{display:none;width:100%;max-height:360px;object-fit:cover;border-radius:18px;margin-top:14px}.result{display:none;margin-top:14px;background:#f1f5ec;border-radius:18px;padding:17px}.result img{width:100px;height:100px;object-fit:cover;border-radius:14px;float:right;margin-left:12px}.confidence{display:inline-block;background:#dfead5;border-radius:999px;padding:5px 9px;font-size:13px;font-weight:850}.warning{clear:both;background:#fff0cf;border:2px solid #edbb48;color:#614600;border-radius:15px;padding:12px;margin-top:12px;font-weight:800}.status{display:none;margin-top:12px;color:var(--muted);font-weight:700}
+.collection{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}.discover{background:var(--paper);border:1px solid var(--line);border-radius:19px;padding:16px}.discover strong{display:block;margin-top:8px}.discover small{color:var(--muted)}
+.adventure{background:#1f4332;color:white;border-radius:28px;padding:28px;text-align:center}.adventure .fight{font-size:45px;margin:10px}.adventure p{color:#dce9df}.talk{background:var(--yellow);color:#26341e;border-radius:17px;padding:13px 16px;font-weight:850;max-width:620px;margin:15px auto}
+.danger{background:#fff0e9;border:1px solid #e9b7ae;color:#71352f;border-radius:17px;padding:15px;margin-top:16px;font-weight:750}
+.footer{padding:30px 0 5px;text-align:center;color:var(--muted);font-size:13px}.hidden{display:none!important}
+.nav{position:sticky;bottom:14px;z-index:20;display:flex;justify-content:center;gap:7px;margin:28px auto 0;max-width:760px;background:#fffdf7ed;border:1px solid var(--line);backdrop-filter:blur(12px);padding:7px;border-radius:999px;box-shadow:0 12px 35px #18342a16}.nav button{border:0;background:transparent;color:var(--muted);padding:10px 14px;border-radius:999px;font-weight:850}.nav button.active{background:var(--green);color:white}
+.screen{display:none}.screen.active{display:block}
+@media(max-width:950px){.lens-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:650px){.app{padding:14px 12px 30px}.topbar{align-items:flex-start}.badge{display:none}.hero{padding:38px 18px}.lens-grid{grid-template-columns:repeat(2,1fr)}.lens-img{height:125px}.info-strip,.explorer{grid-template-columns:1fr}.nav{overflow:auto;justify-content:flex-start}.nav button{white-space:nowrap}.safari-btn{padding:9px 12px}}
+@media(max-width:420px){.lens-grid{grid-template-columns:1fr}.lens-img{height:180px}}
+</style>
+</head>
+<body>
+<div class="app">
+<header class="topbar">
+  <div><div class="brand">🌿 <span>Brasil</span>dex</div><div class="badge">Catálogo de campo · Mata Atlântica</div></div>
+  <button class="safari-btn" onclick="show('safari')">🧭 Meu Safari <span id="countTop">0</span></button>
+</header>
+
+<section id="inicio" class="screen active">
+  <div class="hero">
+    <div class="eyebrow">Floresta + Tecnologia · Catálogo de campo</div>
+    <h1>Brasildex <span>da Mata</span></h1>
+    <p class="subtitle">Dez lentes para reconhecer o que vive, cresce, floresce e dá frutos na Mata Atlântica do Brasil.</p>
+    <div class="hero-actions"><button class="primary" onclick="show('lentes')">🔎 Explorar as lentes</button><button class="secondary" onclick="show('descobrir')">📷 Fazer uma descoberta</button></div>
+  </div>
+
+  <div class="info-strip">
+    <div class="panel"><h2>Seu Safari</h2><p>Explore as categorias do catálogo, registre descobertas e monte uma coleção com o seu grupo.</p></div>
+    <div class="mini-stat"><strong id="countHero">0</strong><span>espécies descobertas neste dispositivo</span></div>
+  </div>
+</section>
+
+<section id="lentes" class="screen">
+  <div class="section-head"><div><h2>As 10 lentes</h2><p>Escolha uma lente para entrar em uma parte do catálogo.</p></div></div>
+  <div class="lens-grid">
+    <!-- TROQUE A URL DO src PARA A FOTO DO SEU GRUPO -->
+    <article class="lens"><div class="lens-img"><img src="https://www.roteirosdecharme.com.br/wp-content/uploads/2023/04/unnamed-11-1-1024x683.png" alt="Aves brasileiras"><span class="lens-number">01</span></div><div class="lens-body"><div class="lens-code">Animalia · Aves</div><h3>Aves do Brasil</h3><p>Pássaros e aves nativas para observar e reconhecer.</p><button onclick="openLens('Aves do Brasil')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQfG8TGT0j7KxuP9HBjnBTeU1Rt4wTCeN4fTLDoDnL2Nw&s=10" alt="Frutas brasileiras"><span class="lens-number">02</span></div><div class="lens-body"><div class="lens-code">Plantae · Fructus</div><h3>Frutas Brasileiras</h3><p>Frutas nativas e tropicais encontradas no Brasil.</p><button onclick="openLens('Frutas Brasileiras')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://images.unsplash.com/photo-1511497584788-876760111969?auto=format&fit=crop&w=900&q=80" alt="Árvores nativas"><span class="lens-number">03</span></div><div class="lens-body"><div class="lens-code">Plantae · Arbor</div><h3>Árvores Nativas</h3><p>Árvores que fazem parte da paisagem e da biodiversidade.</p><button onclick="openLens('Árvores Nativas')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRRnXTp72-brw1SbgJHI1baJ5NyKnq0vqGcXFR0yzNKTQ&s=10" alt="Plantas nativas"><span class="lens-number">04</span></div><div class="lens-body"><div class="lens-code">Plantae · Flora</div><h3>Plantas Nativas</h3><p>Espécies vegetais que ajudam a contar a história da Mata.</p><button onclick="openLens('Plantas Nativas')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=900&q=80" alt="Flores"><span class="lens-number">05</span></div><div class="lens-body"><div class="lens-code">Plantae · Flores</div><h3>Flores da Mata</h3><p>Cores, formas e flores encontradas em ambientes brasileiros.</p><button onclick="openLens('Flores da Mata')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQFCO4gGQZZQyKD_YM4ltLZpr1AnU3xLMl3hn5IsSvIuw&s=10" alt="Plantas úteis"><span class="lens-number">06</span></div><div class="lens-body"><div class="lens-code">Plantae · Utilis</div><h3>Plantas Úteis</h3><p>Plantas usadas como matéria-prima em diferentes produtos.</p><button onclick="openLens('Plantas Úteis')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=900&q=80" alt="Floresta"><span class="lens-number">07</span></div><div class="lens-body"><div class="lens-code">Habitat · Mata</div><h3>Floresta</h3><p>Ambientes, paisagens e características da Mata Atlântica.</p><button onclick="openLens('Floresta')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQHjGhvqKQs6qxG_FylX0EzvJgOAeF-LfdWnh3P-mQYGw&s=10" alt="Sementes e frutos"><span class="lens-number">08</span></div><div class="lens-body"><div class="lens-code">Plantae · Sementes</div><h3>Sementes e Frutos</h3><p>Como as plantas se espalham, florescem e formam novos frutos.</p><button onclick="openLens('Sementes e Frutos')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRIw8htA2crIKmTY08je_QPvVIuWKZDwYh_p8oSvL9Eog&s=10" alt="Animais da mata"><span class="lens-number">09</span></div><div class="lens-body"><div class="lens-code">Animalia · Fauna</div><h3>Fauna da Mata</h3><p>Animais que vivem, se alimentam e interagem nesse ambiente.</p><button onclick="openLens('Fauna da Mata')">Abrir lente</button></div></article>
+    <article class="lens"><div class="lens-img"><img src="https://images.unsplash.com/photo-1473448912268-2022ce9509d8?auto=format&fit=crop&w=900&q=80" alt="Conservação"><span class="lens-number">10</span></div><div class="lens-body"><div class="lens-code">Preservação · Brasil</div><h3>Preserve a Mata</h3><p>Descubra por que conhecer a natureza também ajuda a preservá-la.</p><button onclick="openLens('Preserve a Mata')">Abrir lente</button></div></article>
+  </div>
+</section>
+
+<section id="safari" class="screen">
+  <div class="section-head"><div><h2>Seu Safari</h2><p>Tudo que você já descobriu neste dispositivo.</p></div></div>
+  <div id="colecaoGrid" class="collection"></div>
+</section>
+
+<section id="descobrir" class="screen">
+  <div class="explorer">
+    <div class="explore-card"><h3>📷 Pronto para descobrir?</h3><p>Tire uma foto ou escolha uma imagem da galeria. A identificação usa a mesma estrutura de análise do seu projeto original.</p><div class="camera-drop"><label class="choose">📸 Escolher foto<input id="foto" type="file" accept="image/jpeg,image/png,image/webp,image/*" capture="environment"></label></div><img id="preview" class="preview" alt="Foto escolhida"><button id="identificarBtn" class="primary hidden" style="margin-top:12px" onclick="identificar()">🔎 Identificar</button><div id="status" class="status"></div><div id="resultado" class="result"></div></div>
+    <div class="explore-card"><h3>🌱 Sobre o catálogo</h3><p>O Brasildex foi organizado para funcionar como um catálogo de campo: cada lente abre uma área específica e o Safari guarda as descobertas feitas pelo grupo.</p><div class="talk">🌿 Conhecer a natureza é o primeiro passo para cuidar dela.</div><div class="danger">⚠️ Nunca coma ou toque em plantas e frutos desconhecidos. Use o catálogo para aprender, não para testar espécies na vida real.</div></div>
+  </div>
+</section>
+
+<section id="aventuras" class="screen">
+  <div class="adventure"><h2>🌿 Encontros da natureza</h2><p>Uma pequena brincadeira para mostrar como espécies diferentes podem aparecer relacionadas no ambiente.</p><div class="fight">🦋 🌺 🐦</div><button class="primary" onclick="simularEncontro()">✨ Simular encontro</button><div id="encontro"></div></div>
+</section>
+
+<nav class="nav">
+  <button onclick="show('inicio')" data-screen="inicio" class="active">⌂ Início</button>
+  <button onclick="show('lentes')" data-screen="lentes">◉ Lentes</button>
+  <button onclick="show('descobrir')" data-screen="descobrir">⌁ Descobrir</button>
+  <button onclick="show('safari')" data-screen="safari">◎ Safari</button>
+  <button onclick="show('aventuras')" data-screen="aventuras">✦ Aventuras</button>
+</nav>
+<footer class="footer">Brasildex · Catálogo de campo da Mata Atlântica · imagens das lentes podem ser substituídas pelo seu grupo.</footer>
+</div>
+
+<script>
+const foto=document.getElementById('foto');
+const preview=document.getElementById('preview');
+const identificarBtn=document.getElementById('identificarBtn');
+const resultado=document.getElementById('resultado');
+const statusBox=document.getElementById('status');
+const descobertas=JSON.parse(localStorage.getItem('brasildex_descobertas')||'[]');
+
+function updateCounts(){
+  document.getElementById('countTop').textContent=descobertas.length;
+  document.getElementById('countHero').textContent=descobertas.length;
+}
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.nav button').forEach(b=>b.classList.toggle('active',b.dataset.screen===id));
+  if(id==='safari') renderColecao();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function openLens(name){
+  alert('Lente: '+name+'\n\nEsta área está pronta para vocês adicionarem as espécies, textos e imagens do grupo.');
+}
+updateCounts();
+
+foto.addEventListener('change',()=>{
+  const file=foto.files[0]; if(!file)return;
+  preview.src=URL.createObjectURL(file); preview.style.display='block'; identificarBtn.classList.remove('hidden');
+  resultado.style.display='none'; statusBox.style.display='none';
+});
+function setStatus(text,show=true){statusBox.textContent=text;statusBox.style.display=show?'block':'none'}
+function base64SemPrefixo(dataUrl){return dataUrl.split(',')[1]}
+async function arquivoParaDataUrl(file){return await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+async function identificar(){
+  const file=foto.files[0];if(!file)return;resultado.style.display='none';identificarBtn.disabled=true;setStatus('🔎 Analisando imagem...');
+  try{
+    const dataUrl=await arquivoParaDataUrl(file),base64=base64SemPrefixo(dataUrl);
+    const pedido={modelo:'gemini-3.6-flash',body:{contents:[{parts:[{text:'Analise a foto com cuidado. Identifique apenas se tiver alta certeza (80% ou mais) o animal, planta ou fruta brasileira que aparece. Nunca chute. Responda em JSON com: identificado (boolean), confianca (inteiro de 0 a 100), nome (string), tipo (string), bioma (string), curiosidades (array de strings), perigo (boolean), aviso_perigo (string), som (string). Se não tiver certeza, use identificado=false.'},{inline_data:{mime_type:'image/jpeg',data:base64}}]}],generationConfig:{temperature:.2,responseMimeType:'application/json',responseSchema:{type:'object',properties:{identificado:{type:'boolean'},confianca:{type:'integer'},nome:{type:'string'},tipo:{type:'string'},bioma:{type:'string'},curiosidades:{type:'array',items:{type:'string'}},perigo:{type:'boolean'},aviso_perigo:{type:'string'},som:{type:'string'}},required:['identificado','confianca']}}}};
+    const resposta=await fetch('/api/identificar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(pedido)});
+    if(!resposta.ok)throw new Error('servidor');
+    const json=await resposta.json(),texto=json?.candidates?.[0]?.content?.parts?.[0]?.text;if(!texto)throw new Error('resposta');
+    const dado=JSON.parse(texto);
+    if(dado.identificado!==true||Number(dado.confianca)<80){resultado.innerHTML='<div class="talk">🌿 Não consegui ter certeza. Tente outra foto!</div>';resultado.style.display='block';setStatus('',false);return}
+    mostrarResultado(dado,dataUrl);
+  }catch(e){resultado.innerHTML='<div class="talk">🌿 Opa! Não foi possível analisar agora. Tente novamente.</div>';resultado.style.display='block';setStatus('',false)}finally{identificarBtn.disabled=false}
+}
+function mostrarResultado(dado,dataUrl){
+  resultado.innerHTML='';const img=document.createElement('img');img.src=dataUrl;img.alt='Foto da descoberta';resultado.appendChild(img);
+  const title=document.createElement('h3');title.textContent='🎉 '+(dado.nome||'Descoberta');resultado.appendChild(title);
+  const conf=document.createElement('span');conf.className='confidence';conf.textContent='Confiança: '+Number(dado.confianca)+'%';resultado.appendChild(conf);
+  const info=document.createElement('p');info.textContent='Tipo: '+(dado.tipo||'natureza')+' · Bioma: '+(dado.bioma||'Brasil');resultado.appendChild(info);
+  if(Array.isArray(dado.curiosidades)&&dado.curiosidades.length){const h=document.createElement('b');h.textContent='💡 Curiosidades';resultado.appendChild(h);const ul=document.createElement('ul');dado.curiosidades.forEach(c=>{const li=document.createElement('li');li.textContent=c;ul.appendChild(li)});resultado.appendChild(ul)}
+  if(dado.som){const som=document.createElement('p');som.textContent='🔊 Som: '+dado.som;resultado.appendChild(som)}
+  if(dado.perigo===true){const w=document.createElement('div');w.className='warning';w.textContent='⚠️ PERIGO! '+(dado.aviso_perigo||'Não toque nem coma sem orientação.');resultado.appendChild(w)}
+  const talk=document.createElement('div');talk.className='talk';talk.textContent='🌿 Descoberta adicionada ao seu Safari!';resultado.appendChild(talk);
+  descobertas.unshift({nome:String(dado.nome||'Descoberta'),tipo:String(dado.tipo||''),bioma:String(dado.bioma||'Brasil'),perigo:dado.perigo===true});
+  localStorage.setItem('brasildex_descobertas',JSON.stringify(descobertas.slice(0,60)));updateCounts();resultado.style.display='block';setStatus('',false);
+}
+function renderColecao(){
+  const grid=document.getElementById('colecaoGrid');grid.innerHTML='';
+  if(!descobertas.length){grid.innerHTML='<div class="explore-card"><h3>Seu Safari está vazio</h3><p>Faça uma descoberta pela câmera para começar sua coleção. 📷</p></div>';return}
+  descobertas.forEach(d=>{const card=document.createElement('div');card.className='discover';card.textContent=d.perigo?'⚠️':'🌿';const strong=document.createElement('strong');strong.textContent=d.nome;card.appendChild(strong);const small=document.createElement('small');small.textContent=(d.bioma||'Brasil')+' · '+(d.tipo||'natureza');card.appendChild(small);grid.appendChild(card)})
+}
+function simularEncontro(){
+  const exemplos=[['🦋','🌺','A borboleta visitou a flor!'],['🐦','🌳','Uma ave encontrou abrigo na árvore.'],['🐝','🌼','Um polinizador visitou uma flor.'],['🦜','🍒','Uma ave encontrou um fruto.']];
+  const x=exemplos[Math.floor(Math.random()*exemplos.length)];document.getElementById('encontro').innerHTML='<div class="talk">'+x[0]+' '+x[1]+' — '+x[2]+'</div>';
+}
+</script>
+</body>
+</html>
