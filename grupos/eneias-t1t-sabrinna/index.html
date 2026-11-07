@@ -790,6 +790,13 @@ footer{
 
 }
 
+/* Estilos adicionais exclusivos da seção Meu Álbum. */
+.album-descobertas-secao { margin: 32px auto 56px; padding: 28px; border: 1px solid rgba(140,207,120,.28); border-radius: 22px; background: rgba(8,18,13,.55); }
+.album-descobertas-secao h2 { margin: 8px 0 12px; color: #edf5ed; }
+.album-descobertas-secao > p { color: #c5d6c7; line-height: 1.6; }
+.album-descobertas-secao #album-descobertas { margin-top: 22px; }
+.album-descobertas-secao .album-descobertas-nota { margin-top: 16px; font-size: 13px; opacity: .8; }
+@media (max-width: 650px) { .album-descobertas-secao { padding: 18px; } }
 </style>
 
 </head>
@@ -813,6 +820,7 @@ footer{
     <a href="#lentes" onclick="showHome()">Lentes</a>
 
     <a href="#descobrir" onclick="showHome()">Descobrir</a>
+    <a href="#meu-album" onclick="showHome(); setTimeout(() => document.getElementById('meu-album').scrollIntoView({behavior:'smooth'}), 80)">Meu Álbum</a>
 
   </nav>
 
@@ -990,6 +998,15 @@ footer{
 
   </div>
 
+</section>
+
+<!-- Álbum de descobertas: conteúdo gerenciado por /comum/adaptador.js -->
+<section id="meu-album" class="album-descobertas-secao" aria-labelledby="titulo-meu-album">
+  <div class="eyebrow">Minhas descobertas</div>
+  <h2 id="titulo-meu-album">📖 Meu Álbum</h2>
+  <p>Guarde as espécies que você identificou e toque em cada figurinha para rever a ficha.</p>
+  <div id="album-descobertas" aria-live="polite"></div>
+  <p class="album-descobertas-nota">As descobertas ficam salvas neste navegador e neste dispositivo.</p>
 </section>
 
 </main>
@@ -1332,9 +1349,9 @@ PokedexAdaptador.iniciar({
 
       : "",
 
-  // O projeto ainda não possui botão de salvar no álbum.
-
-  // Por isso, a função salvar foi omitida.
+  // Álbum integrado: salva foto e ficha no navegador do aluno.
+  // O adaptador cria automaticamente o botão "Salvar no álbum".
+  album: { el: "#album-descobertas", compacto: false },
 
   // Abre a escolha de imagem na categoria atualmente selecionada
 
