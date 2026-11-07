@@ -21,7 +21,7 @@
 const GRUPO = {
   nome: "BrasilDex",
   integrantes: "Ian, Guilherme B. e Guilherme R.",
-  escola: "Nestor",
+  escola: "Nestor de Camargo",
   turma: "Turma 2",
   tema: "Exploradores das maravilhas do Brasil",
   pendencias: []          // ex.: ["Missão 5", "Missão 6"]
