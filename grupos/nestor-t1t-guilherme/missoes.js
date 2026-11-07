@@ -35,7 +35,7 @@ const ESPECIALISTA = "Um aventureiro especialista em explorar as maravilhas do B
 // Aparece também na mensagem de "fora do tema":
 //   "🚫 Não reconhecemos porque isso parece ser uma melancia, e aqui a gente
 //    só reconhece <O_QUE_PROCURAR>."
-const O_QUE_PROCURAR = "flores";
+const O_QUE_PROCURAR = "floresflores, aves, insetos, mamíferos, répteis, anfíbios, peixes e plantas";
 
 // Missão 3: quanta certeza a IA precisa ter (número de 0 a 100, sem aspas)
 // Por que o grupo escolheu: ""
