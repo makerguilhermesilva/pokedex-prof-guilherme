@@ -206,7 +206,7 @@ section{padding:30px 0 70px}
   background-image:url('https://cdn.shopify.com/s/files/1/0076/0994/2086/files/kyle-cleveland-VDPFEyIrAn0-unsplash_480x480.jpg?v=1624295163')
 }
 .ma{
-  background-image:url('https://lh3.googleusercontent.com/drive-storage/AJQWtBMljWQd1MaPwjoWajQjGgIWkaVZT-n6R_fI2dZ6YQ_yDUkjyxJsW3bRphkqmtzhdZ4xJxn9pabBCm3CN_8wWFPsNLrcNB972fc96HfS0XzVHjST=w1680-h889?auditContext=forDisplay')
+  background-image:url('https://classic.exame.com/wp-content/uploads/2023/06/Foto-10-A-Mata-Atlantica-e-um-dos-biomas-ricos-do-mundo-em-biodiversidade-Divulgacao.jpg')
 }
 .mm{
   background-image:url('https://pt.quizur.com/_image?href=https://img.quizur.com/f/img5f96ca224a0961.07932168.png?lastEdited=1603717680&w=1200&h=900&f=webp')
@@ -704,6 +704,90 @@ window.addEventListener("load",()=>{
   }
 });
 </script>
+
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+
+  // Identidade visual do AnimalDéx
+  icone: "🌿",
+  fauna: true,
+
+  // Cores retiradas do CSS original
+  cor: "#8ccf78",
+  cor2: "#c5e7a8",
+
+  // O projeto utiliza tema escuro
+  escuro: () => true,
+
+  // Aparência no modo escuro
+  noturno: {
+    fundo: "#08120d",
+    texto: "#edf5ed",
+    suave: "#9eafa1"
+  },
+
+  // Aparência no modo claro
+  claro: {
+    fundo: "#f5faf3",
+    texto: "#17301d",
+    suave: "#526b56"
+  },
+
+  // Mensagem durante a identificação
+  carregando: "🔎 Procurando pistas na foto...",
+
+  // Esconde os resultados antigos de todas as categorias
+  esconder: [
+    "#result-frutas",
+    "#result-flores",
+    "#result-arvores",
+    "#result-mata",
+    "#result-mamiferos",
+    "#result-aves",
+    "#result-insetos",
+    "#result-peixes"
+  ],
+
+  // Informações adicionais exibidas na ficha
+  extras: info => [
+    ["🌿 Onde vive", info.habitat]
+  ],
+
+  // Aviso para espécies perigosas
+  alerta: info =>
+    info.perigoso === true
+      ? (info.aviso || "Cuidado! Peça ajuda a um adulto.")
+      : "",
+
+  // O projeto ainda não possui botão de salvar no álbum.
+  // Por isso, a função salvar foi omitida.
+
+  // Abre a escolha de imagem na categoria atualmente selecionada
+  novaFoto: () => {
+    const pagina = document.querySelector(".lens-page.active");
+
+    if (!pagina) {
+      alert("Primeiro escolha uma categoria!");
+      return;
+    }
+
+    const campos = pagina.querySelectorAll('input[type="file"]');
+
+    // Abre a galeria de imagens
+    if (campos.length > 1) {
+      campos[1].click();
+    } else if (campos.length === 1) {
+      campos[0].click();
+    }
+  }
+
+});
+</script>
+
 
 </body>
 </html>
