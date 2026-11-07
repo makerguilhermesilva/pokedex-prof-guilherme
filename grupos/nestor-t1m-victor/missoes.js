@@ -20,7 +20,7 @@
 const GRUPO = {
 nome: "dexmon",
 integrantes: "vitor",
-escola: "emef prefeito nestor de camargo",
+escola: "Nestor de Camargo",
 turma: "Turma 1",
 tema: "Passarinhos, Insetos, Arvores, Flores, Frutas, Peixes",
 pendencias: [] // ex.: ["Missão 5", "Missão 6"]
