@@ -19,17 +19,17 @@
 // Quem é o grupo (aparece no painel). Use SÓ o primeiro nome dos alunos:
 // o site é público.
 const GRUPO = {
-  nome: "Nome do grupo",
-  integrantes: "Ana, Bruno e Carla",
-  escola: "Escola",
-  turma: "Turma 1",
-  tema: "Flores do Brasil",
+  nome: "BrasilDex",
+  integrantes: "Ian, Guilherme B. e Guilherme R.",
+  escola: "Nestor",
+  turma: "Turma 2",
+  tema: "Exploradores das maravilhas do Brasil",
   pendencias: []          // ex.: ["Missão 5", "Missão 6"]
 };
 
 // Missão 1: quem a IA vai fingir ser
 // Exemplo (tema flores): "um botânico especialista em flores do Brasil"
-const ESPECIALISTA = "um botânico especialista em flores do Brasil";
+const ESPECIALISTA = "";
 
 // Missão 2: o que procurar na foto (uma ou duas palavras)
 // Aparece também na mensagem de "fora do tema":

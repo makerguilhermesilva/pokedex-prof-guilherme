@@ -172,5 +172,59 @@ function simularEncontro(){
   const x=exemplos[Math.floor(Math.random()*exemplos.length)];document.getElementById('encontro').innerHTML='<div class="talk">'+x[0]+' '+x[1]+' — '+x[2]+'</div>';
 }
 </script>
+
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🌿",
+  fauna: false, // Catálogo misto: animais e plantas
+
+  cor: "#24583f",
+  cor2: "#b9d94c",
+
+  escuro: () => false,
+
+  noturno: {
+    fundo: "#18342a",
+    texto: "#fffdf7",
+    suave: "#d9dfd5"
+  },
+
+  claro: {
+    fundo: "#fffdf7",
+    texto: "#18342a",
+    suave: "#66746d"
+  },
+
+  carregando: "🔎 O Brasildex está analisando sua descoberta...",
+
+  esconder: ["#resultado"],
+
+  extras: info => [
+    ["🌎 Bioma", info.bioma],
+    ["🌿 Tipo", info.tipo],
+    ["🔊 Som", info.som]
+  ].filter(campo => campo[1]),
+
+  alerta: info =>
+    info.perigoso === true || info.perigo === true
+      ? (info.aviso || info.aviso_perigo ||
+         "Cuidado! Não toque nem consuma espécies desconhecidas.")
+      : "",
+
+  salvar: () => {
+    // O Brasildex já salva descobertas no Safari
+    show("safari");
+  },
+
+  novaFoto: () => {
+    document.getElementById("foto").click();
+  }
+});
+</script>
+
 </body>
 </html>
