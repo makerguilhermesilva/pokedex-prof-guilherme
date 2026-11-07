@@ -29,7 +29,7 @@ const GRUPO = {
 
 // Missão 1: quem a IA vai fingir ser
 // Exemplo (tema flores): "um botânico especialista em flores do Brasil"
-const ESPECIALISTA = "";
+const ESPECIALISTA = "Um aventureiro especialista em explorar as maravilhas do Brasil";
 
 // Missão 2: o que procurar na foto (uma ou duas palavras)
 // Aparece também na mensagem de "fora do tema":
