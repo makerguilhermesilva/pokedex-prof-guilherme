@@ -191,12 +191,12 @@ const MIN_CONFIDENCE = 80;
 const MAX_FILE_SIZE = 8 * 1024 * 1024;
 const CATS = [
   {id:"mamiferos", title:"Mamíferos", sub:"Bichos da fauna brasileira", code:"ANIMALIA · MAMMALIA", accent:"#ffc440", image:"https://oncafari.org/wp-content/uploads/2025/11/Tata-look_Lucas-Morgado.jpg"},
-  {id:"repteis", title:"Répteis e Anfíbios", sub:"Cobras, lagartos e sapos", code:"ANIMALIA · REPTILIA", accent:"#7fe93a", image:"https://naturaefaunaeflora.com.br/wp-content/uploads/2025/03/termorregulacao-em-repteis.webp"},
+  {id:"repteis", title:"Répteis e Anfíbios", sub:"Cobras, lagartos e sapos", code:"ANIMALIA · REPTILIA", accent:"#7fe93a", image:"https://conexaoplaneta.com.br/wp-content/uploads/2025/04/redes-sociais-plataforma-divulgacao-anfibios-repteis-pedro-peloso-conexao-planeta.jpg"},
   {id:"flores", title:"Flores", sub:"Plantas ornamentais e silvestres", code:"PLANTAE · FLORA", accent:"#ec76bd", image:"https://i.pinimg.com/originals/e6/b5/d8/e6b5d8dc969391b8bc0f9736783c9e80.jpg"},
   {id:"peixes", title:"Peixes", sub:"Fauna de água doce e marinha", code:"ANIMALIA · PISCES", accent:"#54c8ff", image:"https://s2.static.brasilescola.uol.com.br/be/2020/12/peixe.jpg"},
-  {id:"insetos", title:"Insetos", sub:"A fauna invisível da mata", code:"ANIMALIA · INSECTA", accent:"#a5ee43", image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRvoTlDabFlQ_aVsi3nXQ1u_xufiVqKNLBsMJKc3kpC-TR1JPH9HRPDT3w&s=10"},
-  {id:"fungos", title:"Cogumelos e Fungos", sub:"Espécies do reino Fungi", code:"FUNGI · BASIDIOMYCOTA", accent:"#ff716d", image:"https://img.mfrural.com.br/api/image?url=https://s3.amazonaws.com/mfrural-produtos-us/265910-275351-78918445-arvores-nativas.webp&width=480&height=288&mode=4"},
-  {id:"arvores", title:"Árvores Nativas", sub:"Espécies da flora brasileira", code:"PLANTAE · ARBOR", accent:"#68e5a4", image:"https://upload.wikimedia.org/wikipedia/commons/9/99/Imagem_de_"},
+  {id:"insetos", title:"Insetos", sub:"A fauna invisível da mata", code:"ANIMALIA · INSECTA", accent:"#a5ee43", image:"https://www.aultimaarcadenoe.com.br/wp-content/uploads/2009/07/Borboleta-azul-Myscelio-orsis-PNItatiaia-RJ-BR-ASilveira.jpg"},
+  {id:"fungos", title:"Cogumelos e Fungos", sub:"Espécies do reino Fungi", code:"FUNGI · BASIDIOMYCOTA", accent:"#ff716d", image:"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQOMzYrRpcXQ9_0aBzVZN5LcOjgCiTnvJwgwegNxsqhsmbgTVCvPZ9nfOI&s=10"},
+  {id:"arvores", title:"Árvores Nativas", sub:"Espécies da flora brasileira", code:"PLANTAE · ARBOR", accent:"#68e5a4", image:"https://arquitetura.vivadecora.com.br/wp-content/uploads/2019/08/%C3%A1rvores-nativas-Tabebuia-ochracea-Ip%C3%AA-amarelo.jpg"},
   {id:"medicinais", title:"Plantas Medicinais", sub:"Ervas e usos tradicionais", code:"PLANTAE · OFFICINALIS", accent:"#44e6c7", image:"https://s2-casavogue.glbimg.com/mhVnV_r4PjxA-NVj9tHUQfzXXoU=/0x0:620x413/984x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_d72fd4bf0af74c0c89d27a5a226dbbf8/internal_photos/bs/2023/H/N/jgv40BS5GRi8xyh7lB7w/hortela.jpg"},
   {id:"aves", title:"Aves do Brasil", sub:"Pássaros e aves nativas", code:"ANIMALIA · AVES", accent:"#38e69b", image:"https://upload.wikimedia.org/wikipedia/commons/d/da/Arara_Azul_no_Pantanal.jpg"},
   {id:"frutas", title:"Frutas Brasileiras", sub:"Frutas nativas e tropicais", code:"PLANTAE · FRUCTUS", accent:"#ffad4a", image:"https://super.abril.com.br/wp-content/uploads/2018/07/frutas.png?quality=70&w=1024&h=682&crop=1"}
@@ -509,5 +509,90 @@ function updateUI(){
 
 renderCategories();updateUI();
 </script>
+
+<!-- INTEGRAÇÃO OMNIDEX COM A POKÉDEX -->
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🦜",
+
+  // O OmniDex possui animais, plantas e fungos.
+  fauna: false,
+
+  // Cores originais do OmniDex
+  cor: "#33e58a",
+  cor2: "#31c4ff",
+
+  // O site original utiliza tema escuro
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#06130f",
+    texto: "#f4fff8",
+    suave: "#a6bdb3"
+  },
+
+  claro: {
+    fundo: "#f4fff8",
+    texto: "#183c2c",
+    suave: "#527568"
+  },
+
+  carregando: "🦜 O OmniDex está analisando sua descoberta...",
+
+  // Oculta o resultado antigo para usar a ficha padrão
+  esconder: ["#resultado"],
+
+  // Informações que já existem no projeto
+  extras: info => [
+    ["🔎 Categoria",
+      currentCategory ? currentCategory.title : ""],
+    ["🌿 Curiosidade",
+      info.curiosidade || info.curiosidades],
+    ["🐾 Tipo", info.tipo]
+  ].filter(campo => campo[1]),
+
+  // Alerta de perigo da ficha
+  alerta: info => {
+    if (typeof info.perigo === "string") {
+      return info.perigo.trim();
+    }
+
+    if (info.perigoso === true || info.perigo === true) {
+      return info.aviso ||
+        "Cuidado! Peça orientação a um adulto.";
+    }
+
+    return "";
+  },
+
+  // Usa o sistema original de pontos e álbum
+  salvar: () => {
+    const botao = document.getElementById("ganhar");
+
+    if (botao && currentDiscovery) {
+      botao.click();
+
+      document.getElementById("descobertas")
+        ?.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+    } else {
+      toast("⚠️ Nenhuma descoberta pronta para salvar.");
+    }
+  },
+
+  // Abre a câmera original do OmniDex
+  novaFoto: () => {
+    resetScanner();
+    document.getElementById("foto").click();
+  }
+});
+</script>
+
 </body>
 </html>
