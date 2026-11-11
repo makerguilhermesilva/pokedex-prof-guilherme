@@ -3548,8 +3548,6 @@ Responda SOMENTE no formato JSON solicitado.
 
     </script>
 
-    
-<!-- LIGAR-FRONT — JABUTIPOKÉ -->
 <script src="/comum/ficha.js"></script>
 <script src="/comum/adaptador.js"></script>
 
@@ -3582,11 +3580,7 @@ PokedexAdaptador.iniciar({
   extras: info => [
     ["🏷️ Categoria", info.categoria || selectedCategory],
     ["🌳 Habitat", info.habitat],
-    ["🌿 Biomas",
-      Array.isArray(info.biomas)
-        ? info.biomas.join(", ")
-        : (info.bioma || info.biomas)
-    ],
+    ["🌿 Bioma", info.bioma || info.biomas],
     ["📍 Onde encontramos", info.localizacao || info.regiao_origem],
     ["🛡️ Conservação", info.conservacao],
     ["💡 Curiosidade", info.curiosidade || info.curiosidades]
@@ -3597,24 +3591,49 @@ PokedexAdaptador.iniciar({
     info.perigo ||
     "",
 
-  salvar: () => {
-    document.getElementById("saveAlbumButton")?.click();
-    document.getElementById("albumBtn")?.click();
-  },
+  
+salvar: (info) => {
+  try {
+    const botaoSalvar =
+      document.getElementById("saveAlbumButton");
+
+    if (!botaoSalvar) {
+      console.error("Botão de salvar não encontrado.");
+      alert("Não foi possível localizar o botão de salvar.");
+      return;
+    }
+
+    if (botaoSalvar.dataset.saved === "true") {
+      alert("Esta descoberta já foi salva!");
+      return;
+    }
+
+    botaoSalvar.click();
+
+    const album = JSON.parse(
+      localStorage.getItem("jabutipoke_album") || "[]"
+    );
+
+    console.log("Meu Safari:", album);
+
+    if (botaoSalvar.dataset.saved === "true") {
+      alert("Descoberta salva no Meu Safari!");
+    } else {
+      alert("Não foi possível confirmar o salvamento.");
+    }
+
+  } catch (erro) {
+    console.error("Erro ao salvar no Safari:", erro);
+    alert("Ocorreu um erro ao salvar a descoberta.");
+  }
+},
 
   novaFoto: () => {
-    resetDiscovery();
-
-    const camera = document.getElementById("cameraInput");
-
-    if (camera) {
-      camera.value = "";
-      camera.click();
-    }
+    document.getElementById("newPhotoButton")?.click();
+    document.getElementById("cameraInput")?.click();
   }
 });
 </script>
-
 
 </body>
 </html>
