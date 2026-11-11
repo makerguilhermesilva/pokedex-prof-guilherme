@@ -19,23 +19,23 @@
 // Quem é o grupo (aparece no painel). Use SÓ o primeiro nome dos alunos:
 // o site é público.
 const GRUPO = {
-  nome: "Nome do grupo",
-  integrantes: "Ana, Bruno e Carla",
-  escola: "Escola",
+  nome: "Brasildex da Mata",
+  integrantes: "Jhessilyn e Victor",
+  escola: "Renato Rosa",
   turma: "Turma 1",
-  tema: "Flores do Brasil",
+  tema: "Aves do Brasil, Frutas Brasileiras, Plantas da Mata, Mamíferos, Répteis, Peixes, Insetos e Comidas Brasileiras. ",
   pendencias: []          // ex.: ["Missão 5", "Missão 6"]
 };
 
 // Missão 1: quem a IA vai fingir ser
 // Exemplo (tema flores): "um botânico especialista em flores do Brasil"
-const ESPECIALISTA = "um botânico especialista em flores do Brasil";
+const ESPECIALISTA = "um fazendeiro especialista";
 
 // Missão 2: o que procurar na foto (uma ou duas palavras)
 // Aparece também na mensagem de "fora do tema":
 //   "🚫 Não reconhecemos porque isso parece ser uma melancia, e aqui a gente
 //    só reconhece <O_QUE_PROCURAR>."
-const O_QUE_PROCURAR = "flores";
+const O_QUE_PROCURAR = "Aves do Brasil, Frutas do Brasil, Plantas da Mata, Mamíferos, Répteis, Peixes, Insetos e Comidas Brasileiras";
 
 // Missão 3: quanta certeza a IA precisa ter (número de 0 a 100, sem aspas)
 // Por que o grupo escolheu: ""
@@ -43,19 +43,19 @@ const CERTEZA_MINIMA = 80;
 
 // Missão 4: o porteiro
 function conferirFoto(foto) {
-  if (!foto.type.startsWith("image/")) return "📷 Isso não é uma foto!";
-  if (foto.size > 10000000) return "🐘 Foto grande demais! Escolha outra.";
+  if (!foto.type.startsWith("image/")) return "📷 Isso não é uma foto! Tente novamente";
+  if (foto.size > 10000000) return "🐘 Esta imagem é muito grande. Tente outra";
   return "ok";
 }
 
 // Missão 5: quando a IA fica em dúvida (foto pouco nítida)
 function mensagemDeDuvida(r) {
-  return "🤔 Tenho só " + r.confianca + "% de certeza. Tenta outra foto, mais de perto!";
+  return "🤔Tenho apenas" + r.confianca + "Tente uma foto mais clara.";
 }
 
 // Missão 6: quando a IA acerta
 function mensagemDeAcerto(r) {
-  return "🎉 Achei! É " + r.nome_popular + "! Que demais!";
+  return "🎉Encontrei! É " + r.nome_popular + "Que alegria!";
 }
 
 // ----------------------------------------------------------------------------
@@ -63,3 +63,5 @@ function mensagemDeAcerto(r) {
 //  api/identificar.js usar.
 // ----------------------------------------------------------------------------
 module.exports = { GRUPO, ESPECIALISTA, O_QUE_PROCURAR, CERTEZA_MINIMA, conferirFoto, mensagemDeDuvida, mensagemDeAcerto };
+
+

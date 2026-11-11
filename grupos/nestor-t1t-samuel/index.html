@@ -68,6 +68,171 @@ const initial=location.hash.slice(1);if(initial&&document.getElementById(initial
 </script>
 
 
+<!-- INTEGRAÇÃO PURIDEX COM A FICHA PADRÃO -->
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+  // Mascote original
+  icone: "🐤",
+
+  // O PuriDex reconhece animais, plantas e fungos
+  fauna: false,
+
+  // Cores originais do projeto
+  cor: "#ffd72a",
+  cor2: "#55c5ff",
+
+  // Interface original escura
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#071b2d",
+    texto: "#f5fbff",
+    suave: "#9bb7c8"
+  },
+
+  claro: {
+    fundo: "#f5fbff",
+    texto: "#071b2d",
+    suave: "#527487"
+  },
+
+  carregando: "🐤 O Canarinho está analisando sua descoberta...",
+
+  // Oculta o cartão original para usar a ficha padrão
+  esconder: ["#result"],
+
+  // Campos que o PuriDex solicita à IA
+  extras: info => [
+    ["🔬 Nome científico", info.nome_cientifico],
+    ["🔎 O que é", info.descricao],
+    ["💡 Curiosidades", info.curiosidades],
+    ["🌳 Habitat", info.habitat],
+    ["🛡️ Conservação", info.conservacao]
+  ].filter(campo => campo[1]),
+
+  // Avisos de segurança
+  alerta: info => {
+    if (typeof info.perigo === "string") {
+      return info.perigo.trim();
+    }
+
+    if (info.perigoso === true || info.perigo === true) {
+      return info.aviso ||
+        "Cuidado! Peça orientação a um adulto.";
+    }
+
+    return "";
+  },
+
+  // Utiliza o álbum original dos alunos
+  salvar: () => {
+    if (!selected || !photo) {
+      status("🐤 Nenhuma descoberta pronta para salvar.", "error");
+      return;
+    }
+
+    save();
+  },
+
+  // Retorna ao Safari e abre o seletor de fotos
+  novaFoto: () => {
+    showPage("safari");
+
+    const arquivo = document.getElementById("file");
+    arquivo.value = "";
+
+    pick();
+  }
+});
+</script>
+
+
+<!-- INTEGRAÇÃO PURIDEX COM A FICHA PADRÃO -->
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+  // Mascote original
+  icone: "🐤",
+
+  // O PuriDex reconhece animais, plantas e fungos
+  fauna: false,
+
+  // Cores originais do projeto
+  cor: "#ffd72a",
+  cor2: "#55c5ff",
+
+  // Interface original escura
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#071b2d",
+    texto: "#f5fbff",
+    suave: "#9bb7c8"
+  },
+
+  claro: {
+    fundo: "#f5fbff",
+    texto: "#071b2d",
+    suave: "#527487"
+  },
+
+  carregando: "🐤 O Canarinho está analisando sua descoberta...",
+
+  // Oculta o cartão original para usar a ficha padrão
+  esconder: ["#result"],
+
+  // Campos que o PuriDex solicita à IA
+  extras: info => [
+    ["🔬 Nome científico", info.nome_cientifico],
+    ["🔎 O que é", info.descricao],
+    ["💡 Curiosidades", info.curiosidades],
+    ["🌳 Habitat", info.habitat],
+    ["🛡️ Conservação", info.conservacao]
+  ].filter(campo => campo[1]),
+
+  // Avisos de segurança
+  alerta: info => {
+    if (typeof info.perigo === "string") {
+      return info.perigo.trim();
+    }
+
+    if (info.perigoso === true || info.perigo === true) {
+      return info.aviso ||
+        "Cuidado! Peça orientação a um adulto.";
+    }
+
+    return "";
+  },
+
+  // Utiliza o álbum original dos alunos
+  salvar: () => {
+    if (!selected || !photo) {
+      status("🐤 Nenhuma descoberta pronta para salvar.", "error");
+      return;
+    }
+
+    save();
+  },
+
+  // Retorna ao Safari e abre o seletor de fotos
+  novaFoto: () => {
+    showPage("safari");
+
+    const arquivo = document.getElementById("file");
+    arquivo.value = "";
+
+    pick();
+  }
+});
+</script>
+
 
 </body>
 </html>

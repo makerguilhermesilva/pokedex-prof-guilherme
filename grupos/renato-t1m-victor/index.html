@@ -49,12 +49,17 @@
   }
   .brand-sub{font-size:8px;color:#a7b3a5;margin-top:3px}
   .safari{
+    display:inline-block;
+    text-decoration:none;
+    cursor:pointer;
     border:1px solid var(--line);
     border-radius:7px;
     padding:7px 11px;
     font-size:9px;
     color:#dfe8dc;
   }
+
+  .safari:hover,.safari:focus-visible{border-color:var(--green);color:#fff;outline-offset:3px}
 
   .hero{
     display:grid;
@@ -200,7 +205,7 @@
         <div class="brand-sub">Núcleo de campo · IA de visão</div>
       </div>
     </div>
-    <div class="safari">🟡 Meu Safari 0</div>
+    <a class="safari" href="brasildex_safari.html" aria-label="Abrir meu Safari">🟡 Meu Safari <span id="safariCount">0</span></a>
   </header>
 
   <section class="hero">
@@ -218,39 +223,62 @@
   </section>
 
   <section class="categories">
-    <a class="category" href="descoberta.html?categoria=Aves">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Aves">
       <img src="https://midia.planetaexo.com/wp-content/uploads/2026/06/brazil-wildlife-toucan.jpg.jpg" alt="Ave">
       <div class="category-info"><div class="tag">ANIMALIA · AVES</div><h3>Aves do Brasil</h3><p>Pássaros e aves nativas</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Frutas">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Frutas">
       <img src="https://files.agro20.com.br/uploads/2019/09/maracuja-2.jpg" alt="Abacaxi">
       <div class="category-info"><div class="tag">PLANTAE · FRUTOS</div><h3>Frutas Brasileiras</h3><p>Frutas nativas e tropicais</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Plantas">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Plantas">
       <img src="https://www.portalolasalvesalve.com.br/wp-content/uploads/2021/11/Vitoria-Regia.jpg" alt="Plantas">
       <div class="category-info"><div class="tag">PLANTAE · FLORA</div><h3>Plantas da Mata</h3><p>Árvores, flores e folhas</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Mamíferos">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Mamíferos">
       <img src="https://tunesambiental.com/wp-content/uploads/dsc_6824-1.jpg" alt="Mamíferos">
       <div class="category-info"><div class="tag">ANIMALIA · MAMMALIA</div><h3>Mamíferos</h3><p>Animais terrestres do Brasil</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Répteis">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Répteis">
       <img src="https://recreio.com.br/wp-content/uploads/aleatorio/repteis_capa.jpg" alt="Réptil">
       <div class="category-info"><div class="tag">ANIMALIA · REPTILIA</div><h3>Répteis</h3><p>Serpentes, lagartos e outros</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Peixes">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Peixes">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcShdZXq9tr0yrsHUgNkNTOfsxJ1liW5aH80DJJ8LhWfEY46ONraDN-aW3cR&s=10" alt="Peixe">
       <div class="category-info"><div class="tag">ANIMALIA · PISCES</div><h3>Peixes</h3><p>Vida dos rios e mares</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Insetos">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Insetos">
       <img src="https://www3.unicentro.br/petfisica/wp-content/uploads/sites/54/2018/06/Fen%C3%B4meno-Morpho-e1677336324134.jpg" alt="Inseto">
       <div class="category-info"><div class="tag">ANIMALIA · INSECTA</div><h3>Insetos</h3><p>Pequenos habitantes da natureza</p></div>
     </a>
-    <a class="category" href="descoberta.html?categoria=Comidas Brasileiras">
+    <a class="category" href="brasildex_descoberta_safari.html?categoria=Comidas Brasileiras">
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS7e5Xcth0d94UvAkjW1dj2_rxIiQEsqBC7F-eByHoe_aoaMUtMlWmA3J0&s=10" alt="Comida brasileira">
       <div class="category-info"><div class="tag">CULTURA · BRASIL</div><h3>Comidas Brasileiras</h3><p>Sabores e origens do Brasil</p></div>
     </a>
   </section>
 </div>
+<script>
+  // Mesmo armazenamento utilizado pelo álbum de descobertas dos alunos.
+  function atualizarContadorSafari() {
+    const contador = document.getElementById("safariCount");
+    if (!contador) return;
+    try {
+      const descobertas = JSON.parse(localStorage.getItem("brasildexDiscoveries") || "[]");
+      contador.textContent = Array.isArray(descobertas) ? descobertas.length : 0;
+    } catch (erro) {
+      contador.textContent = "0";
+    }
+  }
+
+  atualizarContadorSafari();
+  // Atualiza ao voltar do Safari e quando outra aba salva uma descoberta.
+  window.addEventListener("pageshow", atualizarContadorSafari);
+  window.addEventListener("focus", atualizarContadorSafari);
+  window.addEventListener("storage", evento => {
+    if (evento.key === "brasildexDiscoveries" || evento.key === null) {
+      atualizarContadorSafari();
+    }
+  });
+</script>
 </body>
 </html>

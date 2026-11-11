@@ -136,6 +136,7 @@
       </div>
     </div>
     <a class="back" href="index.html">← Voltar às categorias</a>
+    <a class="back" href="brasildex_safari.html">🧭 Meu Safari</a>
   </header>
 
   <main class="panel">
@@ -223,10 +224,12 @@ const statusBox = document.getElementById("status");
 const result = document.getElementById("result");
 
 let selectedFile = null;
+let ultimaDescoberta = null;
 
 function handleFile(file){
   if(!file) return;
   selectedFile = file;
+  ultimaDescoberta = null;
   const reader = new FileReader();
   reader.onload = e => {
     previewImage.src = e.target.result;
@@ -300,6 +303,7 @@ identifyButton.addEventListener("click", async () => {
     });
 
     const base64 = String(dataUrl).split(",")[1];
+    const mimeType = String(dataUrl).match(/^data:([^;]+);/)?.[1] || "image/jpeg";
 
     const prompt = `
 Você é o identificador do aplicativo Brasildex da Mata.
@@ -330,7 +334,7 @@ Regras:
         contents: [{
           parts: [
             { text: prompt },
-            { inline_data: { mime_type: "image/jpeg", data: base64 } }
+            { inline_data: { mime_type: mimeType, data: base64 } }
           ]
         }],
         generationConfig: {
@@ -340,7 +344,7 @@ Regras:
             type: "object",
             properties: {
               identificado: {type:"boolean"},
-              confiança: {type:"integer"},
+              confianca: {type:"integer"},
               nome: {type:"string"},
               nome_cientifico: {type:"string"},
               categoria: {type:"string"},
@@ -354,7 +358,7 @@ Regras:
               biomas: {type:"array", items:{type:"string"}},
               aviso_perigo: {type:"string"}
             },
-            required: ["identificado","confiança"]
+            required: ["identificado","confianca"]
           }
         }
       }
@@ -374,7 +378,7 @@ Regras:
 
     const data = JSON.parse(raw);
 
-    if(data.identificado !== true || Number(data.confiança) < 80){
+    if(data.identificado !== true || Number(data.confianca ?? data.confiança) < 80){
       showStatus("Ops! 😕 Não consegui fazer uma identificação segura agora. Verifique a foto e tente novamente.");
       return;
     }
@@ -392,29 +396,9 @@ Regras:
     updateMap(data.biomas);
     setText("warning", data.aviso_perigo);
 
-    // Salva a descoberta no Safari do usuário.
-    try {
-      const discoveries = JSON.parse(localStorage.getItem("brasildexDiscoveries") || "[]");
-      discoveries.push({
-        id: Date.now(),
-        nome_item: data.nome_item || data.nome || "Descoberta",
-        nome_cientifico: data.nome_cientifico || "",
-        categoria: data.categoria || selectedCategory,
-        habitat: data.habitat || "",
-        regiao_origem: data.regiao_origem || "",
-        conservacao: data.conservacao || "",
-        caracteristicas: data.caracteristicas || "",
-        curiosidades: data.curiosidades || "",
-        importancia: data.importancia || "",
-        aviso_perigo: data.aviso_perigo || "",
-        biomas: Array.isArray(data.biomas) ? data.biomas : [],
-        tipo: /planta|flor|árvore|fruta/i.test((data.categoria || "") + " " + (data.nome_item || "")) ? "planta" : "animal",
-        imagem: dataUrl
-      });
-      localStorage.setItem("brasildexDiscoveries", JSON.stringify(discoveries));
-    } catch (saveError) {
-      console.warn("Não foi possível salvar no Safari.", saveError);
-    }
+    // A ficha padrão oferece o botão Salvar. Não salvar automaticamente:
+    // isso evita registros duplicados e preserva a escolha do aluno.
+    ultimaDescoberta = data;
 
     statusBox.style.display = "none";
     result.style.display = "block";
@@ -422,6 +406,85 @@ Regras:
     showStatus("Ops! 😕 Não consegui fazer a identificação agora. Verifique a internet e tente novamente.");
   }finally{
     identifyButton.disabled = false;
+  }
+});
+</script>
+
+<!-- Integração da ficha padrão. Os arquivos /comum/ permanecem compartilhados. -->
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+<script>
+function salvarDescobertaBrasildex(info) {
+  if (!selectedFile || !info || info.identificado !== true) {
+    showStatus("⚠️ Escolha e identifique uma foto antes de salvar.");
+    return;
+  }
+  const dataUrl = previewImage.src;
+  if (!dataUrl || !dataUrl.startsWith("data:image/")) {
+    showStatus("⚠️ Não foi possível recuperar a foto da descoberta.");
+    return;
+  }
+  try {
+    const discoveries = JSON.parse(localStorage.getItem("brasildexDiscoveries") || "[]");
+    if (!Array.isArray(discoveries)) throw new Error("Álbum inválido");
+    const categoria = info.categoria || selectedCategory;
+    discoveries.push({
+      id: Date.now(),
+      nome_item: info.nome_item || info.nome_popular || info.nome || "Descoberta",
+      nome_cientifico: info.nome_cientifico || "",
+      categoria,
+      habitat: info.habitat || "",
+      regiao_origem: info.regiao_origem || "",
+      conservacao: info.conservacao || "",
+      caracteristicas: info.caracteristicas || "",
+      curiosidades: info.curiosidades || "",
+      importancia: info.importancia || "",
+      aviso_perigo: info.aviso_perigo || "",
+      biomas: Array.isArray(info.biomas) ? info.biomas : [],
+      tipo: /planta|flor|árvore|fruta/i.test(categoria + " " + (info.nome_item || "")) ? "planta" : "animal",
+      imagem: dataUrl
+    });
+    localStorage.setItem("brasildexDiscoveries", JSON.stringify(discoveries));
+    location.href = "brasildex_safari.html";
+  } catch (e) {
+    console.error("Erro ao salvar no Safari", e);
+    showStatus("⚠️ Não consegui salvar no Safari. Verifique o armazenamento do navegador.");
+  }
+}
+
+PokedexAdaptador.iniciar({
+  icone: "🌿",
+  fauna: /^(Aves|Mamíferos|Répteis|Peixes|Insetos)$/i.test(selectedCategory),
+  cor: "#65d89b",
+  cor2: "#e2c565",
+  escuro: () => true,
+  noturno: { fundo: "#10291f", texto: "#f5fff6", suave: "#b8d0c1" },
+  claro: { fundo: "#f5fff6", texto: "#173e2b", suave: "#5e7667" },
+  carregando: "🔎 O Brasildex da Mata está analisando sua descoberta...",
+  esconder: ["#result"],
+  extras: info => [
+    ["🏷️ Categoria", info.categoria || selectedCategory],
+    ["🌳 Habitat", info.habitat],
+    ["📍 Região / origem", info.regiao_origem],
+    ["🛡️ Conservação", info.conservacao],
+    ["🌱 Características", info.caracteristicas],
+    ["🍎 Alimentação / ingredientes", info.alimentacao_ingredientes],
+    ["💡 Curiosidades", info.curiosidades],
+    ["🌎 Importância", info.importancia],
+    ["🗺️ Biomas", Array.isArray(info.biomas) ? info.biomas.join(", ") : info.biomas]
+  ].filter(campo => campo[1]),
+  alerta: info => info.aviso_perigo && !/nenhum perigo conhecido/i.test(info.aviso_perigo)
+    ? info.aviso_perigo : "",
+  salvar: info => salvarDescobertaBrasildex(info),
+  novaFoto: () => {
+    selectedFile = null;
+    ultimaDescoberta = null;
+    identifyButton.disabled = true;
+    previewImage.style.display = "none";
+    empty.style.display = "block";
+    result.style.display = "none";
+    statusBox.style.display = "none";
+    cameraInput.click();
   }
 });
 </script>
