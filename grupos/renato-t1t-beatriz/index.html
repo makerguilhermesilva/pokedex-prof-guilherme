@@ -3548,5 +3548,73 @@ Responda SOMENTE no formato JSON solicitado.
 
     </script>
 
+    
+<!-- LIGAR-FRONT — JABUTIPOKÉ -->
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🐢",
+  fauna: true,
+
+  cor: "#ffd52a",
+  cor2: "#0b3157",
+
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#061a33",
+    texto: "#ffffff",
+    suave: "#b7c4d1"
+  },
+
+  claro: {
+    fundo: "#fffdf3",
+    texto: "#061a33",
+    suave: "#718197"
+  },
+
+  carregando: "🐢 O Jabutipoké está investigando sua foto...",
+
+  esconder: ["#resultCard"],
+
+  extras: info => [
+    ["🏷️ Categoria", info.categoria || selectedCategory],
+    ["🌳 Habitat", info.habitat],
+    ["🌿 Biomas",
+      Array.isArray(info.biomas)
+        ? info.biomas.join(", ")
+        : (info.bioma || info.biomas)
+    ],
+    ["📍 Onde encontramos", info.localizacao || info.regiao_origem],
+    ["🛡️ Conservação", info.conservacao],
+    ["💡 Curiosidade", info.curiosidade || info.curiosidades]
+  ].filter(campo => campo[1]),
+
+  alerta: info =>
+    info.aviso_perigo ||
+    info.perigo ||
+    "",
+
+  salvar: () => {
+    document.getElementById("saveAlbumButton")?.click();
+    document.getElementById("albumBtn")?.click();
+  },
+
+  novaFoto: () => {
+    resetDiscovery();
+
+    const camera = document.getElementById("cameraInput");
+
+    if (camera) {
+      camera.value = "";
+      camera.click();
+    }
+  }
+});
+</script>
+
+
 </body>
 </html>
