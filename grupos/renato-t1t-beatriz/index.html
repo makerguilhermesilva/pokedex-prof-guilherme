@@ -1136,6 +1136,14 @@
                 min-height: 250px;
             }
         }
+
+        /* Duas opções claras para registrar a descoberta. */
+        .photo-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+        .photo-actions button { min-height: 48px; border-radius: 12px; cursor: pointer; font-weight: 800; padding: 10px; }
+        .photo-action-camera { background: var(--yellow); color: var(--navy); }
+        .photo-action-gallery { background: transparent; color: var(--white); border: 1px solid var(--border); }
+        .photo-actions button:hover { filter: brightness(1.1); }
+        @media (max-width: 420px) { .photo-actions { grid-template-columns: 1fr; } }
     </style>
 </head>
 
@@ -1151,7 +1159,7 @@
             <div class="logo" id="logoHome">
                 <img
                     class="logo-image"
-                    src="imagens/jabuti.jpg"
+                    src="imagem/jabuti.png"
                     alt="Jabuti"
                 >
 
@@ -1167,7 +1175,7 @@
                 </button>
 
                 <button class="nav-btn" id="albumBtn">
-                    Meu Safari
+                    Meu Safari <span id="safariCount"></span>
                 </button>
             </nav>
 
@@ -1221,29 +1229,11 @@
             </div>
 
 
-            <div class="hero-mascot">
-
-                <button
-                    class="macaw-sound"
-                    id="macawSoundButton"
-                    type="button"
-                    title="Ouvir o som da arara"
-                >
-
-                    <img
-                        src="imagens/arara.jpg"
-                        alt="Arara"
-                    >
-
-                    <span>OUVIR SOM DA ARARA</span>
-
-                </button>
-
                 <div class="mascot-circle">
 
                     <img
                         class="mascot-image"
-                        src="imagens/jabuti.jpg"
+                        src="imagem/jabuti.png"
                         alt="Mascote Jabutipoké: um jabuti"
                     >
 
@@ -1300,7 +1290,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/aves.jpg"
+                        src="https://img.magnific.com/fotos-premium/retrato-de-tucano-luz-dourada-intensa-vida-selvagem-na-selva_1695091-1073.jpg?semt=ais_hybrid&w=740&q=80"
                         alt="Aves brasileiras"
                     >
 
@@ -1334,7 +1324,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/mamiferos.jpg"
+                        src="https://catracalivre.com.br/wp-content/uploads/2026/01/freepik-onapintada-adulta-em-ambiente-de-mata-brasileira-b-67196.jpeg"
                         alt="Mamíferos brasileiros"
                     >
 
@@ -1368,7 +1358,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/repteis.jpg"
+                        src="https://www.petz.com.br/blog/wp-content/uploads/2024/08/tartaruga.jpg"
                         alt="Répteis brasileiros"
                     >
 
@@ -1402,7 +1392,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/anfibios.jpg"
+                        src="https://conexaoplaneta.com.br/wp-content/uploads/2025/04/redes-sociais-plataforma-divulgacao-anfibios-repteis-pedro-peloso-conexao-planeta.jpg"
                         alt="Anfíbios brasileiros"
                     >
 
@@ -1436,7 +1426,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/peixes.jpg"
+                        src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSRYmbsPNaRIASwZDvvDxthLjgSWa9Xrv0IeS6jvOqsRwbT-6r7AhqS-dQ&s=10"
                         alt="Peixes brasileiros"
                     >
 
@@ -1470,7 +1460,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/insetos.jpg"
+                        src="https://www.ra-bugio.org.br/especies/745.jpg"
                         alt="Insetos brasileiros"
                     >
 
@@ -1504,7 +1494,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/arvores.jpg"
+                        src="https://static.nationalgeographicbrasil.com/files/styles/image_3200/public/ipe-amarelo.jpg?w=1600"
                         alt="Árvores brasileiras"
                     >
 
@@ -1538,7 +1528,7 @@
 
                     <img
                         class="category-image"
-                        src="imagens/plantas.jpg"
+                        src="https://soubh.uai.com.br/wp-content/uploads/2020/07/main_shutterstock_1705683325.jpg"
                         alt="Plantas e flores brasileiras"
                     >
 
@@ -1567,13 +1557,13 @@
 
                 <button
                     class="category-card"
-                    data-category="Frutos"
+                    data-category="Frutas"
                 >
 
                     <img
                         class="category-image"
-                        src="imagens/frutos.jpg"
-                        alt="Frutos brasileiros"
+                        src="https://arvoresdesaopaulo.wordpress.com/wp-content/uploads/2011/05/frutas-da-estac3a7c3a3o-imagem-da-internet.jpg"
+                        alt="Frutas brasileiros"
                     >
 
                     <div class="category-overlay"></div>
@@ -1648,12 +1638,11 @@
             <section class="upload-card">
 
                 <h3 class="upload-title">
-                    Envie uma foto
+                    Fotografe sua descoberta
                 </h3>
 
                 <p class="upload-description">
-                    Escolha uma imagem nítida do animal, planta,
-                    fruto ou inseto que você encontrou.
+                    Tire uma foto agora com a câmera do celular ou escolha uma foto da galeria.
                 </p>
 
 
@@ -1677,11 +1666,11 @@
                         <strong>+</strong>
 
                         <span>
-                            Clique aqui para escolher uma foto
+                            📷 Sua descoberta começa com uma foto
                         </span>
 
                         <small>
-                            JPG, PNG ou WEBP
+                            Use a câmera ou escolha uma imagem da galeria
                         </small>
 
                     </div>
@@ -1695,6 +1684,11 @@
 
                 </label>
 
+                <div class="photo-actions">
+                    <button type="button" class="photo-action-camera" id="openCameraButton">📷 Tirar foto agora</button>
+                    <button type="button" class="photo-action-gallery" id="openGalleryButton">🖼️ Escolher da galeria</button>
+                </div>
+                <input id="cameraInput" type="file" accept="image/*" capture="environment" class="hidden" aria-label="Tirar foto com a câmera">
 
                 <button
                     class="discover-btn"
@@ -2057,6 +2051,9 @@
 
     </footer>
 
+
+    <script src="/comum/ficha.js"></script>
+    <script src="/comum/adaptador.js"></script>
 
     <script>
 
@@ -2448,6 +2445,19 @@
             }
         );
 
+
+        // No celular, capture="environment" solicita a câmera traseira.
+        // No computador, o navegador pode oferecer seleção de arquivo.
+        const cameraInput = document.getElementById("cameraInput");
+        document.getElementById("openCameraButton").addEventListener("click", () => {
+            cameraInput.value = "";
+            cameraInput.click();
+        });
+        document.getElementById("openGalleryButton").addEventListener("click", () => imageInput.click());
+        cameraInput.addEventListener("change", event => {
+            const file = event.target.files?.[0];
+            if (file) handleFile(file);
+        });
 
         function handleFile(file) {
 
@@ -2935,27 +2945,12 @@ Responda SOMENTE no formato JSON solicitado.
                     await response.json();
 
 
-                const text =
-                    data
-                        ?.candidates
-                        ?.[0]
-                        ?.content
-                        ?.parts
-                        ?.[0]
-                        ?.text;
-
-
-                if (!text) {
-
-                    throw new Error(
-                        "A resposta da IA estava vazia."
-                    );
-
+                const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                const parsed = text ? JSON.parse(text) : data;
+                const aiResult = parsed?.resultado || parsed?.ficha || parsed;
+                if (!aiResult || typeof aiResult !== "object") {
+                    throw new Error("A resposta da IA estava vazia.");
                 }
-
-
-                const aiResult =
-                    JSON.parse(text);
 
 
                 /* =================================================
@@ -2966,10 +2961,10 @@ Responda SOMENTE no formato JSON solicitado.
                    OU confiança < 80
                 ================================================= */
 
-                if (
-                    aiResult.identificado !== true ||
-                    Number(aiResult.confianca) < 80
-                ) {
+                const confianca = Number(aiResult.confianca ?? aiResult.confidence ?? 0);
+                const identificado = aiResult.identificado === true ||
+                    (aiResult.identificado == null && Boolean(aiResult.nome) && confianca >= 80);
+                if (!identificado || confianca < 80) {
 
                     loadingArea.classList.add(
                         "hidden"
@@ -2983,11 +2978,17 @@ Responda SOMENTE no formato JSON solicitado.
                 }
 
 
-                currentResult =
-                    aiResult;
+                currentResult = {
+                    ...aiResult,
+                    confianca,
+                    bioma: aiResult.bioma || (Array.isArray(aiResult.biomas) ? aiResult.biomas.join(", ") : aiResult.biomas),
+                    localizacao: aiResult.localizacao || aiResult.regiao_origem,
+                    curiosidade: aiResult.curiosidade || aiResult.curiosidades,
+                    perigo: aiResult.perigo || aiResult.aviso_perigo
+                };
 
                 displayResult(
-                    aiResult,
+                    currentResult,
                     currentImageData
                 );
 
@@ -3080,6 +3081,8 @@ Responda SOMENTE no formato JSON solicitado.
 
             }
 
+            saveAlbumButton.dataset.saved = "false";
+            saveAlbumButton.textContent = "☆ Salvar no Safari";
             resultCard.classList.remove(
                 "hidden"
             );
@@ -3320,9 +3323,12 @@ Responda SOMENTE no formato JSON solicitado.
                 };
 
 
+                if (saveAlbumButton.dataset.saved === "true") return;
                 album.unshift(item);
 
                 saveAlbum(album);
+                saveAlbumButton.dataset.saved = "true";
+                atualizarContadorSafari();
 
                 saveAlbumButton.textContent =
                     "✓ Salvo no Safari";
@@ -3481,8 +3487,63 @@ Responda SOMENTE no formato JSON solicitado.
         }
 
 
-        initializeImages();
+        function atualizarContadorSafari() {
+            const contador = document.getElementById("safariCount");
+            if (contador) contador.textContent = `(${getAlbum().length})`;
+        }
+        window.addEventListener("pageshow", atualizarContadorSafari);
+        window.addEventListener("storage", atualizarContadorSafari);
 
+        // A ficha e o adaptador são compartilhados entre os grupos.
+        // Mantemos o resultado original e o álbum próprio do Jabutipoké.
+        if (window.PokedexAdaptador?.iniciar) {
+            PokedexAdaptador.iniciar({
+                icone: "🐢",
+                cor: "#ffd52a",
+                cor2: "#0b3157",
+                escuro: () => true,
+                noturno: { fundo: "#061a33", texto: "#ffffff", suave: "#b7c4d1" },
+                claro: { fundo: "#fffdf3", texto: "#061a33", suave: "#718197" },
+                extras: info => [
+                    ["🏷️ Categoria", info.categoria || selectedCategory],
+                    ["🌳 Habitat", info.habitat],
+                    ["🌿 Biomas", Array.isArray(info.biomas) ? info.biomas.join(", ") : (info.bioma || info.biomas)],
+                    ["📍 Localização", info.localizacao || info.regiao_origem],
+                    ["🛡️ Conservação", info.conservacao],
+                    ["💡 Curiosidades", info.curiosidade || info.curiosidades]
+                ].filter(campo => campo[1]),
+                alerta: info => info.aviso_perigo || info.perigo || "",
+                salvar: info => {
+                    if (!currentImageData) return;
+                    const album = getAlbum();
+                    const nome = info.nome || info.nome_popular || currentResult?.nome || "Descoberta";
+                    if (album.some(item => item.imagem === currentImageData && item.nome === nome)) return;
+                    album.unshift({
+                        id: Date.now(), nome,
+                        categoria: info.categoria || selectedCategory,
+                        imagem: currentImageData,
+                        data: new Date().toLocaleDateString("pt-BR")
+                    });
+                    saveAlbum(album);
+                    saveAlbumButton.dataset.saved = "true";
+                    saveAlbumButton.textContent = "✓ Salvo no Safari";
+                    atualizarContadorSafari();
+                },
+                novaFoto: () => { resetDiscovery(); cameraInput.value = ""; cameraInput.click(); }
+            });
+        }
+
+        // Imagens são opcionais até o aluno enviar a pasta imagens/.
+        document.querySelectorAll('img[src^="imagens/"]').forEach(img => {
+            img.addEventListener("error", () => {
+                img.style.visibility = "hidden";
+                if (img.classList.contains("category-image")) {
+                    img.parentElement.style.background = "linear-gradient(145deg,#0b3157,#092849)";
+                }
+            });
+        });
+        initializeImages();
+        atualizarContadorSafari();
         showPage("home");
 
     </script>
