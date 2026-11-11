@@ -1729,7 +1729,7 @@
 
                     <img
                         class="loading-image"
-                        src="imagens/jabuti.png"
+                        src="imagem/jabuti.png"
                         alt="Jabuti pesquisando"
                     >
 
@@ -2026,6 +2026,21 @@
 
 
     <!-- =====================================================
+         ÁUDIO DA ARARA
+    ====================================================== -->
+
+    <audio
+        id="macawAudio"
+        preload="auto"
+    >
+        <source
+            src="som-arara.mp3"
+            type="audio/mpeg"
+        >
+    </audio>
+
+
+    <!-- =====================================================
          FOOTER
     ====================================================== -->
 
@@ -2060,7 +2075,7 @@
 
         const imagens = {
 
-            jabuti: "imagens/jabuti.jpg",
+            jabuti: "imagem/jabuti.png",
 
             arara: "imagens/arara.jpg",
 
@@ -2361,7 +2376,7 @@
                             card.dataset.category;
 
                         discoveryTitle.textContent =
-                            "Descubra um " +
+                            "Explore: " +
                             selectedCategory;
 
                         showPage("discovery");
@@ -2456,6 +2471,9 @@
             }
 
             selectedFile = file;
+            currentResult = null;
+            saveAlbumButton.dataset.saved = "false";
+            saveAlbumButton.textContent = "☆ Salvar no Safari";
 
             const reader =
                 new FileReader();
@@ -3188,7 +3206,7 @@ Responda SOMENTE no formato JSON solicitado.
            ÁUDIO DA ARARA
         ===================================================== */
 
-        macawSoundButton.addEventListener(
+        macawSoundButton?.addEventListener(
             "click",
             () => {
 
@@ -3248,6 +3266,7 @@ Responda SOMENTE no formato JSON solicitado.
                     ALBUM_KEY,
                     JSON.stringify(album)
                 );
+                return true;
 
             } catch (error) {
 
@@ -3259,6 +3278,7 @@ Responda SOMENTE no formato JSON solicitado.
                 alert(
                     "O álbum ficou cheio. Tente remover algumas descobertas."
                 );
+                return false;
 
             }
 
@@ -3269,57 +3289,79 @@ Responda SOMENTE no formato JSON solicitado.
            SALVAR DESCOBERTA
         ===================================================== */
 
-        saveAlbumButton.addEventListener(
-            "click",
-            () => {
+        // A ficha compartilhada e o botão do aluno usam o mesmo salvamento.
+        // Não depende de um clique artificial em outro botão.
+        async function registrarNoSafari(info) {
+            const dados = info || currentResult;
+            const imagemOriginal = currentImageData ||
+                (imagePreview?.src?.startsWith("data:image/") ? imagePreview.src : null);
 
-                if (
-                    !currentResult ||
-                    !currentImageData
-                ) {
-                    return;
-                }
-
-                const album =
-                    getAlbum();
-
-                const item = {
-
-                    id:
-                        Date.now(),
-
-                    nome:
-                        currentResult.nome ||
-                        "Descoberta",
-
-                    categoria:
-                        currentResult.categoria ||
-                        selectedCategory,
-
-                    imagem:
-                        currentImageData,
-
-                    data:
-                        new Date()
-                            .toLocaleDateString(
-                                "pt-BR"
-                            )
-
-                };
-
-
-                if (saveAlbumButton.dataset.saved === "true") return;
-                album.unshift(item);
-
-                saveAlbum(album);
-                saveAlbumButton.dataset.saved = "true";
-                atualizarContadorSafari();
-
-                saveAlbumButton.textContent =
-                    "✓ Salvo no Safari";
-
+            if (!dados || !imagemOriginal) {
+                alert("Para salvar, primeiro tire uma foto e identifique uma espécie.");
+                return false;
             }
-        );
+
+            const nome = dados.nome || dados.nome_popular ||
+                dados.nome_comum || dados.nomePopular || "Descoberta";
+            const categoria = dados.categoria || selectedCategory;
+            const album = getAlbum();
+
+            if (album.some(item => item.nome === nome && item.imagem === imagemOriginal)) {
+                saveAlbumButton.dataset.saved = "true";
+                saveAlbumButton.textContent = "✓ Salvo no Safari";
+                return true;
+            }
+
+            // Fotos de tablet podem exceder o limite do localStorage.
+            // Reduzimos a resolução para manter mais descobertas no álbum.
+            const imagem = await new Promise(resolve => {
+                const foto = new Image();
+                foto.onload = () => {
+                    try {
+                        const max = 900;
+                        const escala = Math.min(1, max / Math.max(foto.width, foto.height));
+                        const canvas = document.createElement("canvas");
+                        canvas.width = Math.round(foto.width * escala);
+                        canvas.height = Math.round(foto.height * escala);
+                        canvas.getContext("2d").drawImage(foto, 0, 0, canvas.width, canvas.height);
+                        resolve(canvas.toDataURL("image/jpeg", 0.7));
+                    } catch (erro) {
+                        console.warn("Não foi possível compactar a foto:", erro);
+                        resolve(imagemOriginal);
+                    }
+                };
+                foto.onerror = () => resolve(imagemOriginal);
+                foto.src = imagemOriginal;
+            });
+
+            if (album.some(item => item.nome === nome && item.imagem === imagem)) {
+                saveAlbumButton.dataset.saved = "true";
+                saveAlbumButton.textContent = "✓ Salvo no Safari";
+                return true;
+            }
+
+            album.unshift({
+                id: Date.now(), nome, categoria, imagem,
+                data: new Date().toLocaleDateString("pt-BR")
+            });
+
+            if (!saveAlbum(album)) return false;
+            currentResult = { ...dados, nome, categoria };
+            saveAlbumButton.dataset.saved = "true";
+            saveAlbumButton.textContent = "✓ Salvo no Safari";
+            atualizarContadorSafari();
+            console.log("Jabutipoké: descoberta salva no Meu Safari", nome);
+            return true;
+        }
+
+        saveAlbumButton.addEventListener("click", async () => {
+            try {
+                await registrarNoSafari(currentResult);
+            } catch (erro) {
+                console.error("Erro ao salvar no Meu Safari:", erro);
+                alert("Não foi possível salvar a descoberta.");
+            }
+        });
 
 
         /* =====================================================
@@ -3445,16 +3487,8 @@ Responda SOMENTE no formato JSON solicitado.
 
         function initializeImages() {
 
-            document
-                .querySelectorAll(
-                    ".mascot-image"
-                )
-                .forEach(img => {
-
-                    img.src =
-                        imagens.jabuti;
-
-                });
+            // Mantém a imagem do mascote escolhida pelo aluno no HTML.
+            // O arquivo deve estar em imagem/jabuti.png.
 
 
             const macawImage =
@@ -3484,6 +3518,8 @@ Responda SOMENTE no formato JSON solicitado.
         if (window.PokedexAdaptador?.iniciar) {
             PokedexAdaptador.iniciar({
                 icone: "🐢",
+                fauna: true,
+                carregando: "🐢 O Jabutipoké está investigando sua foto...",
                 cor: "#ffd52a",
                 cor2: "#0b3157",
                 escuro: () => true,
@@ -3498,21 +3534,14 @@ Responda SOMENTE no formato JSON solicitado.
                     ["💡 Curiosidades", info.curiosidade || info.curiosidades]
                 ].filter(campo => campo[1]),
                 alerta: info => info.aviso_perigo || info.perigo || "",
-                salvar: info => {
-                    if (!currentImageData) return;
-                    const album = getAlbum();
-                    const nome = info.nome || info.nome_popular || currentResult?.nome || "Descoberta";
-                    if (album.some(item => item.imagem === currentImageData && item.nome === nome)) return;
-                    album.unshift({
-                        id: Date.now(), nome,
-                        categoria: info.categoria || selectedCategory,
-                        imagem: currentImageData,
-                        data: new Date().toLocaleDateString("pt-BR")
-                    });
-                    saveAlbum(album);
-                    saveAlbumButton.dataset.saved = "true";
-                    saveAlbumButton.textContent = "✓ Salvo no Safari";
-                    atualizarContadorSafari();
+                salvar: async info => {
+                    try {
+                        const salvo = await registrarNoSafari(info);
+                        if (salvo) showPage("album");
+                    } catch (erro) {
+                        console.error("Erro ao salvar pela ficha:", erro);
+                        alert("Não foi possível salvar a descoberta.");
+                    }
                 },
                 novaFoto: () => { resetDiscovery(); cameraInput.value = ""; cameraInput.click(); }
             });
@@ -3532,93 +3561,6 @@ Responda SOMENTE no formato JSON solicitado.
         showPage("home");
 
     </script>
-
-<script src="/comum/ficha.js"></script>
-<script src="/comum/adaptador.js"></script>
-
-<script>
-PokedexAdaptador.iniciar({
-  icone: "🐢",
-  fauna: true,
-
-  cor: "#ffd52a",
-  cor2: "#0b3157",
-
-  escuro: () => true,
-
-  noturno: {
-    fundo: "#061a33",
-    texto: "#ffffff",
-    suave: "#b7c4d1"
-  },
-
-  claro: {
-    fundo: "#fffdf3",
-    texto: "#061a33",
-    suave: "#718197"
-  },
-
-  carregando: "🐢 O Jabutipoké está investigando sua foto...",
-
-  esconder: ["#resultCard"],
-
-  extras: info => [
-    ["🏷️ Categoria", info.categoria || selectedCategory],
-    ["🌳 Habitat", info.habitat],
-    ["🌿 Bioma", info.bioma || info.biomas],
-    ["📍 Onde encontramos", info.localizacao || info.regiao_origem],
-    ["🛡️ Conservação", info.conservacao],
-    ["💡 Curiosidade", info.curiosidade || info.curiosidades]
-  ].filter(campo => campo[1]),
-
-  alerta: info =>
-    info.aviso_perigo ||
-    info.perigo ||
-    "",
-
-  
-salvar: (info) => {
-  try {
-    const botaoSalvar =
-      document.getElementById("saveAlbumButton");
-
-    if (!botaoSalvar) {
-      console.error("Botão de salvar não encontrado.");
-      alert("Não foi possível localizar o botão de salvar.");
-      return;
-    }
-
-    if (botaoSalvar.dataset.saved === "true") {
-      alert("Esta descoberta já foi salva!");
-      return;
-    }
-
-    botaoSalvar.click();
-
-    const album = JSON.parse(
-      localStorage.getItem("jabutipoke_album") || "[]"
-    );
-
-    console.log("Meu Safari:", album);
-
-    if (botaoSalvar.dataset.saved === "true") {
-      alert("Descoberta salva no Meu Safari!");
-    } else {
-      alert("Não foi possível confirmar o salvamento.");
-    }
-
-  } catch (erro) {
-    console.error("Erro ao salvar no Safari:", erro);
-    alert("Ocorreu um erro ao salvar a descoberta.");
-  }
-},
-
-  novaFoto: () => {
-    document.getElementById("newPhotoButton")?.click();
-    document.getElementById("cameraInput")?.click();
-  }
-});
-</script>
 
 </body>
 </html>
