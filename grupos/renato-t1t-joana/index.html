@@ -236,5 +236,49 @@ function renderAlbum(){
 }
 renderAlbum();
 </script>
+
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🐾",
+  fauna: true,
+
+  cor: "#20c875",
+  cor2: "#e53935",
+
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#07110d",
+    texto: "#f2fff8",
+    suave: "#9db6aa"
+  },
+
+  claro: {
+    fundo: "#f2fff8",
+    texto: "#10251a",
+    suave: "#557363"
+  },
+
+  carregando: "🔎 O cientista BioDex está investigando a espécie...",
+
+  esconder: ["#result"],
+
+  extras: info => [
+    ["🗺️ Onde vive", info.habitat],
+    ["🍽️ Alimentação", info.alimentacao],
+    ["💡 Curiosidades", info.curiosidades],
+    ["🔊 Som", info.som],
+    ["💬 Conversação", info.conversacao]
+  ],
+
+  alerta: info => info.perigo || "",
+
+  novaFoto: () => document.getElementById("photo").click()
+});
+</script>
+
 </body>
 </html>
