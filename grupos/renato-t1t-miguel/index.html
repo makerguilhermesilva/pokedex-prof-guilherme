@@ -133,10 +133,11 @@ footer{text-align:center;color:#6e776e;margin:28px 0 8px;font-size:13px}
 @media(max-width:900px){.lens-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media(max-width:650px){.lens-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 
+.camera-gallery{margin-left:8px;border:0;border-radius:12px;padding:12px 16px;background:#39764a;color:#fff;font:inherit;font-weight:bold;cursor:pointer}button:disabled{opacity:.5;cursor:not-allowed}[hidden]{display:none!important}
 </style>
 </head>
 <body><main class="app">
-<header><div class="brand"><div class="logo">🌿</div><div><h1>Explore<br>Mata</h1><div class="sub">Núcleo WIT · Catálogo de campo</div></div></div><button class="safari-btn" onclick="document.getElementById('photoInput').click()">🧭 Meu Safari</button></header>
+<header><div class="brand"><div class="logo">🌿</div><div><h1>Explore<br>Mata</h1><div class="sub">Núcleo WIT · Catálogo de campo</div></div></div><button class="safari-btn" onclick="showAlbum()">🧭 Meu Safari</button></header>
 <section id="home">
  <div class="hero"><div class="kicker">Floresta + Tecnologia · IA de visão</div><h2>Descubra o que vive na mata. 🌎</h2><p>Pesquise, escolha uma categoria ou envie uma foto. Conheça os animais e as plantas do Brasil de um jeito simples, organizado e divertido.</p></div>
  <div class="search"><input id="homeSearch" type="search" placeholder="🔎 Pesquisar animal ou planta..." oninput="quickSearch(this.value)"></div>
@@ -146,16 +147,16 @@ footer{text-align:center;color:#6e776e;margin:28px 0 8px;font-size:13px}
   <span class="lens-count">8 categorias</span>
 </div>
 <div class="choices lens-grid">
-  <button class="choice lens" onclick="showList('animals')"><img src="https://www.fishtv.com/uploads/noticias/principal/546x268/274_arara-azul-nao-esta-mais-ameacada-de-extincao.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🦜</span><h3>Aves brasileiras</h3><p>Araras, tucanos e outras aves.</p></span></button>
-  <button class="choice lens" onclick="showList('animals')"><img src="https://pensamentoverde.com.br/wp-content/uploads/2013/09/img214.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🐆</span><h3>Animais da mata</h3><p>Os bichos dos biomas brasileiros.</p></span></button>
-  <button class="choice lens" onclick="showList('plants')"><img src="https://c.files.bbci.co.uk/A678/production/_121661624_jbrj_producao_imagens_de_campo_799988.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🌿</span><h3>Plantas brasileiras</h3><p>Árvores e plantas da nossa mata.</p></span></button>
-  <button class="choice lens" onclick="showList('plants')"><img src="https://s2-globorural.glbimg.com/qud9f680LcB3XYNjzkji1Q5S7mo=/0x0:1920x1080/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_afe5c125c3bb42f0b5ae633b58923923/internal_photos/bs/2026/n/n/hnloQWThWvQtycwGTT4Q/1-8-.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🍇</span><h3>Frutas do Brasil</h3><p>Frutas e frutos encontrados no país.</p></span></button>
-  <button class="choice lens" onclick="showList('plants')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQFuDuNHJjsvQH0D6dnUBXHoM4fSxrCBX2x7GJSYiUWvDFR8o1IOsHGsw&s=10"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🌸</span><h3>Flores</h3><p>Flores e espécies nativas.</p></span></button>
-  <button class="choice lens" onclick="showList('animals')"><img src="https://www.adventureclub.com.br/wp-content/uploads/2020/11/golden-lion-tamarin-1443023_1920-min.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🐾</span><h3>Fauna brasileira</h3><p>Vida selvagem do Brasil.</p></span></button>
-  <button class="choice lens" onclick="showList('plants')"><img src="https://revistapesquisa.fapesp.br/wp-content/uploads/2025/04/rpf-cogumelos-2025-05-02-1140.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🍄</span><h3>Fungos e cogumelos</h3><p>Conheça os fungos da mata.</p></span></button>
-  <button class="choice lens" onclick="showList('animals')"><img src="https://s1.static.brasilescola.uol.com.br/be/2022/06/paisagem-natural-floresta.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🌳</span><h3>Vida na floresta</h3><p>Espécies dos ambientes naturais.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Aves brasileiras','animals')"><img src="https://www.fishtv.com/uploads/noticias/principal/546x268/274_arara-azul-nao-esta-mais-ameacada-de-extincao.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🦜</span><h3>Aves brasileiras</h3><p>Araras, tucanos e outras aves.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Animais da mata','animals')"><img src="https://pensamentoverde.com.br/wp-content/uploads/2013/09/img214.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🐆</span><h3>Animais da mata</h3><p>Os bichos dos biomas brasileiros.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Plantas brasileiras','plants')"><img src="https://c.files.bbci.co.uk/A678/production/_121661624_jbrj_producao_imagens_de_campo_799988.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🌿</span><h3>Plantas brasileiras</h3><p>Árvores e plantas da nossa mata.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Frutas do Brasil','plants')"><img src="https://s2-globorural.glbimg.com/qud9f680LcB3XYNjzkji1Q5S7mo=/0x0:1920x1080/888x0/smart/filters:strip_icc()/i.s3.glbimg.com/v1/AUTH_afe5c125c3bb42f0b5ae633b58923923/internal_photos/bs/2026/n/n/hnloQWThWvQtycwGTT4Q/1-8-.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🍇</span><h3>Frutas do Brasil</h3><p>Frutas e frutos encontrados no país.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Flores','plants')"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQFuDuNHJjsvQH0D6dnUBXHoM4fSxrCBX2x7GJSYiUWvDFR8o1IOsHGsw&s=10"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🌸</span><h3>Flores</h3><p>Flores e espécies nativas.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Fauna brasileira','animals')"><img src="https://www.adventureclub.com.br/wp-content/uploads/2020/11/golden-lion-tamarin-1443023_1920-min.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🐾</span><h3>Fauna brasileira</h3><p>Vida selvagem do Brasil.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Fungos e cogumelos','plants')"><img src="https://revistapesquisa.fapesp.br/wp-content/uploads/2025/04/rpf-cogumelos-2025-05-02-1140.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🍄</span><h3>Fungos e cogumelos</h3><p>Conheça os fungos da mata.</p></span></button>
+  <button class="choice lens" onclick="openDiscovery('Vida na floresta','animals')"><img src="https://s1.static.brasilescola.uol.com.br/be/2022/06/paisagem-natural-floresta.jpg"><span class="lens-shade"></span><span class="lens-content"><span class="lens-icon">🌳</span><h3>Vida na floresta</h3><p>Espécies dos ambientes naturais.</p></span></button>
 </div>
-<div class="camera"><h2>📷 Descobrir por foto</h2><p>Escolha uma foto para tentar identificar um animal ou uma planta.</p><label for="photoInput">Tirar ou escolher foto</label><input id="photoInput" type="file" accept="image/*" capture="environment"><div id="photoArea"></div></div>
+<div class="toolbar"><button class="back" onclick="showList('animals')">📚 Consultar animais</button><button class="back" onclick="showList('plants')">🌿 Consultar plantas</button></div>
 </section>
 <section id="list" hidden>
 <div id="categoryNav" class="category-nav">
@@ -169,8 +170,8 @@ footer{text-align:center;color:#6e776e;margin:28px 0 8px;font-size:13px}
  <h2 id="listTitle"></h2><div id="grid" class="grid"></div>
 </section>
 <section id="detail" hidden><div class="toolbar"><button class="back" onclick="showList(currentType)">← Voltar à lista</button></div><div id="detailBox" class="detail"></div></section>
-<section id="discoveries" hidden><div class="toolbar"><button class="back" onclick="showList(currentType)">← Voltar</button></div><div class="detail"><div class="kicker dark">DESCOBERTAS</div><h2>✨ Minhas descobertas</h2><p>As espécies identificadas pela câmera podem aparecer aqui.</p><div class="empty-panel">📷 Faça uma descoberta usando uma foto.</div></div></section>
-<section id="album" hidden><div class="toolbar"><button class="back" onclick="showList(currentType)">← Voltar</button></div><div class="detail"><div class="kicker dark">ÁLBUM</div><h2>📖 Álbum de espécies</h2><p>Suas espécies encontradas ficam organizadas aqui.</p><div class="empty-panel">🌿 Seu álbum começa quando você fizer descobertas.</div></div></section>
+<section id="discoveries" hidden><div class="toolbar"><button class="back" onclick="home()">← Escolher outra lente</button></div><div class="detail"><div class="kicker dark">NOVA DESCOBERTA</div><h2 id="discoveryTitle">✨ Vida na floresta</h2><p id="discoveryDescription">Tire uma foto ou escolha uma imagem para identificar.</p></div><div class="camera"><h2>📷 Descobrir por foto</h2><p>Escolha uma foto para tentar identificar um animal ou uma planta.</p><label for="photoInput">Tirar ou escolher foto</label><input id="photoInput" type="file" accept="image/*" capture="environment"><div id="photoArea"></div></div></section>
+<section id="album" hidden><div class="toolbar"><button class="back" onclick="showList(currentType)">← Voltar</button></div><div class="detail"><div class="kicker dark">ÁLBUM</div><h2>📖 Álbum de espécies</h2><p>Suas espécies encontradas ficam organizadas aqui.</p><div id="albumContent"><div class="empty-panel">🌿 Seu álbum começa quando você fizer descobertas.</div></div></div></section>
 <footer>Explore Mata • Aprenda, observe e cuide da natureza. 🌿</footer>
 </main>
 <script>
@@ -203,10 +204,17 @@ const plants=[
 {name:"Cogumelo da mata",emoji:"🍄",habitat:"forest",place:"Locais úmidos com matéria orgânica em vários biomas",natural:"Fungos podem nascer naturalmente no solo, em folhas, troncos e madeira em decomposição.",facts:"Cogumelos são fungos, não plantas. Alguns ajudam a decompor folhas e madeira.",safety:"⚠️ Nunca coma cogumelos encontrados na natureza. Não é possível confirmar se são seguros apenas pela aparência."}
 ];
 let currentType='animals', currentFilter='all';
+let selectedLens='Vida na floresta',analyzing=false;
+function openDiscovery(name,type){
+ if(analyzing)return;
+ selectedLens=name;currentType=type;
+ document.getElementById('photoInput').value='';document.getElementById('photoArea').replaceChildren();
+ showDiscoveries();
+}
 function home(){document.getElementById('home').hidden=false;document.getElementById('list').hidden=true;document.getElementById('detail').hidden=true;document.getElementById('discoveries').hidden=true;document.getElementById('album').hidden=true;const hs=document.getElementById('homeSearch');if(hs)hs.value='';window.scrollTo(0,0)}
 function showList(type){currentType=type;currentFilter='all';document.getElementById('home').hidden=true;document.getElementById('detail').hidden=true;document.getElementById('discoveries').hidden=true;document.getElementById('album').hidden=true;document.getElementById('list').hidden=false;document.getElementById('listTitle').textContent=type==='animals'?'🐾 Animais brasileiros':'🌱 Plantas brasileiras';filterList('all');window.scrollTo(0,0)}
 function filterList(f){currentFilter=f;['all','forest','water'].forEach(x=>document.getElementById(x+'Filter').classList.toggle('active',x===f));const data=currentType==='animals'?animals:plants;const grid=document.getElementById('grid');grid.replaceChildren();const q=(document.getElementById('listSearch')?.value||'').trim().toLowerCase();data.filter(x=>(f==='all'||x.habitat===f)&&(!q||[x.name,x.place,x.facts,x.natural].filter(Boolean).join(' ').toLowerCase().includes(q))).forEach((x,i)=>{const b=document.createElement('button');b.className='tile';b.setAttribute('aria-label','Ver informações sobre '+x.name);const pic=document.createElement('div');pic.className='picture';pic.textContent=x.emoji;const t=document.createElement('div');t.className='tiletext';const h=document.createElement('h3');h.textContent=x.name;const p=document.createElement('p');p.textContent=x.place;t.append(h,p);b.append(pic,t);b.onclick=()=>detail(x);grid.append(b)})}
-function showDiscoveries(){document.getElementById('home').hidden=true;document.getElementById('list').hidden=true;document.getElementById('detail').hidden=true;document.getElementById('album').hidden=true;document.getElementById('discoveries').hidden=false;window.scrollTo(0,0)}
+function showDiscoveries(){document.getElementById('discoveryTitle').textContent='✨ '+selectedLens;document.getElementById('discoveryDescription').textContent='Lente escolhida: '+selectedLens+'. Tire uma foto ou escolha uma imagem da galeria.';document.getElementById('home').hidden=true;document.getElementById('list').hidden=true;document.getElementById('detail').hidden=true;document.getElementById('album').hidden=true;document.getElementById('discoveries').hidden=false;window.scrollTo(0,0)}
 function showAlbum(){document.getElementById('home').hidden=true;document.getElementById('list').hidden=true;document.getElementById('detail').hidden=true;document.getElementById('discoveries').hidden=true;document.getElementById('album').hidden=false;window.scrollTo(0,0)}
 function detail(x){document.getElementById('list').hidden=true;document.getElementById('discoveries').hidden=true;document.getElementById('album').hidden=true;document.getElementById('detail').hidden=false;const box=document.getElementById('detailBox');box.replaceChildren();const head=document.createElement('div');head.className='detailhead';const pic=document.createElement('div');pic.className='detailpic';pic.textContent=x.emoji;const intro=document.createElement('div');const h=document.createElement('h2');h.textContent=x.name;const tag=document.createElement('span');tag.className='tag';tag.textContent=currentType==='animals'?'Animal brasileiro':'Planta/fungo do Brasil';const place=document.createElement('p');place.textContent=(currentType==='animals'?'Habitat: ':'Onde nasce naturalmente: ')+(currentType==='animals'?x.place:x.natural);intro.append(h,tag,place);head.append(pic,intro);box.append(head);const f=document.createElement('p');f.textContent=x.facts;box.append(f);const info=document.createElement('div');info.className='info-grid';const habitat=document.createElement('div');habitat.className='info-card';const ht=document.createElement('h3');ht.textContent=currentType==='animals'?'🏞️ Habitat':'🌱 Onde nasce';const hp=document.createElement('p');hp.textContent=currentType==='animals'?x.habitatInfo:x.natural;habitat.append(ht,hp);info.append(habitat);if(currentType==='animals'){const attracted=document.createElement('div');attracted.className='info-card';const at=document.createElement('h3');at.textContent='🍃 Pelo que pode ser atraído';const ap=document.createElement('p');ap.textContent=x.attracted;attracted.append(at,ap);info.append(attracted)}box.append(info);const safety=document.createElement('div');safety.className='notice '+(currentType==='animals'?'warning':'safe');safety.textContent=(currentType==='animals'?'⚠️ Segurança: ':'🌿 Cuidados: ')+x.safety;box.append(safety);if(currentType==='animals'){const sound=document.createElement('button');sound.className='action';sound.textContent='🔊 Ouvir som do animal';if(x.soundUrl){sound.onclick=()=>playSound(x.soundUrl,sound)}else{sound.onclick=()=>alert('🔊 Ainda não há uma gravação disponível para este animal.');}box.append(sound)}const back=document.createElement('button');back.className='action green';back.textContent='Ver mais '+(currentType==='animals'?'animais':'plantas');back.onclick=()=>showList(currentType);box.append(back);window.scrollTo(0,0)}
 function quickSearch(value){
@@ -231,13 +239,55 @@ function quickSearch(value){
 }
 function playSound(url,button){let audio=document.getElementById('animalAudio');if(!audio){audio=document.createElement('audio');audio.id='animalAudio';audio.preload='none';document.body.append(audio)}audio.pause();audio.src=url;audio.currentTime=0;button.textContent='⏸️ Tocando som...';audio.onended=()=>button.textContent='🔊 Ouvir som do animal';audio.onerror=()=>{button.textContent='🔊 Som indisponível';alert('Não foi possível carregar esta gravação agora. Tente novamente mais tarde.')};audio.play().catch(()=>{button.textContent='🔊 Ouvir som do animal';alert('Toque novamente para reproduzir o som.')})}
 function fileData(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
-document.getElementById('photoInput').addEventListener('change',async e=>{const file=e.target.files[0];if(!file)return;const area=document.getElementById('photoArea');area.replaceChildren();const img=document.createElement('img');img.className='preview';img.src=URL.createObjectURL(file);area.append(img);const status=document.createElement('div');status.className='status';status.textContent='🔎 Analisando a foto...';area.append(status);try{const data=(await fileData(file)).split(',')[1];const payload={modelo:"gemini-3.6-flash",body:{contents:[{parts:[{text:"Identifique somente um animal brasileiro ou uma planta brasileira na foto. Se não tiver certeza, identificado deve ser false. Retorne nome, tipo, curiosidades e informação de segurança. Não afirme que um animal é manso; diga para observar animais silvestres à distância."},{inline_data:{mime_type:"image/jpeg",data}}]}],generationConfig:{temperature:0.2,responseMimeType:"application/json",responseSchema:{type:"object",properties:{identificado:{type:"boolean"},confianca:{type:"integer"},nome:{type:"string"},tipo:{type:"string"},curiosidades:{type:"string"},perigo:{type:"string"}},required:["identificado","confianca"]}}}};const r=await fetch('/api/identificar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});if(!r.ok)throw Error();const response=await r.json();const raw=response?.candidates?.[0]?.content?.parts?.[0]?.text;if(!raw)throw Error();const result=JSON.parse(raw);if(result.identificado!==true||Number(result.confianca)<80){status.textContent='🌱 Hmm, não consegui ter certeza. Tente outra foto, com boa luz e o ser vivo aparecendo melhor.';return}status.textContent='✅ Possível identificação: '+(result.nome||'ser vivo identificado')+'.';const card=document.createElement('div');card.className='detail';card.style.marginTop='14px';const h=document.createElement('h3');h.textContent=result.nome||'Descoberta';const p=document.createElement('p');p.textContent=result.curiosidades||'Não há curiosidades disponíveis.';const w=document.createElement('div');w.className='notice warning';w.textContent='⚠️ Segurança: '+(result.perigo||'Confirme com um adulto ou especialista.');card.append(h,p,w);area.append(card)}catch{status.textContent='😕 Não consegui conectar agora. Tente novamente mais tarde.'}});
+function imageJpeg(file){return new Promise(async(resolve,reject)=>{
+ try{
+  const src=await fileData(file),img=new Image();
+  img.onload=()=>{try{const c=document.createElement('canvas'),k=Math.min(1,1200/Math.max(img.naturalWidth,img.naturalHeight));c.width=Math.max(1,Math.round(img.naturalWidth*k));c.height=Math.max(1,Math.round(img.naturalHeight*k));c.getContext('2d').drawImage(img,0,0,c.width,c.height);resolve(c.toDataURL('image/jpeg',.82))}catch(e){reject(e)}};
+  img.onerror=()=>reject(new Error('Não consegui abrir essa imagem. Tente uma foto JPG, PNG ou WebP.'));img.src=src;
+ }catch(e){reject(new Error('Não consegui ler essa foto. Tente outra imagem.'))}
+})}
+window.addEventListener('change',async e=>{
+ const input=document.getElementById('photoInput');if(e.target!==input||analyzing)return;
+ const file=input.files&&input.files[0];if(!file)return;
+ const area=document.getElementById('photoArea');area.replaceChildren();
+ const status=document.createElement('div');status.className='status';area.append(status);
+ if(!file.type.startsWith('image/')){status.textContent='Escolha um arquivo de imagem.';return}
+ if(file.size>10000000){status.textContent='Essa foto é grande demais. Escolha uma imagem de até 10 MB.';return}
+ const categoria=selectedLens;analyzing=true;input.disabled=true;
+ document.querySelectorAll('.lens,.camera-gallery').forEach(b=>b.disabled=true);
+ status.textContent='📷 Preparando sua foto...';
+ try{
+  const src=await imageJpeg(file),img=document.createElement('img');img.className='preview';img.src=src;img.alt='Foto para identificar: '+categoria;area.prepend(img);
+  if(location.protocol==='file:'){status.textContent='A foto está pronta. Para identificar com IA, abra o aplicativo no site publicado.';return}
+  status.textContent='🔎 Analisando a foto na categoria '+categoria+'...';
+  const payload={grupo:'renato-t1t-miguel',tipo:file.type,tamanho:file.size,body:{contents:[{parts:[
+   {text:'Você é um guia de campo da natureza brasileira. A lente escolhida pelo usuário é '+categoria+'. Identifique somente o que pertence a essa categoria na foto. Se estiver fora da categoria, retorne e_do_tema=false e identificado=false. Se não tiver certeza, identificado deve ser false. Retorne nome, tipo, curiosidades e informação de segurança em português simples. Não afirme que um animal é manso; diga para observar animais silvestres à distância. Nunca recomende consumir plantas ou fungos somente pela identificação visual.'},
+   {inline_data:{mime_type:'image/jpeg',data:src.split(',')[1]}}
+  ]}],generationConfig:{temperature:.2,responseMimeType:'application/json',responseSchema:{type:'object',properties:{identificado:{type:'boolean'},confianca:{type:'integer'},nome:{type:'string'},tipo:{type:'string'},curiosidades:{type:'string'},perigo:{type:'string'}},required:['identificado','confianca']}}}};
+  const r=await fetch('/api/identificar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  const response=await r.json().catch(()=>null);
+  if(!r.ok)throw new Error(response?.error?.message||(r.status===404?'O serviço de identificação não foi encontrado. Confira a publicação.':'O reconhecimento falhou (código '+r.status+'). Tente novamente.'));
+  const raw=response?.candidates?.[0]?.content?.parts?.[0]?.text;
+  if(typeof raw!=='string')throw new Error('A IA não enviou uma identificação. Tente outra foto.');
+  let result;try{result=JSON.parse(raw)}catch(e){throw new Error('Não consegui ler a resposta da IA. Tente novamente.')}
+  if(!result||typeof result!=='object')throw new Error('A resposta da IA está incompleta. Tente novamente.');
+  if(result.fora_do_tema||result.e_do_tema===false||result.identificado!==true||!Number.isFinite(Number(result.confianca))||Number(result.confianca)<80){status.textContent=result.mensagem_backend||'Não consegui ter certeza. Tente outra foto, com boa luz.';return}
+  const nome=result.nome_popular||result.nome||'Descoberta';status.textContent='✅ Identificação: '+nome+'.';
+  const card=document.createElement('div');card.className='detail';card.style.marginTop='14px';
+  const h=document.createElement('h3');h.textContent=nome;
+  const p=document.createElement('p');p.textContent=Array.isArray(result.curiosidades)?result.curiosidades.join(' • '):(result.curiosidades||'Curiosidades não confirmadas.');
+  const w=document.createElement('div');w.className='notice warning';w.textContent='⚠️ Segurança: '+(result.perigo||result.aviso||'Observe com cuidado e peça ajuda a um adulto.');card.append(h,p,w);area.append(card);
+ }catch(e){status.textContent=e instanceof TypeError?'Não consegui conectar ao reconhecimento. Confira a internet e tente novamente.':e.message}
+ finally{analyzing=false;input.disabled=false;document.querySelectorAll('.lens,.camera-gallery').forEach(b=>b.disabled=false)}
+},true);
+document.getElementById('photoInput').addEventListener('click',e=>{if(!analyzing)e.target.value=''});
+
 </script>
 
-<script src="/comum/ficha.js"></script>
-<script src="/comum/adaptador.js"></script>
+<script src="../../comum/ficha.js"></script>
+<script src="../../comum/adaptador.js"></script>
 <script>
-PokedexAdaptador.iniciar({
+if(window.PokedexAdaptador)PokedexAdaptador.iniciar({
   icone: "🌿",
   fauna: false,
 
@@ -260,7 +310,9 @@ PokedexAdaptador.iniciar({
 
   carregando: "🔎 Investigando a natureza da foto...",
 
-  esconder: ["#photoArea"],
+  esconder: [],
+  galeria: { depoisDe: '.camera label', input: '#photoInput', classe: 'camera-gallery' },
+  album: { el: '#albumContent', depois: () => showAlbum() },
 
   extras: info => [
     ["🌱 Tipo de ser vivo", info.tipo],
@@ -269,7 +321,7 @@ PokedexAdaptador.iniciar({
 
   alerta: info => info.perigo || "",
 
-  novaFoto: () => document.getElementById("photoInput").click()
+  novaFoto: () => {if(!analyzing){openDiscovery(selectedLens,currentType);document.getElementById('photoInput').click()}}
 });
 </script>
 
