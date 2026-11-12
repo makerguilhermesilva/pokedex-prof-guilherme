@@ -410,11 +410,33 @@ input[type=file]{display:none}
       <img id="imagem" alt="Imagem escolhida">
     </div>
     <div class="actions">
-      <label class="btn btn-main" for="foto">📸 Tirar foto</label>
-      <label class="btn btn-dark" for="foto">🖼️ Galeria</label>
+
+<!-- Botões de captura -->
+<label class="btn btn-main" for="cameraInput">
+  📸 Tirar foto
+</label>
+
+<label class="btn btn-dark" for="foto">
+  🖼️ Galeria
+</label>
+
+<!-- Câmera traseira -->
+<input
+  id="cameraInput"
+  type="file"
+  accept="image/*"
+  capture="environment"
+>
+
+<!-- Galeria -->
+<input
+  id="foto"
+  type="file"
+  accept="image/jpeg,image/png,image/webp"
+>
+
       <button class="btn btn-green" id="descobrir" disabled>✨ Descobrir</button>
       <button class="btn btn-dark" id="limpar">Limpar</button>
-      <input id="foto" type="file" accept="image/jpeg,image/png,image/webp">
     </div>
     <div class="status" id="status"></div>
   </div>
@@ -826,6 +848,131 @@ document.getElementById("limpar").addEventListener("click",()=>{
 
 </script>
 
+
+<!-- LIGAR-FRONT — ASAS DA AMAZÔNIA -->
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🐦",
+  fauna: true,
+
+  cor: "#82d95b",
+  cor2: "#e9d65b",
+
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#08110d",
+    texto: "#f4f2df",
+    suave: "#a8b3aa"
+  },
+
+  claro: {
+    fundo: "#f4f2df",
+    texto: "#08110d",
+    suave: "#526b59"
+  },
+
+  carregando: "🐦 O Tuca está investigando sua descoberta...",
+
+  esconder: ["#resultado"],
+
+  extras: info => [
+    [
+      "🏷️ Categoria",
+      nomesCategoria[categoriaSelecionada]
+    ],
+    [
+      "🌳 Onde vive",
+      info.onde_vive || info.habitat
+    ],
+    [
+      "🌿 Bioma",
+      Array.isArray(info.biomas)
+        ? info.biomas.join(", ")
+        : (info.bioma || info.biomas)
+    ],
+    [
+      "💡 Curiosidades",
+      info.curiosidades || info.curiosidade
+    ]
+  ].filter(campo => campo[1]),
+
+  alerta: info => {
+    const nome = String(
+      info.nome || info.nome_popular || ""
+    ).toLowerCase();
+
+    if (nome.includes("gavião") ||
+        nome.includes("gaviao")) {
+      return "Observe o gavião de longe. Não tente tocar ou se aproximar!";
+    }
+
+    return info.perigoso === true
+      ? (info.aviso || "Cuidado! Peça ajuda a um adulto.")
+      : "";
+  },
+
+  salvar: info => {
+    try {
+      const nome = String(
+        info.nome || info.nome_popular || ""
+      ).trim();
+
+      if (!nome) {
+        alert("Não foi possível identificar o nome da descoberta.");
+        return;
+      }
+
+      const onde = String(
+        info.onde_vive || info.habitat || "Brasil"
+      );
+
+      const categoria =
+        nomesCategoria[categoriaSelecionada];
+
+      const existente = descobertas.some(
+        item => item.nome.toLowerCase() === nome.toLowerCase()
+      );
+
+      if (existente) {
+        alert("Esta descoberta já está no Seu Safari!");
+        abrirSafari();
+        return;
+      }
+
+      descobertas.unshift({
+        nome,
+        onde,
+        categoria,
+        bioma: "amazon"
+      });
+
+      atualizarAlbum();
+      abrirSafari();
+
+      alert("🐦 Descoberta registrada no Seu Safari!");
+
+    } catch (erro) {
+      console.error("Erro ao salvar no Safari:", erro);
+      alert("Não foi possível salvar a descoberta.");
+    }
+  },
+
+  novaFoto: () => {
+    document.getElementById("limpar")?.click();
+
+    const foto = document.getElementById("foto");
+
+    if (foto) {
+      foto.value = "";
+      foto.click();
+    }
+  }
+});
+</script>
 
 
 </body>
