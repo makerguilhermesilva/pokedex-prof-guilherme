@@ -19,11 +19,11 @@
 // Quem é o grupo (aparece no painel). Use SÓ o primeiro nome dos alunos:
 // o site é público.
 const GRUPO = {
-  nome: "Nome do grupo",
-  integrantes: "Ana, Bruno e Carla",
-  escola: "Escola",
-  turma: "Turma 1",
-  tema: "Flores do Brasil",
+  nome: "A Mata",
+  integrantes: "Gustavo",
+  escola: "Osmarinho",
+  turma: "Turma 2",
+  tema: "Animais do Brasil, Frutas nativas, Insetos do Brasil, Árvores nativas,Plantas e Flores e Fungos e Cogumelos",
   pendencias: []          // ex.: ["Missão 5", "Missão 6"]
 };
 
@@ -35,7 +35,7 @@ const ESPECIALISTA = "um botânico especialista em flores do Brasil";
 // Aparece também na mensagem de "fora do tema":
 //   "🚫 Não reconhecemos porque isso parece ser uma melancia, e aqui a gente
 //    só reconhece <O_QUE_PROCURAR>."
-const O_QUE_PROCURAR = "flores";
+const O_QUE_PROCURAR = "Animais do Brasil, Frutas nativas, Insetos do Brasil, Árvores nativas,Plantas e Flores e Fungos e Cogumelos";
 
 // Missão 3: quanta certeza a IA precisa ter (número de 0 a 100, sem aspas)
 // Por que o grupo escolheu: ""
