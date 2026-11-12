@@ -585,6 +585,7 @@ input[type=file]{display:none}
 
 <script>
 const fotoInput=document.getElementById("foto");
+const cameraInput=document.getElementById("cameraInput");
 const imagem=document.getElementById("imagem");
 const dropInner=document.getElementById("dropInner");
 const descobrir=document.getElementById("descobrir");
@@ -640,7 +641,56 @@ function renderSafari(){
 let fotoBase64=null;
 let tipoImagem="image/jpeg";
 let categoriaSelecionada="aves";
-let descobertas=[];
+const CHAVE_SAFARI="asas-amazonia-safari-osmarinho-t1m-isabella";
+let versaoFoto=0;
+let identificando=false;
+let fotoAlbum="";
+let ultimaIdentificacao=null;
+let descobertas=lerDescobertas();
+
+function lerDescobertas(){
+  try{
+    const itens=JSON.parse(localStorage.getItem(CHAVE_SAFARI)||"[]");
+    return Array.isArray(itens) ? itens.filter(d=>d && typeof d.nome==="string" && typeof d.onde==="string" && typeof d.categoria==="string") : [];
+  }catch(erro){return [];}
+}
+
+function guardarDescoberta(info, contexto){
+  const nome=seguro(info.nome_popular||info.nome,"Descoberta").trim()||"Descoberta";
+  const onde=seguro(info.onde_vive||info.habitat,"Brasil");
+  const existente=descobertas.find(d=>d.nome.toLowerCase()===nome.toLowerCase());
+  const item={nome,onde,categoria:contexto.categoria,foto:contexto.foto,
+    bioma:biomaDaDescoberta(info)};
+  const anteriores=descobertas.slice();
+  if(existente) descobertas=descobertas.map(d=>d===existente ? item : d);
+  else descobertas.unshift(item);
+  try{
+    localStorage.setItem(CHAVE_SAFARI,JSON.stringify(descobertas));
+  }catch(erro){
+    descobertas=anteriores;
+    throw new Error("Não foi possível guardar a foto no Safari. O armazenamento do navegador está cheio ou indisponível.");
+  }
+  atualizarAlbum();
+}
+
+function biomaDaDescoberta(info){
+  const nomes={amazonia:"amazon",cerrado:"cerrado",mataatlantica:"mata",caatinga:"caatinga",pantanal:"pantanal",pampa:"pampa"};
+  const valores=Array.isArray(info.biomas) ? info.biomas : [info.bioma||info.biomas||""];
+  for(const valor of valores){
+    const chave=String(valor).normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase().replace(/[^a-z]/g,"");
+    if(nomes[chave])return nomes[chave];
+  }
+  return "amazon";
+}
+
+function bloquearCaptura(bloqueado){
+  identificando=bloqueado;
+  fotoInput.disabled=bloqueado;
+  cameraInput.disabled=bloqueado;
+  document.getElementById("limpar").disabled=bloqueado;
+  document.querySelectorAll(".cat").forEach(b=>b.disabled=bloqueado);
+  descobrir.disabled=bloqueado||!fotoBase64;
+}
 
 const nomesCategoria={
   aves:"Aves",mamiferos:"Mamíferos",repteis:"Répteis",anfibios:"Anfíbios",
@@ -670,29 +720,76 @@ document.querySelectorAll(".cat").forEach(btn=>{
   });
 });
 
-fotoInput.addEventListener("change",()=>{
-  const file=fotoInput.files && fotoInput.files[0];
+// Os dois campos entregam a foto à mesma rotina, inclusive a webcam do adaptador.
+function receberFoto(evento){
+  const input=evento.target;
+  if(input!==fotoInput && input!==cameraInput)return;
+  if(identificando)return;
+  const file=input.files && input.files[0];
   if(!file)return;
-  const reader=new FileReader();
-  reader.onload=()=>{
-    const src=String(reader.result);
-    fotoBase64=src.split(",")[1]||"";
-    tipoImagem=file.type||"image/jpeg";
-    imagem.src=src;
-    imagem.style.display="block";
-    dropInner.style.display="none";
-    descobrir.disabled=false;
-    statusEl.textContent="Imagem pronta! Agora vamos descobrir. 🔎";
-    statusEl.className="status success";
-    resultado.classList.remove("show");
-    semResultado.style.display="grid";
-  };
-  reader.onerror=()=>{
-    statusEl.textContent="Ops! Não consegui abrir essa imagem. Tente outra. 😊";
+  const versao=++versaoFoto;
+  fotoBase64=null;
+  fotoAlbum="";
+  ultimaIdentificacao=null;
+  imagem.removeAttribute("src");
+  imagem.style.display="none";
+  dropInner.style.display="block";
+  descobrir.disabled=true;
+  limparResultado();
+  statusEl.textContent="Preparando sua foto... 📷";
+  statusEl.className="status";
+  const falhou=mensagem=>{
+    if(versao!==versaoFoto)return;
+    statusEl.textContent=mensagem;
     statusEl.className="status error";
   };
+  if(!file.type.startsWith("image/")){
+    falhou("Escolha um arquivo de imagem.");
+    return;
+  }
+  if(file.size>10000000){
+    falhou("Essa foto é grande demais. Escolha uma imagem de até 10 MB.");
+    return;
+  }
+  const reader=new FileReader();
+  reader.onload=()=>{
+    if(versao!==versaoFoto)return;
+    const foto=new Image();
+    foto.onload=()=>{
+      if(versao!==versaoFoto)return;
+      try{
+        const reduzir=(lado,qualidade)=>{
+          const escala=Math.min(1,lado/Math.max(foto.naturalWidth,foto.naturalHeight));
+          const canvas=document.createElement("canvas");
+          canvas.width=Math.max(1,Math.round(foto.naturalWidth*escala));
+          canvas.height=Math.max(1,Math.round(foto.naturalHeight*escala));
+          canvas.getContext("2d").drawImage(foto,0,0,canvas.width,canvas.height);
+          return canvas.toDataURL("image/jpeg",qualidade);
+        };
+        const src=reduzir(1600,0.82);
+        fotoBase64=src.split(",")[1];
+        tipoImagem="image/jpeg";
+        fotoAlbum=reduzir(360,0.74);
+        imagem.src=src;
+        imagem.style.display="block";
+        dropInner.style.display="none";
+        descobrir.disabled=false;
+        statusEl.textContent="Imagem pronta! Agora vamos descobrir. 🔎";
+        statusEl.className="status success";
+      }catch(erro){falhou("Não consegui preparar essa imagem. Tente outra foto.");}
+    };
+    foto.onerror=()=>falhou("Não consegui abrir essa imagem. Tente uma foto JPG, PNG ou WebP.");
+    foto.src=String(reader.result);
+  };
+  reader.onerror=()=>falhou("Não consegui ler essa imagem. Tente outra foto.");
   reader.readAsDataURL(file);
-});
+}
+// Executa antes da conferência do adaptador para também limpar uma foto antiga
+// quando o novo arquivo for inválido.
+document.addEventListener("change",receberFoto,true);
+[fotoInput,cameraInput].forEach(input=>input.addEventListener("click",()=>{
+  if(!identificando)input.value="";
+}));
 
 function seguro(valor, fallback=""){
   return typeof valor==="string" ? valor : fallback;
@@ -705,14 +802,20 @@ function limparResultado(){
 }
 
 descobrir.addEventListener("click",async()=>{
-  if(!fotoBase64)return;
-  descobrir.disabled=true;
+  if(!fotoBase64||identificando)return;
+  if(location.protocol==="file:"){
+    statusEl.textContent="A foto está pronta. Para identificar com IA, abra o aplicativo no site publicado.";
+    statusEl.className="status error";
+    return;
+  }
+  bloquearCaptura(true);
+  const contexto={categoria:nomesCategoria[categoriaSelecionada],foto:fotoAlbum};
   statusEl.textContent="Tuca está olhando a imagem... 🐦🔎";
   statusEl.className="status";
   limparResultado();
 
   const pedido={
-    modelo:"gemini-3.6-flash",
+    grupo:"osmarinho-t1m-isabella",
     body:{
       contents:[{parts:[
         {text:
@@ -751,24 +854,30 @@ descobrir.addEventListener("click",async()=>{
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify(pedido)
     });
-    if(!resposta.ok)throw new Error("servidor");
-
-    const bruto=await resposta.json();
+    const bruto=await resposta.json().catch(()=>null);
+    if(!resposta.ok){
+      const mensagem=bruto?.error?.message || (resposta.status===404
+        ? "O serviço de identificação não foi encontrado. Confira a publicação do aplicativo."
+        : "O reconhecimento falhou (código "+resposta.status+"). Tente novamente.");
+      throw new Error(mensagem);
+    }
     const texto=bruto?.candidates?.[0]?.content?.parts?.[0]?.text;
-    if(typeof texto!=="string")throw new Error("resposta");
-    const dados=JSON.parse(texto);
+    if(typeof texto!=="string")throw new Error("A IA não enviou uma identificação. Tente outra foto.");
+    let dados;
+    try{dados=JSON.parse(texto);}catch(erro){throw new Error("A resposta da IA não pôde ser lida. Tente novamente.");}
+    if(!dados || typeof dados!=="object")throw new Error("A resposta da IA está incompleta. Tente novamente.");
 
-    if(dados.identificado!==true || Number(dados.confianca)<80){
-      statusEl.textContent="Hmm... não consegui ter certeza. Tenta outra foto! 🌿📸";
+    if(dados.identificado!==true || !Number.isFinite(Number(dados.confianca)) || Number(dados.confianca)<80){
+      statusEl.textContent=dados.mensagem_backend||"Hmm... não consegui ter certeza. Tenta outra foto! 🌿📸";
       statusEl.className="status";
       descobrir.disabled=false;
       falaTuca.textContent="Tuca diz: “Vamos tentar uma foto mais clara?”";
       return;
     }
 
-    const nome=seguro(dados.nome,"Descoberta");
-    const curios=seguro(dados.curiosidades,"Uma descoberta da natureza brasileira!");
-    const onde=seguro(dados.onde_vive,"Brasil");
+    const nome=seguro(dados.nome_popular||dados.nome,"Descoberta");
+    const curios=Array.isArray(dados.curiosidades) ? dados.curiosidades.join(" ") : seguro(dados.curiosidades,"Uma descoberta da natureza brasileira!");
+    const onde=seguro(dados.onde_vive||dados.habitat,"Brasil");
 
     nomeEl.textContent=nome;
     confiancaEl.textContent="Certeza: "+Number(dados.confianca)+"%";
@@ -790,20 +899,17 @@ descobrir.addEventListener("click",async()=>{
     mapaTitulo.textContent=nome;
     mapaTexto.textContent="Esta espécie pode ser encontrada em: "+onde;
 
-    const existente=descobertas.some(x=>x.nome.toLowerCase()===nome.toLowerCase());
-    if(!existente){
-      descobertas.unshift({nome,onde,categoria:nomesCategoria[categoriaSelecionada]});
-      atualizarAlbum();
-    }
+    ultimaIdentificacao={info:dados,contexto};
+    guardarDescoberta(dados,contexto);
 
     statusEl.textContent="Descoberta registrada no seu álbum! 🎉";
     statusEl.className="status success";
   }catch(e){
-    statusEl.textContent="Ops! A floresta ficou sem sinal. 🌧️ Tente de novo daqui a pouco!";
+    statusEl.textContent=e instanceof TypeError ? "Não consegui conectar ao reconhecimento. Confira a internet e tente novamente." : (e.message||"Não consegui identificar essa foto. Tente novamente.");
     statusEl.className="status error";
-    falaTuca.textContent="Tuca diz: “Não consegui falar com a floresta agora. Vamos tentar de novo!”";
+    falaTuca.textContent="Tuca diz: “Confira o aviso acima e vamos tentar de novo!”";
   }finally{
-    descobrir.disabled=!fotoBase64;
+    bloquearCaptura(false);
   }
 });
 
@@ -822,20 +928,33 @@ function atualizarAlbum(){
       strong.textContent="🐦 "+d.nome;
       const span=document.createElement("span");
       span.textContent=d.categoria+" · "+d.onde;
+      if(typeof d.foto==="string" && d.foto.startsWith("data:image/")){
+        const foto=document.createElement("img");
+        foto.src=d.foto;
+        foto.alt=d.nome;
+        foto.loading="lazy";
+        foto.style.cssText="width:100%;height:120px;object-fit:cover;border-radius:9px;margin-bottom:8px";
+        item.appendChild(foto);
+      }
       item.append(num,strong,span);
       album.appendChild(item);
     });
   }
   const n=descobertas.length;
   contadorAlbum.textContent=n;
-  contadorTopo.textContent=n;
+  if(contadorTopo)contadorTopo.textContent=n;
   contadorHero.textContent=n;
 }
 
 document.getElementById("limpar").addEventListener("click",()=>{
+  if(identificando)return;
+  ++versaoFoto;
   fotoInput.value="";
+  cameraInput.value="";
+  fotoAlbum="";
+  ultimaIdentificacao=null;
   fotoBase64=null;
-  imagem.src="";
+  imagem.removeAttribute("src");
   imagem.style.display="none";
   dropInner.style.display="block";
   descobrir.disabled=true;
@@ -846,15 +965,16 @@ document.getElementById("limpar").addEventListener("click",()=>{
   mapaTexto.textContent="Depois de descobrir algo, o Tuca mostra onde essa espécie vive.";
 });
 
+atualizarAlbum();
 </script>
 
 
 <!-- LIGAR-FRONT — ASAS DA AMAZÔNIA -->
-<script src="/comum/ficha.js"></script>
-<script src="/comum/adaptador.js"></script>
+<script src="../../comum/ficha.js"></script>
+<script src="../../comum/adaptador.js"></script>
 
 <script>
-PokedexAdaptador.iniciar({
+if(window.PokedexAdaptador) PokedexAdaptador.iniciar({
   icone: "🐦",
   fauna: true,
 
@@ -917,47 +1037,20 @@ PokedexAdaptador.iniciar({
 
   salvar: info => {
     try {
-      const nome = String(
-        info.nome || info.nome_popular || ""
-      ).trim();
-
-      if (!nome) {
-        alert("Não foi possível identificar o nome da descoberta.");
+      // O pop-up pode ser aberto antes de o fetch terminar. Espera a rotina
+      // principal liberar a foto e usa o contexto da identificação concluída.
+      if(identificando){
+        alert("Aguarde a identificação terminar e toque novamente em salvar.");
         return;
       }
-
-      const onde = String(
-        info.onde_vive || info.habitat || "Brasil"
-      );
-
-      const categoria =
-        nomesCategoria[categoriaSelecionada];
-
-      const existente = descobertas.some(
-        item => item.nome.toLowerCase() === nome.toLowerCase()
-      );
-
-      if (existente) {
-        alert("Esta descoberta já está no Seu Safari!");
-        abrirSafari();
+      if(!ultimaIdentificacao){
+        alert("Identifique uma foto antes de salvar no Safari.");
         return;
       }
-
-      descobertas.unshift({
-        nome,
-        onde,
-        categoria,
-        bioma: "amazon"
-      });
-
-      atualizarAlbum();
+      guardarDescoberta(ultimaIdentificacao.info,ultimaIdentificacao.contexto);
       abrirSafari();
-
-      alert("🐦 Descoberta registrada no Seu Safari!");
-
     } catch (erro) {
-      console.error("Erro ao salvar no Safari:", erro);
-      alert("Não foi possível salvar a descoberta.");
+      alert(erro.message||"Não foi possível salvar a descoberta.");
     }
   },
 
