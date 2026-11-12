@@ -202,9 +202,9 @@
                 <div class="discovery-grid">
                     <div class="upload-card">
                         <div class="photo-icon">📷</div>
-                        <h3>Envie uma foto</h3>
+                        <h3>Capture sua descoberta</h3>
                         <p>Tire uma foto ou escolha uma imagem da galeria.</p>
-                        <label class="file-button">📁 Escolher imagem
+                        <label class="file-button">📷 Tirar foto
                             <input type="file" id="photo" accept="image/*" capture="environment">
                         </label>
                         <img class="preview" id="preview" alt="Prévia da imagem escolhida">
@@ -266,11 +266,13 @@
         const $=id=>document.getElementById(id);
         let selectedCategory={name:'Animais',icon:'🐾',description:'Animais brasileiros'};
         let selectedFile=null,points=0,discoveries=[],selectedBiome='',visitedBiomes=new Set();
+        let identificando=false,versaoFoto=0;
         const accessoryByBiome={'Amazônia':'🌿🦜','Cerrado':'🤠🌾','Caatinga':'🌵🕶️','Mata Atlântica':'🦜🍃','Pantanal':'🐊🧢','Pampa':'🧢🌱'};
         function showPage(id){document.querySelectorAll('.page').forEach(p=>p.classList.toggle('active',p.id===id));window.scrollTo({top:0,behavior:'smooth'});}
         function goHome(){showPage('home')}
         function openDiscovery(name,icon,description){
-         selectedCategory={name,icon,description};selectedFile=null;$('photo').value='';$('preview').style.display='none';$('identifyBtn').disabled=true;
+         if(identificando)return;
+         selectedCategory={name,icon,description};limparFoto();
          $('discoveryTitle').textContent='O que você encontrou?';$('discoverySubtitle').textContent='Categoria escolhida: '+name+'. Envie uma foto para começar a análise.';
          $('categoryBadge').textContent=icon+' '+name;$('status').textContent='A análise só começa quando você escolher uma foto.';
          resetResult('🌱','Sua descoberta aparecerá aqui','O nome, as curiosidades, a conservação e o habitat serão mostrados quando a análise tiver certeza.');
@@ -301,12 +303,38 @@
           $('biomeInfo').scrollIntoView({behavior:'smooth',block:'nearest'});
          }
         }
-        $('photo').addEventListener('change',e=>{
-         selectedFile=e.target.files&&e.target.files[0]||null;$('identifyBtn').disabled=!selectedFile;
-         if(!selectedFile){$('preview').style.display='none';return}
-         if(!selectedFile.type.startsWith('image/')){$('status').textContent='Escolha um arquivo de imagem, por favor.';$('identifyBtn').disabled=true;return}
-         $('preview').src=URL.createObjectURL(selectedFile);$('preview').style.display='block';$('status').textContent='Foto pronta! Toque em “Analisar imagem” para descobrir mais.';
-        });
+        function limparFoto(limparCampo=true){
+         ++versaoFoto;selectedFile=null;
+         if(limparCampo)$('photo').value='';
+         $('preview').removeAttribute('src');$('preview').style.display='none';$('identifyBtn').disabled=true;
+        }
+        document.addEventListener('change',e=>{
+         if(e.target!==$('photo')||identificando)return;
+         const arquivo=e.target.files&&e.target.files[0];if(!arquivo)return;
+         limparFoto(false);const versao=versaoFoto;
+         resetResult('🌱','Sua descoberta aparecerá aqui','Prepare a foto e toque em Analisar imagem.');
+         if(!arquivo.type.startsWith('image/')){$('status').textContent='Escolha um arquivo de imagem, por favor.';return}
+         if(arquivo.size>10000000){$('status').textContent='Essa foto é grande demais. Escolha uma imagem de até 10 MB.';return}
+         $('status').textContent='Preparando sua foto...';
+         const falhou=()=>{if(versao===versaoFoto)$('status').textContent='Não consegui abrir essa imagem. Tente uma foto JPG, PNG ou WebP.'};
+         const leitor=new FileReader();
+         leitor.onload=()=>{
+          if(versao!==versaoFoto)return;
+          const img=new Image();
+          img.onload=()=>{
+           if(versao!==versaoFoto)return;
+           selectedFile=arquivo;$('preview').src=String(leitor.result);$('preview').style.display='block';$('identifyBtn').disabled=false;
+           $('status').textContent='Foto pronta! Toque em “Analisar imagem” para descobrir mais.';
+          };
+          img.onerror=falhou;img.src=String(leitor.result);
+         };
+         leitor.onerror=falhou;leitor.readAsDataURL(arquivo);
+        },true);
+        $('photo').addEventListener('click',()=>{if(!identificando)$('photo').value=''});
+        function bloquearAnalise(ativo){
+         identificando=ativo;$('photo').disabled=ativo;$('identifyBtn').disabled=ativo||!selectedFile;
+         document.querySelectorAll('.lens,.fp-galeria').forEach(b=>b.disabled=ativo);
+        }
         function renderAlbum(){
          const grid=$('albumGrid');grid.replaceChildren();$('albumCount').textContent=discoveries.length;
          if(!discoveries.length){const empty=document.createElement('div');empty.className='empty-album';empty.textContent='Suas identificações aparecem aqui depois da primeira descoberta. 🌱';grid.appendChild(empty);return}
@@ -336,22 +364,52 @@
          const r=$('result');r.replaceChildren();addText(r,'div','🔎').style.fontSize='2.4rem';addText(r,'h3',title);addText(r,'p',message);const b=document.createElement('button');b.className='btn btn-yellow';b.textContent='Tentar novamente';b.onclick=()=>{$('status').textContent='Escolha a foto e tente novamente.';$('identifyBtn').disabled=!selectedFile};r.appendChild(b);
         }
         $('identifyBtn').addEventListener('click',async()=>{
-         if(!selectedFile)return;$('identifyBtn').disabled=true;$('status').textContent='🔬 Analisando a imagem...';
+         if(!selectedFile||identificando)return;
+         if(location.protocol==='file:'){$('status').textContent='A foto está pronta. Para identificar com IA, abra o aplicativo no site publicado.';return}
+         bloquearAnalise(true);$('status').textContent='🔬 Analisando a imagem...';
          try{
-          const jpegData=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');const max=1200;const scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.86).split(',')[1]);URL.revokeObjectURL(img.src)};img.onerror=()=>reject(new Error('Não consegui abrir a imagem.'));img.src=URL.createObjectURL(selectedFile)});
-          const schema={type:'OBJECT',properties:{
-           identificado:{type:'BOOLEAN'},confianca:{type:'INTEGER'},nome:{type:'STRING'},tipo:{type:'STRING'},descricao:{type:'STRING'},curiosidades:{type:'ARRAY',items:{type:'STRING'}},conservacao:{type:'STRING'},habitat:{type:'STRING'},distribuicao:{type:'STRING'},biomas:{type:'ARRAY',items:{type:'STRING'}},som:{type:'STRING'},perigo:{type:'BOOLEAN'},aviso_perigo:{type:'STRING'}
+          const jpegData=await new Promise((resolve,reject)=>{const img=new Image();img.onload=()=>{const canvas=document.createElement('canvas');const max=1200;const scale=Math.min(1,max/Math.max(img.width,img.height));canvas.width=Math.max(1,Math.round(img.width*scale));canvas.height=Math.max(1,Math.round(img.height*scale));const ctx=canvas.getContext('2d');ctx.drawImage(img,0,0,canvas.width,canvas.height);resolve(canvas.toDataURL('image/jpeg',.86).split(',')[1]);URL.revokeObjectURL(img.src)};img.onerror=()=>{URL.revokeObjectURL(img.src);reject(new Error('Não consegui abrir a imagem.'))};img.src=URL.createObjectURL(selectedFile)});
+          const schema={type:'object',properties:{
+           identificado:{type:'boolean'},confianca:{type:'integer'},nome:{type:'string'},tipo:{type:'string'},descricao:{type:'string'},curiosidades:{type:'array',items:{type:'string'}},conservacao:{type:'string'},habitat:{type:'string'},distribuicao:{type:'string'},biomas:{type:'array',items:{type:'string'}},som:{type:'string'},perigo:{type:'boolean'},aviso_perigo:{type:'string'}
           },required:['identificado','confianca']};
           const prompt='Você é um guia de campo cuidadoso da natureza brasileira, explicando para crianças. A categoria selecionada é '+selectedCategory.name+' ('+selectedCategory.description+'). Identifique apenas se houver evidência visual suficiente; não chute. Se não tiver certeza, use identificado=false e confiança menor que 80. confiança é inteiro de 0 a 100. Responda em português simples com: nome, tipo, descrição curta, até 3 curiosidades, estado de conservação (ou "não confirmado"), habitat, distribuição geográfica, biomas (somente entre Amazônia, Cerrado, Caatinga, Mata Atlântica, Pantanal, Pampa quando tiver certeza), som (se animal, senão string vazia), perigo (true se houver risco de toque/ingestão ou se segurança não puder ser garantida) e aviso_perigo. Nunca diga que planta ou fungo é seguro para comer. Se a foto for de um rastro/ninho ou algo que não dê para identificar, não adivinhe; retorne identificado=false.';
-          const response=await fetch('/api/identificar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({modelo:'gemini-3.6-flash',body:{contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:jpegData}}]}],generationConfig:{temperature:.2,responseMimeType:'application/json',responseSchema:schema}}})});
-          if(!response.ok)throw new Error('Serviço indisponível');
-          const resposta=await response.json();const raw=resposta?.candidates?.[0]?.content?.parts?.[0]?.text;if(typeof raw!=='string')throw new Error('Resposta vazia');
-          const data=JSON.parse(raw);const conf=Number(data.confianca);
-          if(data.identificado!==true||!Number.isFinite(conf)||conf<80){$('status').textContent='Hmm, não consegui ter certeza. Tente outra foto!';showTryAgain('Hmm, não consegui ter certeza 🐶','Tente outra foto, com mais luz e mostrando melhor o que encontrou. O PokéBrasil não vai chutar!')}
+          const response=await fetch('/api/identificar',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({grupo:'ezio-t1m-pedro',tipo:selectedFile.type,tamanho:selectedFile.size,body:{contents:[{parts:[{text:prompt},{inline_data:{mime_type:'image/jpeg',data:jpegData}}]}],generationConfig:{temperature:.2,responseMimeType:'application/json',responseSchema:schema}}})});
+          const resposta=await response.json().catch(()=>null);
+           if(!response.ok)throw new Error(resposta?.error?.message||(response.status===404?'O serviço de identificação não foi encontrado. Confira a publicação do aplicativo.':'O reconhecimento falhou (código '+response.status+'). Tente novamente.'));
+           const raw=resposta?.candidates?.[0]?.content?.parts?.[0]?.text;
+           if(typeof raw!=='string')throw new Error('A IA não enviou uma identificação. Tente outra foto.');
+           let data;try{data=JSON.parse(raw)}catch(e){throw new Error('Não consegui ler a resposta da IA. Tente novamente.')}
+           if(!data||typeof data!=='object')throw new Error('A resposta da IA está incompleta. Tente novamente.');
+           data.nome=data.nome_popular||data.nome;
+           data.habitat=data.habitat||data.habitat_descricao;
+           data.conservacao=data.conservacao||data.status_conservacao;
+           const conf=Number(data.confianca);
+          if(data.fora_do_tema||data.identificado!==true||!Number.isFinite(conf)||conf<80){const mensagem=data.mensagem_backend||'Tente outra foto, com mais luz e mostrando melhor o que encontrou.';$('status').textContent=mensagem;showTryAgain('Não consegui confirmar essa descoberta 🐶',mensagem)}
           else{data.confianca=Math.round(conf);$('status').textContent='Descoberta confirmada!';renderResult(data)}
-         }catch(err){$('status').textContent='A conexão falhou ou o serviço não respondeu.';showTryAgain('Ops, explorador! 🌧️','Não consegui analisar agora. Confira a conexão e tente novamente.')}
-         finally{$('identifyBtn').disabled=!selectedFile}
+         }catch(err){const mensagem=err instanceof TypeError?'Não consegui conectar ao reconhecimento. Confira a internet e tente novamente.':err.message;$('status').textContent=mensagem;showTryAgain('Ops, explorador! 🌧️',mensagem)}
+         finally{bloquearAnalise(false)}
         });
+    </script>
+    <script src="../../comum/ficha.js"></script>
+    <script src="../../comum/adaptador.js"></script>
+    <script>
+    if(window.PokedexAdaptador) PokedexAdaptador.iniciar({
+      icone:'🐾',fauna:true,cor:'#2f7553',cor2:'#f3c94d',escuro:()=>false,
+      claro:{fundo:'#fffef8',texto:'#193328',suave:'#6c7e73'},
+      carregando:'🔎 O Caramelo está investigando sua descoberta...',
+      esconder:[],
+      galeria:{depoisDe:'label.file-button',input:'#photo'},
+      extras:info=>[['🏡 Onde vive',info.habitat||info.habitat_descricao],['🌱 Conservação',info.conservacao||info.status_conservacao],['🔊 Som',info.som]].filter(c=>c[1]),
+      alerta:info=>info.perigo===true?(info.aviso_perigo||'Observe de longe e peça ajuda a um adulto.'):'',
+      salvar:()=>{if(!identificando)showPage('album')},
+      novaFoto:()=>{
+        if(identificando)return;
+        limparFoto();showPage('discovery');
+        resetResult('🌱','Sua descoberta aparecerá aqui','Tire outra foto para começar uma nova identificação.');
+        $('status').textContent='Tire outra foto ou escolha uma imagem da galeria.';
+        $('photo').click();
+      }
+    });
     </script>
 </body>
 
