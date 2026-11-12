@@ -19,9 +19,9 @@
 // Quem é o grupo (aparece no painel). Use SÓ o primeiro nome dos alunos:
 // o site é público.
 const GRUPO = {
-  nome: "Nome do grupo",
-  integrantes: "Ana, Bruno e Carla",
-  escola: "Escola",
+  nome: "Asas da amazônia",
+  integrantes: "Isabella , Alexandre , Beijamin",
+  escola: "Osmarinho",
   turma: "Turma 1",
   tema: "Flores do Brasil",
   pendencias: []          // ex.: ["Missão 5", "Missão 6"]
