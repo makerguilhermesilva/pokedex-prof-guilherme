@@ -1401,5 +1401,79 @@ Não invente informações.
 
 </script>
 
+
+<!-- LIGAR-FRONT — A MATA -->
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+
+<script>
+if (window.PokedexAdaptador) {
+  PokedexAdaptador.iniciar({
+    icone: "🌿",
+    fauna: true,
+
+    cor: "#d4af37",
+    cor2: "#f0d56a",
+
+    escuro: () => true,
+
+    noturno: {
+      fundo: "#050505",
+      texto: "#ffffff",
+      suave: "#bdbdbd"
+    },
+
+    claro: {
+      fundo: "#ffffff",
+      texto: "#050505",
+      suave: "#555555"
+    },
+
+    carregando: "🌿 A Mata está investigando sua foto...",
+
+    esconder: ["#resultModal"],
+
+    extras: info => [
+      ["🏷️ Categoria", selectedCategory],
+      ["🌳 Onde vive", info.onde_vive || info.habitat],
+      ["📖 Sobre", info.sobre || info.curiosidades],
+      ["🌿 Bioma", info.bioma || info.biomas]
+    ].filter(campo => campo[1]),
+
+    alerta: info => {
+      if (info.perigoso === true) {
+        return info.informacoes_perigo ||
+          "Observe com segurança e mantenha distância.";
+      }
+      return "";
+    },
+
+    salvar: info => {
+      const descoberta = {
+        ...info,
+        nome: info.nome || info.nome_popular || "Descoberta",
+        categoria: selectedCategory,
+        imagem: document.getElementById("preview").src,
+        data: new Date().toISOString()
+      };
+
+      salvarDescoberta(descoberta);
+      mostrarResultado(descoberta);
+    },
+
+    novaFoto: () => {
+      const input = document.getElementById("cameraInput");
+      if (input) {
+        input.value = "";
+        input.click();
+      }
+    }
+  });
+} else {
+  console.error("PokedexAdaptador não foi carregado.");
+}
+</script>
+
+
 </body>
 </html>
