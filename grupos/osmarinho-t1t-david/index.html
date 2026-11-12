@@ -295,10 +295,14 @@
         let fotoPreviewData = "";
         let imagemDaDescobertaAtual = "";
         let ultimaDescoberta = null;
+        let identificando = false;
+        let versaoFoto = 0;
         let pontos = Number(localStorage.getItem("floresta_pontos") || 0);
         let descobertas = Number(localStorage.getItem("floresta_descobertas") || 0);
         let medalhas = Number(localStorage.getItem("floresta_medalhas") || 0);
-        let album = JSON.parse(localStorage.getItem("floresta_album") || "[]");
+        let album;
+        try { album = JSON.parse(localStorage.getItem("floresta_album") || "[]"); }
+        catch (erro) { album = []; }
         if (!Array.isArray(album)) album = [];
         descobertas = album.length;
         
@@ -322,15 +326,9 @@
         document.getElementById("safariStrip").addEventListener("keydown", function(e){ if(e.key === "Enter" || e.key === " "){ e.preventDefault(); mostrarPagina("paginaAlbum"); } });
         document.getElementById("voltarCategorias").addEventListener("click", function(){ mostrarPagina("paginaInicial"); });
         document.getElementById("novaDescoberta").addEventListener("click", function(){
+          if (identificando) return;
+          limparFotoAtual();
           categoriaSelecionada = "";
-          fotoSelecionada = null;
-          fotoPreviewData = "";
-          imagemDaDescobertaAtual = "";
-          ultimaDescoberta = null;
-          fotoInput.value = "";
-          preview.src = "";
-          preview.style.display = "none";
-          document.getElementById("resultado").style.display = "none";
           document.getElementById("categoriaEscolhida").textContent = "Nenhuma categoria escolhida";
           document.querySelectorAll(".categoria-btn").forEach(function(b){ b.classList.remove("ativa"); });
           mostrarPagina("paginaInicial");
@@ -347,6 +345,8 @@
           botao.addEventListener("click", function() {
             botoesCategoria.forEach(function(outro) { outro.classList.remove("ativa"); });
             botao.classList.add("ativa");
+            if (identificando) return;
+            if (categoriaSelecionada !== botao.dataset.categoria) limparFotoAtual();
             categoriaSelecionada = botao.dataset.categoria;
             textoCategoria.textContent = "✅ Categoria escolhida: " + categoriaSelecionada;
             const categoriaPagina = document.getElementById("categoriaPagina");
@@ -355,92 +355,171 @@
           });
         });
         
-        fotoInput.addEventListener("change", function(event) {
-          const arquivo = event.target.files[0];
+        function limparFotoAtual(limparCampo = true) {
+          ++versaoFoto;
+          fotoSelecionada = null;
+          fotoPreviewData = "";
+          imagemDaDescobertaAtual = "";
+          ultimaDescoberta = null;
+          if (limparCampo) fotoInput.value = "";
+          preview.removeAttribute("src");
+          preview.style.display = "none";
+          document.getElementById("resultado").style.display = "none";
+          document.getElementById("mensagem").style.display = "none";
+          document.getElementById("btnDescobrir").disabled = true;
+          document.getElementById("btnAlbum").disabled = true;
+        }
+
+        // O adaptador entrega tanto a captura da webcam quanto a galeria a este campo.
+        // A conferência roda antes dele para não deixar uma imagem antiga selecionada.
+        document.addEventListener("change", function(event) {
+          if (event.target !== fotoInput || identificando) return;
+          const arquivo = fotoInput.files && fotoInput.files[0];
           if (!arquivo) return;
+          limparFotoAtual(false);
+          const versao = versaoFoto;
           if (!arquivo.type.startsWith("image/")) {
             mostrarMensagem("📸 Escolha um arquivo de imagem.", false);
             return;
           }
-          fotoSelecionada = arquivo;
-          const leitor = new FileReader();
-          leitor.onload = function(e) {
-            fotoPreviewData = e.target.result;
-            preview.src = fotoPreviewData;
-            preview.style.display = "block";
-          };
-          leitor.readAsDataURL(arquivo);
-          mostrarMensagem("📸 Foto carregada! Agora clique em Descobrir.", true);
-        });
-        
-        document.getElementById("btnDescobrir").addEventListener("click", descobrir);
-        
-        function descobrir() {
-          if (!categoriaSelecionada) {
-            mostrarMensagem("🧭 Escolha uma categoria antes de descobrir!", false);
-            mostrarPagina("paginaInicial");
+          if (arquivo.size > 10000000) {
+            mostrarMensagem("📸 Essa foto é grande demais. Escolha uma imagem de até 10 MB.", false);
             return;
           }
-          if (!fotoSelecionada) {
+          mostrarMensagem("📸 Preparando sua foto...", true);
+          const falhou = function() {
+            if (versao !== versaoFoto) return;
+            mostrarMensagem("Não consegui abrir essa imagem. Tente uma foto JPG, PNG ou WebP.", false);
+          };
+          const leitor = new FileReader();
+          leitor.onload = function() {
+            if (versao !== versaoFoto) return;
+            const imagem = new Image();
+            imagem.onload = function() {
+              if (versao !== versaoFoto) return;
+              try {
+                const escala = Math.min(1, 1600 / Math.max(imagem.naturalWidth, imagem.naturalHeight));
+                const canvas = document.createElement("canvas");
+                canvas.width = Math.max(1, Math.round(imagem.naturalWidth * escala));
+                canvas.height = Math.max(1, Math.round(imagem.naturalHeight * escala));
+                canvas.getContext("2d").drawImage(imagem, 0, 0, canvas.width, canvas.height);
+                fotoPreviewData = canvas.toDataURL("image/jpeg", 0.82);
+                fotoSelecionada = arquivo;
+                preview.src = fotoPreviewData;
+                preview.style.display = "block";
+                document.getElementById("btnDescobrir").disabled = false;
+                mostrarMensagem("📸 Foto carregada! Agora clique em Descobrir.", true);
+              } catch (erro) { falhou(); }
+            };
+            imagem.onerror = falhou;
+            imagem.src = String(leitor.result);
+          };
+          leitor.onerror = falhou;
+          leitor.readAsDataURL(arquivo);
+        }, true);
+        fotoInput.addEventListener("click", function() {
+          if (!identificando) fotoInput.value = "";
+        });
+
+        function bloquearIdentificacao(ativo) {
+          identificando = ativo;
+          fotoInput.disabled = ativo;
+          document.getElementById("btnDescobrir").disabled = ativo || !fotoSelecionada;
+          document.getElementById("btnDescobrir").textContent = ativo ? "🔎 Identificando..." : "🌿 Descobrir!";
+          document.getElementById("btnAlbum").disabled = ativo || !ultimaDescoberta;
+          ["voltarCategorias", "novaDescoberta"].forEach(function(id) { document.getElementById(id).disabled = ativo; });
+          botoesCategoria.forEach(function(botao) { botao.disabled = ativo; });
+        }
+
+        function normalizarDescoberta(info, categoria) {
+          const texto = function(valor, padrao) {
+            return Array.isArray(valor) ? valor.join(" ") : (typeof valor === "string" && valor ? valor : padrao);
+          };
+          const emojis = {"Animais brasileiros":"🐾", "Plantas nativas ou medicinais":"🌿", "Árvores":"🌳", "Rochas e pedras preciosas":"💎"};
+          return {
+            nome: texto(info.nome_popular || info.nome, "Descoberta"),
+            emoji: emojis[categoria] || "🔎", categoria: categoria, confianca: Number(info.confianca),
+            curiosidades: texto(info.curiosidades, "Informação não disponível."),
+            habitat: texto(info.habitat || info.habitat_descricao, "Informação não disponível."),
+            conservacao: texto(info.conservacao || info.status_conservacao, "Informação não disponível."),
+            mapa: texto(info.mapa, "Regiões onde a descoberta pode ser encontrada no Brasil."),
+            regioes: Array.isArray(info.regioes) ? info.regioes : (Array.isArray(info.biomas) ? info.biomas : []),
+            perigoso: info.perigoso === true,
+            aviso: texto(info.aviso, info.perigoso === true ? "Observe de longe e peça ajuda a um adulto." : "")
+          };
+        }
+
+        document.getElementById("btnDescobrir").addEventListener("click", descobrir);
+        document.getElementById("btnDescobrir").disabled = true;
+        document.getElementById("btnAlbum").disabled = true;
+
+        async function descobrir() {
+          if (identificando) return;
+          if (!categoriaSelecionada) {
+            mostrarPagina("paginaInicial");
+            mostrarMensagem("🧭 Escolha uma categoria antes de descobrir!", false);
+            return;
+          }
+          if (!fotoSelecionada || !fotoPreviewData) {
             mostrarMensagem("📸 Escolha uma foto primeiro!", false);
             return;
           }
-        
+          if (location.protocol === "file:") {
+            mostrarMensagem("A foto está pronta. Para identificar com IA, abra o aplicativo no site publicado.", false);
+            return;
+          }
+          const categoria = categoriaSelecionada;
+          const foto = fotoPreviewData;
+          ultimaDescoberta = null;
+          imagemDaDescobertaAtual = "";
+          document.getElementById("resultado").style.display = "none";
+          bloquearIdentificacao(true);
           const analise = document.getElementById("analise");
           analise.style.display = "block";
-          mostrarMensagem("🔎 Preparando sua descoberta...", true);
-          setTimeout(function() {
+          mostrarMensagem("🔎 Investigando sua descoberta com IA...", true);
+          try {
+            const campos = {
+              identificado:{type:"boolean"}, confianca:{type:"integer"},
+              nome:{type:"string"}, habitat:{type:"string"}, conservacao:{type:"string"},
+              mapa:{type:"string"}, perigoso:{type:"boolean"}, aviso:{type:"string"}
+            };
+            const resposta = await fetch("/api/identificar", {
+              method:"POST", headers:{"Content-Type":"application/json"},
+              body:JSON.stringify({
+                grupo:"osmarinho-t1t-david", tipo:fotoSelecionada.type, tamanho:fotoSelecionada.size,
+                body:{
+                  contents:[{parts:[
+                    {text:"Você é um explorador da natureza brasileira. A categoria selecionada é: " + categoria + ". Identifique somente o que pertence a essa categoria na foto. Se estiver fora da categoria ou não houver certeza, use identificado=false. Nunca invente uma identificação. Responda em português simples para crianças, em JSON, incluindo nome, habitat, conservacao, mapa, perigoso e aviso. Para minerais, explique que conservação de espécies não se aplica. Para plantas, avise para não consumir nem usar como remédio apenas pela identificação visual."},
+                    {inline_data:{mime_type:"image/jpeg",data:foto.split(",")[1]}}
+                  ]}],
+                  generationConfig:{temperature:0.2,responseMimeType:"application/json",responseSchema:{type:"object",properties:campos,required:Object.keys(campos)}}
+                }
+              })
+            });
+            const bruto = await resposta.json().catch(function() { return null; });
+            if (!resposta.ok) throw new Error(bruto?.error?.message || (resposta.status === 404
+              ? "O serviço de identificação não foi encontrado. Confira a publicação do aplicativo."
+              : "O reconhecimento falhou (código " + resposta.status + "). Tente novamente."));
+            const texto = bruto?.candidates?.[0]?.content?.parts?.[0]?.text;
+            if (typeof texto !== "string") throw new Error("A IA não enviou uma identificação. Tente outra foto.");
+            let info;
+            try { info = JSON.parse(texto); }
+            catch (erro) { throw new Error("Não consegui ler a resposta da IA. Tente novamente."); }
+            if (!info || typeof info !== "object") throw new Error("A resposta da IA está incompleta. Tente novamente.");
+            if (info.fora_do_tema || info.identificado !== true || !Number.isFinite(Number(info.confianca)) || Number(info.confianca) < 80) {
+              mostrarMensagem(info.mensagem_backend || info.mensagem || "Não consegui ter certeza. Tente uma foto mais nítida.", false);
+              return;
+            }
+            imagemDaDescobertaAtual = foto;
+            mostrarResultado(normalizarDescoberta(info, categoria));
+          } catch (erro) {
+            mostrarMensagem(erro instanceof TypeError ? "Não consegui conectar ao reconhecimento. Confira a internet e tente novamente." : erro.message, false);
+          } finally {
             analise.style.display = "none";
-            // Guarda a foto da descoberta antes de limpar o campo de upload.
-            imagemDaDescobertaAtual = fotoPreviewData || "";
-            const resultado = gerarDescobertaDemo(categoriaSelecionada);
-            mostrarResultado(resultado);
+            bloquearIdentificacao(false);
+          }
+        }
 
-            // A imagem pesquisada não fica presa no campo para a próxima pesquisa.
-            fotoSelecionada = null;
-            fotoPreviewData = "";
-            fotoInput.value = "";
-            preview.src = "";
-            preview.style.display = "none";
-            document.getElementById("analise").style.display = "none";
-          }, 1200);
-        }
-        
-        function gerarDescobertaDemo(categoria) {
-          if (categoria === "Animais brasileiros") return {
-            nome:"Onça-pintada", emoji:"🐆", categoria:"Animais brasileiros", confianca:95,
-            curiosidades:"A onça-pintada é o maior felino das Américas. Suas manchas ajudam na camuflagem e cada padrão é único.",
-            habitat:"Pode viver em diferentes ambientes brasileiros, incluindo Amazônia, Pantanal, Cerrado e Mata Atlântica.",
-            conservacao:"A situação de conservação depende da espécie e das fontes consultadas pela IA. A onça-pintada é uma espécie protegida e sofre ameaças como perda de habitat.",
-            mapa:"Regiões onde a espécie pode ser encontrada no Brasil.", regioes:["Amazônia","Pantanal","Cerrado","Mata Atlântica"],
-            perigoso:true, aviso:"⚠️ É um animal selvagem. Nunca tente se aproximar, tocar ou alimentar um animal silvestre."
-          };
-          if (categoria === "Plantas nativas ou medicinais") return {
-            nome:"Planta da floresta", emoji:"🌿", categoria:"Plantas nativas ou medicinais", confianca:92,
-            curiosidades:"O Brasil possui uma enorme diversidade de plantas. Algumas têm usos tradicionais, mas a identificação visual sozinha não confirma se uma planta é segura.",
-            habitat:"Pode ser encontrada em áreas de vegetação brasileira, dependendo da espécie.",
-            conservacao:"A conservação varia conforme a espécie. A identificação deve ser confirmada antes de qualquer uso ou manejo.",
-            mapa:"Diversidade de plantas em diferentes biomas brasileiros.", regioes:["Amazônia","Cerrado","Mata Atlântica","Caatinga"],
-            perigoso:true, aviso:"⚠️ Não consuma nem utilize uma planta apenas pela identificação visual. Algumas plantas podem ser tóxicas."
-          };
-          if (categoria === "Árvores") return {
-            nome:"Árvore brasileira", emoji:"🌳", categoria:"Árvores", confianca:94,
-            curiosidades:"As árvores oferecem abrigo e alimento para muitos animais e ajudam a manter o equilíbrio dos ecossistemas.",
-            habitat:"Árvores brasileiras podem ser encontradas em florestas, cerrados e outros ambientes naturais.",
-            conservacao:"A conservação varia conforme a espécie e o bioma. Algumas árvores são ameaçadas pela perda de habitat e exploração.",
-            mapa:"Árvores aparecem em diferentes biomas e paisagens do Brasil.", regioes:["Amazônia","Cerrado","Pantanal","Mata Atlântica"],
-            perigoso:false, aviso:""
-          };
-          return {
-            nome:"Rochas e pedras preciosas", emoji:"💎", categoria:"Rochas e pedras preciosas", confianca:91,
-            curiosidades:"O Brasil possui grande diversidade de minerais e diferentes pedras preciosas e semipreciosas.",
-            habitat:"Rochas e minerais aparecem em diferentes formações geológicas do território brasileiro.",
-            conservacao:"Rochas e minerais não possuem uma classificação de conservação como animais e plantas; a extração pode, porém, causar impactos ambientais.",
-            mapa:"Diferentes regiões geológicas possuem formações e minerais variados.", regioes:["Minas Gerais","Bahia","Goiás","Rio Grande do Sul"],
-            perigoso:false, aviso:""
-          };
-        }
-        
         function mostrarResultado(resultado) {
           ultimaDescoberta = resultado;
           const painel = document.getElementById("resultado");
@@ -786,10 +865,10 @@
         }
     </script>
 
-<script src="/comum/ficha.js"></script>
-<script src="/comum/adaptador.js"></script>
+<script src="../../comum/ficha.js"></script>
+<script src="../../comum/adaptador.js"></script>
 <script>
-PokedexAdaptador.iniciar({
+if(window.PokedexAdaptador) PokedexAdaptador.iniciar({
   icone: "🌳",
   fauna: false,
   cor: "#7bea12",
@@ -811,7 +890,15 @@ PokedexAdaptador.iniciar({
 
   carregando: "🔎 O explorador está investigando sua descoberta...",
 
-  esconder: ["#resultado"],
+  esconder: [],
+  galeria: { depoisDe: ".upload-label", input: "#fotoInput" },
+  salvar: () => {
+    if (identificando || !ultimaDescoberta) {
+      mostrarMensagem("Aguarde a identificação terminar antes de salvar.", false);
+      return;
+    }
+    document.getElementById("btnAlbum").click();
+  },
 
   extras: info => [
     ["💡 Curiosidades", info.curiosidades],
@@ -823,7 +910,12 @@ PokedexAdaptador.iniciar({
 
   alerta: info => info.aviso || "",
 
-  novaFoto: () => document.getElementById("fotoInput").click()
+  novaFoto: () => {
+    if (identificando) return;
+    limparFotoAtual();
+    mostrarPagina("paginaDescoberta");
+    fotoInput.click();
+  }
 });
 </script>
 
