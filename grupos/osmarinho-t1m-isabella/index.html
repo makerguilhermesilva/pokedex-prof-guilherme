@@ -289,10 +289,16 @@ input[type=file]{display:none}
 .scene-caption{position:absolute;bottom:15px;left:16px;right:16px;z-index:2}
 .scene-caption .eyebrow{margin:0 0 5px;font-size:10px;color:#45e9a6}
 .scene-caption strong{font-family:Georgia,serif;font-size:21px}
-.walker{position:absolute;z-index:4;left:12%;bottom:24%;width:54px;height:54px;border-radius:50%;border:3px solid #36e6a2;background:#0b291dd9;box-shadow:0 0 0 8px #25d88c33,0 0 30px #30eaa9aa;display:grid;place-items:center;font-size:30px;animation:walkAcross 13s linear infinite alternate, bob .55s ease-in-out infinite alternate}
-.walker::after{content:'';position:absolute;inset:-7px;border:1px solid #62f4b4;border-radius:50%;animation:pulse 1.8s ease-out infinite}
-@keyframes walkAcross{from{left:10%}to{left:82%}} @keyframes bob{from{transform:translateY(0) rotate(-5deg)}to{transform:translateY(-5px) rotate(5deg)}} @keyframes pulse{from{transform:scale(.85);opacity:.8}to{transform:scale(1.5);opacity:0}}
-@media(prefers-reduced-motion:reduce){.walker{animation:none;left:45%}}
+.walker{position:absolute;z-index:2;left:var(--posicao,12%);bottom:var(--altura,26%);width:clamp(56px,12vw,80px);height:clamp(56px,12vw,80px);border-radius:50%;border:3px solid #36e6a2;background:#0b291de8;box-shadow:0 0 0 5px #25d88c22,0 5px 16px #0008;display:grid;place-items:center;font-size:30px;animation:walkAcross var(--duracao,15s) linear var(--atraso,0s) infinite alternate}
+.walker img{width:100%;height:100%;object-fit:cover;border-radius:50%;display:block;animation:bob .65s ease-in-out infinite alternate}
+.walker-name{position:absolute;top:calc(100% + 5px);left:50%;transform:translateX(-50%);max-width:120px;width:max-content;padding:3px 7px;border-radius:8px;background:#07130de8;color:#f4f2df;font-size:10px;line-height:1.3;text-align:center;pointer-events:none}
+.safari-planta{animation:none;border-color:#b0df70}
+.safari-planta img{animation:none}
+.day-controls{z-index:5}
+@keyframes walkAcross{from{left:4%}to{left:calc(100% - 94px)}}
+@keyframes bob{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-4px) rotate(3deg)}}
+@media(prefers-reduced-motion:reduce){.walker,.walker img{animation:none}}
+
 @media(max-width:600px){
   .app{width:min(100% - 22px,1180px);padding-top:15px}
   .topbar{padding-bottom:20px}
@@ -614,7 +620,14 @@ const brasilPage=document.getElementById("brasilPage");
 const tucaPage=document.getElementById("tucaPage");
 const biomes=[{id:"amazon",name:"Amazônia",cls:"amazon"},{id:"cerrado",name:"Cerrado",cls:"cerrado"},{id:"mata",name:"Mata Atlântica",cls:"mata"},{id:"caatinga",name:"Caatinga",cls:"caatinga"},{id:"pantanal",name:"Pantanal",cls:"pantanal"},{id:"pampa",name:"Pampa",cls:"pampa"}];
 function esconderPaginas(){[homePage,discoveryPage,safariPage,brasilPage,tucaPage].forEach(p=>p.style.display="none");}
-function abrirSafari(){esconderPaginas();safariPage.style.display="block";renderSafari();window.scrollTo({top:0,behavior:"smooth"});}
+function abrirSafari(){
+  esconderPaginas();
+  safariPage.style.display="block";
+  renderSafari();
+  const bioma=descobertas[0]?.bioma||"amazon";
+  const cena=document.getElementById("scene-"+bioma);
+  if(cena)cena.scrollIntoView({behavior:"smooth",block:"center"});
+}
 function abrirBrasil(){esconderPaginas();brasilPage.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
 function abrirTuca(){esconderPaginas();tucaPage.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
 function voltarPaginaInicial(){esconderPaginas();homePage.style.display="block";window.scrollTo({top:0,behavior:"smooth"});}
@@ -625,17 +638,70 @@ document.getElementById("voltarBrasil").addEventListener("click",voltarPaginaIni
 document.getElementById("voltarTuca").addEventListener("click",voltarPaginaInicial);
 function voltarSafari(){voltarPaginaInicial();}
 document.getElementById("voltarSafari").addEventListener("click",voltarSafari);
+function descobertaEhPlanta(d){
+  const categoria=String(d.categoria||"").normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase();
+  return ["arvores","flores","frutas","plantas"].includes(categoria);
+}
+
 function renderSafari(){
- const tabs=document.getElementById("biomeTabs"), scenes=document.getElementById("biomeScenes");
- tabs.textContent="";scenes.textContent="";
- const counts={};biomes.forEach(b=>counts[b.id]=0);
- descobertas.forEach(d=>{const id=(d.bioma||"amazon");if(counts[id]!==undefined)counts[id]++;});
- biomes.forEach((b,i)=>{
-  const tab=document.createElement("button");tab.className="biome-tab"+(i===0?" active":"");tab.textContent="●  "+b.name+"  "+counts[b.id];tab.addEventListener("click",()=>{document.querySelectorAll(".biome-tab").forEach(x=>x.classList.remove("active"));tab.classList.add("active");document.getElementById("scene-"+b.id).scrollIntoView({behavior:"smooth",block:"center"});});tabs.appendChild(tab);
-  const section=document.createElement("section");section.className="biome-section";section.innerHTML='<div class="biome-title"><h3>'+b.name+'</h3><span>'+counts[b.id]+' descobertas</span></div><div class="biome-scene '+b.cls+'" id="scene-'+b.id+'"><div class="day-controls"><button class="active">Dia</button><button>Amanhecer</button><button>Crepúsculo</button><button>Noite</button></div><div class="walker" title="Personagem caminhando">🧑‍🌾</div><div class="scene-message">'+(counts[b.id]?'Você já encontrou vida por aqui! Continue explorando este bioma.':'Ninguém por aqui ainda. Identifique algo do(a) '+b.name+' para ver a vida chegar nesse cenário.')+'</div><div class="scene-caption"><div class="eyebrow">BIOMA BRASILEIRO · DIA</div><strong>'+counts[b.id]+' caminhando · 0 plantadas</strong></div></div></section>';
-  scenes.appendChild(section);
-  section.querySelectorAll(".day-controls button").forEach((btn,j)=>btn.addEventListener("click",()=>{section.querySelectorAll(".day-controls button").forEach(x=>x.classList.remove("active"));btn.classList.add("active");const scene=section.querySelector(".biome-scene");scene.style.filter=["none","sepia(.25) brightness(1.15)","sepia(.45) brightness(.8)","brightness(.55) hue-rotate(25deg)"][j];section.querySelector(".eyebrow").textContent="BIOMA BRASILEIRO · "+btn.textContent.toUpperCase();}));
- });
+  const tabs=document.getElementById("biomeTabs"),scenes=document.getElementById("biomeScenes");
+  tabs.textContent="";
+  scenes.textContent="";
+  const biomaAtual=descobertas[0]?.bioma||"amazon";
+  biomes.forEach(b=>{
+    const itens=descobertas.filter(d=>(d.bioma||"amazon")===b.id);
+    const plantas=itens.filter(descobertaEhPlanta).length;
+    const animais=itens.length-plantas;
+    const tab=document.createElement("button");
+    tab.className="biome-tab"+(b.id===biomaAtual ? " active" : "");
+    tab.textContent="●  "+b.name+"  "+itens.length;
+    tab.addEventListener("click",()=>{
+      tabs.querySelectorAll(".biome-tab").forEach(x=>x.classList.remove("active"));
+      tab.classList.add("active");
+      document.getElementById("scene-"+b.id).scrollIntoView({behavior:"smooth",block:"center"});
+    });
+    tabs.appendChild(tab);
+    const section=document.createElement("section");
+    section.className="biome-section";
+    section.innerHTML='<div class="biome-title"><h3>'+b.name+'</h3><span>'+itens.length+' descobertas</span></div><div class="biome-scene '+b.cls+'" id="scene-'+b.id+'"><div class="day-controls"><button class="active">Dia</button><button>Amanhecer</button><button>Crepúsculo</button><button>Noite</button></div><div class="scene-caption"><div class="eyebrow">BIOMA BRASILEIRO · DIA</div><strong>'+animais+' caminhando · '+plantas+' plantadas</strong></div></div>';
+    const scene=section.querySelector(".biome-scene");
+    if(!itens.length){
+      const mensagem=document.createElement("div");
+      mensagem.className="scene-message";
+      mensagem.textContent="Ninguém por aqui ainda. Identifique algo do(a) "+b.name+" para ver a vida chegar nesse cenário.";
+      scene.appendChild(mensagem);
+    }
+    itens.forEach((d,i)=>{
+      const planta=descobertaEhPlanta(d);
+      const personagem=document.createElement("div");
+      personagem.className="walker "+(planta ? "safari-planta" : "safari-animal");
+      personagem.title=d.nome+(planta ? " no bioma" : " caminhando");
+      personagem.style.setProperty("--posicao",(5+(i*23)%72)+"%");
+      personagem.style.setProperty("--altura",(25+(i*13)%34)+"%");
+      personagem.style.setProperty("--duracao",(14+(i*7)%13)+"s");
+      personagem.style.setProperty("--atraso",(-i*5-3)+"s");
+      if(typeof d.foto==="string" && d.foto.startsWith("data:image/")){
+        const foto=document.createElement("img");
+        foto.src=d.foto;
+        foto.alt=d.nome;
+        personagem.appendChild(foto);
+      }else{
+        personagem.appendChild(document.createTextNode(planta ? "🌱" : "🐾"));
+      }
+      const nome=document.createElement("span");
+      nome.className="walker-name";
+      nome.textContent=d.nome;
+      personagem.appendChild(nome);
+      scene.appendChild(personagem);
+    });
+    scenes.appendChild(section);
+    section.querySelectorAll(".day-controls button").forEach((btn,j)=>btn.addEventListener("click",()=>{
+      section.querySelectorAll(".day-controls button").forEach(x=>x.classList.remove("active"));
+      btn.classList.add("active");
+      scene.style.filter=["none","sepia(.25) brightness(1.15)","sepia(.45) brightness(.8)","brightness(.55) hue-rotate(25deg)"][j];
+      section.querySelector(".eyebrow").textContent="BIOMA BRASILEIRO · "+btn.textContent.toUpperCase();
+    }));
+  });
 }
 
 let fotoBase64=null;
