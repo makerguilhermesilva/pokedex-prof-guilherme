@@ -23,19 +23,19 @@ const GRUPO = {
   integrantes: "Ana, Bruno e Carla",
   escola: "Escola",
   turma: "Turma 1",
-  tema: "Flores do Brasil",
+  tema: "Aves brasileiras, animais mamíferos, árvores nativas, frutas brasileiras, comidas típicas brasileiras e animais marinhos",
   pendencias: []          // ex.: ["Missão 5", "Missão 6"]
 };
 
 // Missão 1: quem a IA vai fingir ser
 // Exemplo (tema flores): "um botânico especialista em flores do Brasil"
-const ESPECIALISTA = "um botânico especialista em flores do Brasil";
+const ESPECIALISTA = "um explorador da OrcaDex especialista na natureza e na cultura brasileira";
 
 // Missão 2: o que procurar na foto (uma ou duas palavras)
 // Aparece também na mensagem de "fora do tema":
 //   "🚫 Não reconhecemos porque isso parece ser uma melancia, e aqui a gente
 //    só reconhece <O_QUE_PROCURAR>."
-const O_QUE_PROCURAR = "flores";
+const O_QUE_PROCURAR = "aves brasileiras, animais mamíferos, árvores nativas, frutas brasileiras, comidas típicas brasileiras e animais marinhos";
 
 // Missão 3: quanta certeza a IA precisa ter (número de 0 a 100, sem aspas)
 // Por que o grupo escolheu: ""
