@@ -44,7 +44,14 @@
         .foto-area{text-align:center}
         .upload-label{display:inline-block;padding:15px 24px;border-radius:16px;border:2px dashed #16bce8;background:rgba(4,45,52,.8);color:white;cursor:pointer;font-weight:bold;transition:.2s}
         .upload-label:hover{background:rgba(8,90,94,.9);transform:translateY(-2px)}
-        #fotoInput{display:none}
+        #fotoInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
         #preview{display:none;max-width:100%;width:360px;max-height:350px;object-fit:cover;margin:20px auto;border-radius:20px;border:3px solid #16bce8;box-shadow:0 0 25px rgba(22,188,232,.25)}
         .btn-descobrir{border:none;border-radius:18px;padding:16px 35px;font-size:20px;font-weight:bold;color:#06231c;background:linear-gradient(135deg,#7bea12,#b8ff59);cursor:pointer;box-shadow:0 8px 20px rgba(123,234,18,.2);transition:.2s}
         .btn-descobrir:hover{transform:scale(1.04)}
@@ -194,8 +201,16 @@
 
         <section class="painel foto-area">
             <h2>📸 FAÇA SUA DESCOBERTA</h2>
-            <label class="upload-label" for="fotoInput">📷 Escolher uma foto</label>
-            <input id="fotoInput" type="file" accept="image/*">
+<label class="upload-label" for="fotoInput">
+    📷 Abrir câmera / Escolher foto
+</label>
+
+<input
+    id="fotoInput"
+    type="file"
+    accept="image/*"
+    capture="environment"
+>
             <img id="preview" alt="Pré-visualização da foto">
             <br>
             <button class="btn-descobrir" id="btnDescobrir">🌿 Descobrir!</button>
