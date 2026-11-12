@@ -770,5 +770,47 @@
           }
         }
     </script>
+
+<script src="/comum/ficha.js"></script>
+<script src="/comum/adaptador.js"></script>
+<script>
+PokedexAdaptador.iniciar({
+  icone: "🌳",
+  fauna: false,
+  cor: "#7bea12",
+  cor2: "#087e9d",
+
+  escuro: () => true,
+
+  noturno: {
+    fundo: "#031d22",
+    texto: "#ffffff",
+    suave: "#bde2e8"
+  },
+
+  claro: {
+    fundo: "#f3ead7",
+    texto: "#102018",
+    suave: "#6f756e"
+  },
+
+  carregando: "🔎 O explorador está investigando sua descoberta...",
+
+  esconder: ["#resultado"],
+
+  extras: info => [
+    ["💡 Curiosidades", info.curiosidades],
+    ["🗺️ Onde vive", info.habitat],
+    ["🌱 Conservação", info.conservacao],
+    ["📍 Regiões brasileiras", Array.isArray(info.regioes) ? info.regioes.join(", ") : info.regioes],
+    ["🗺️ Mapa da descoberta", info.mapa]
+  ],
+
+  alerta: info => info.aviso || "",
+
+  novaFoto: () => document.getElementById("fotoInput").click()
+});
+</script>
+
 </body>
 </html>
